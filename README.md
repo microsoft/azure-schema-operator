@@ -1,7 +1,6 @@
 # Project
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+Azure Schema Operator project is aimed to manage a schema changes of varios Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.
 
 As the maintainer of this project, please make a few updates:
 
