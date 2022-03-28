@@ -8,8 +8,8 @@ vars:
   CONTROLLER_APP: manager
   SCRIPTS_ROOT: ./scripts
 
-  TEST_RESOURCE_PREFIX: asotest
-  TEST_LIVE_RESOURCE_PREFIX: asolivetest
+  TEST_RESOURCE_PREFIX: schematest
+  TEST_LIVE_RESOURCE_PREFIX: schemalivetest
 
   VERSION:
     # Version tags for the controller must start with "v1", e.g. "v1.0.0-alpha.0".
@@ -191,3 +191,17 @@ tasks:
     vars:
       CHANGED:
         sh: git status --porcelain
+
+  az-login:
+    desc: Runs AZ login
+    cmds:
+      - echo "Place holder for az login"
+      # - az login --service-principal -u {{.AZURE_CLIENT_ID}} -p {{.AZURE_CLIENT_SECRET}} --tenant {{.AZURE_TENANT_ID}}
+      # - az account set --subscription {{.AZURE_SUBSCRIPTION_ID}}
+
+  cleanup-azure-resources:
+    desc: Removes any resources created by the integration tests.
+    deps: [az-login]
+    cmds:
+      - echo "Place holder for test resource group cleanup"
+      # - '{{.SCRIPTS_ROOT}}/delete-old-resourcegroups.sh -p "{{.TEST_RESOURCE_PREFIX}}"'

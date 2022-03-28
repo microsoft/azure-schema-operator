@@ -32,7 +32,7 @@ jobs:
         uses: githubocto/repo-visualizer@main
         with:
           excluded_paths: 'ignore,.github,scripts'
-          output_file: 'docs/hugo/content/contributing/contributing/schemaop-structure.svg'
+          output_file: 'docs/site/content/contributing/contributing/schemaop-structure.svg'
           commit_message: 'Updating visualization for the schema operator'
           artifact_name: 'schemaop-structure'
 
