@@ -1,0 +1,15 @@
+{
+  "name": "Azure Schema Operator",
+  "short_name": "Azure Schema Operator",
+  "start_url": "/azure-schema-operator/",
+  "scope": "/azure-schema-operator/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/azure-schema-operator/favicon.svg",
+      "sizes": "512x512"
+    }
+  ]
+}

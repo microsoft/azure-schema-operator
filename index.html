@@ -1,0 +1,341 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta name=generator content="Hugo 0.91.2">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Azure-Schema-Operator #    Note: The API is expected to change (while adhering to semantic versioning). Alpha and Beta resources are generally not recommended for production environments. Alpha, Beta, and Stable mean roughly the same for this project as they do for all Kubernetes features.
+ Azure Schema Operator project is aimed to manage a schema changes of varios Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content>
+<meta property="og:description" content>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/">
+<title> | Azure Schema Operator</title>
+<link rel=manifest href=/azure-schema-operator/manifest.json>
+<link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/azure-schema-operator/flexsearch.min.js></script>
+<script defer src=/azure-schema-operator/en.search.min.43a778c1d9fb7764d0c81cacf65494b36cff64873d59f4f7e2bd58ab86ebc6ce.js integrity="sha256-Q6d4wdn7d2TQyBys9lSUs2z/ZIc9WfT34r1Yq4brxs4=" crossorigin=anonymous></script>
+<link rel=alternate type=application/rss+xml href=https://microsoft.github.io/azure-schema-operator/index.xml title="Azure Schema Operator">
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/azure-schema-operator/><span>Azure Schema Operator</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<span>User’s Guide</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/introduction/annotations/>Annotations</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/authentication/>Authentication</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/filter/>Filter</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+</ul>
+</li>
+<li>
+<span>For Contributors</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/contributing/contributing/>Contributing</a>
+</li>
+<li>
+<a href=/azure-schema-operator/contributing/create-a-new-release/>Create a New Release</a>
+</li>
+</ul>
+</li>
+<li>
+<span>Tutorials</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/tutorials/eventhub/>Eventhub</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/kusto/>Kusto</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/sqlserver/>Sqlserver</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong></strong>
+<label for=toc-control>
+<img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#status>Status</a></li>
+<li><a href=#usage>Usage</a></li>
+<li><a href=#authentication>Authentication</a>
+<ul>
+<li><a href=#prerequisites>Prerequisites</a></li>
+<li><a href=#installing>Installing</a></li>
+</ul>
+</li>
+<li><a href=#running-the-tests>Running the tests</a></li>
+<li><a href=#deployment>Deployment</a></li>
+<li><a href=#built-with>Built With</a></li>
+<li><a href=#contributing>Contributing</a></li>
+<li><a href=#versioning-and-changelog>Versioning and changelog</a></li>
+<li><a href=#authors>Authors</a></li>
+<li><a href=#license>License</a></li>
+<li><a href=#acknowledgments>Acknowledgments</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=azure-schema-operator>
+Azure-Schema-Operator
+<a class=anchor href=#azure-schema-operator>#</a>
+</h1>
+<p><a href=https://goreportcard.com/report/github.com/Microsoft/azure-schema-operator><img src=https://goreportcard.com/badge/github.com/Microsoft/azure-schema-operator alt="Go Report Card"></a>
+<img src="https://github.com/Microsoft/azure-schema-operator/actions/workflows/live-validation.yml/badge.svg?branch=main" alt="Build Status"></p>
+<blockquote>
+<p>Note: The API is expected to change (while adhering to semantic versioning). Alpha and Beta resources are generally not recommended for production environments. Alpha, Beta, and Stable mean roughly the same for this project as they do for <a href=https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#feature-stages>all Kubernetes features</a>.</p>
+</blockquote>
+<p>Azure Schema Operator project is aimed to manage a schema changes of varios Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.</p>
+<p>A developer defines the schema in source location (e.g. configMap) and the
+operator will make sure to apply it on all the defined clusters.</p>
+<p><img src=/docs/images/SchemaOperator.drawio.png alt="Schema-Operator flow"></p>
+<p>The Operator offloads the heavy lifting to schema tools such as <a href=https://github.com/microsoft/delta-kusto>delta-kusto</a>
+and instead focuses on ensuring the validity of the deployment process.<br>
+The operator will validate that the schema was deployed on all databases on all clusters or rollback to a previous successful version.</p>
+<p>Currently supports:</p>
+<ul>
+<li>Azure Data Explorer (Kusto)</li>
+<li>SQL Server</li>
+<li>Eventhubs (Schema-Registry)</li>
+</ul>
+<p>Soon To Be supported:</p>
+<ul>
+<li>Cosmos</li>
+</ul>
+<h2 id=status>
+Status
+<a class=anchor href=#status>#</a>
+</h2>
+<p>The project is currently in Alpha status, you can follow status and project plans in the open <a href=/docs/Tasks.md>tasks page</a></p>
+<h2 id=usage>
+Usage
+<a class=anchor href=#usage>#</a>
+</h2>
+<p>Follow the <a href=/docs/Install.md>installation guide</a> to deploy the operator.<br>
+The schema operator expects a configMap with the kql data (generated by <code>delta-kusto</code> on the dev environment)</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>ConfigMap</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dev-template-kql</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>default</span>
+<span style=color:#f92672>data</span>:
+  <span style=color:#f92672>kql</span>: |<span style=color:#e6db74>
+</span><span style=color:#e6db74>    </span>    <span style=color:#ae81ff>.create-or-alter function  Add(a:real,b:real) {a+b}</span>
+</code></pre></div><p>In this simple example we have a configMap that defines a single function.
+Now we create the <code>SchemaDeployment</code> object (our schema object to apply on all clusters)</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>dbschema.microsoft.com/v1alpha1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>SchemaDeployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>master-test-template</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>type</span>: <span style=color:#ae81ff>kusto</span>
+  <span style=color:#f92672>applyTo</span>:
+    <span style=color:#f92672>clusterUris</span>: [<span style=color:#e6db74>&#39;https://sampleadx.westeurope.kusto.windows.net&#39;</span>]
+    <span style=color:#f92672>db</span>: <span style=color:#e6db74>&#39;tenant_&#39;</span>
+  <span style=color:#f92672>failIfDataLoss</span>: <span style=color:#66d9ef>false</span>
+  <span style=color:#f92672>failurePolicy</span>: <span style=color:#ae81ff>rollback</span>
+  <span style=color:#f92672>source</span>:
+    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dev-template-kql</span>
+    <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>default</span>
+</code></pre></div><p>The template defines the cluster list (<code>sampleadx</code>) and a regular expression
+to filter databases by thier name (<code>tenant_</code> is our sample filter but can be any regexp)</p>
+<h2 id=authentication>
+Authentication
+<a class=anchor href=#authentication>#</a>
+</h2>
+<p>the <code>schema-operator</code> needs access and perimssions on the target databases.
+Authorisation can be defined either by <code>MSI</code> (recommanded) or by defining a secret.</p>
+<p>To use <code>MSI</code>, <code>SCHEMAOP_USE_MSI</code> environemt variable needs to be defined on the manager pod.</p>
+<p>To use a secret, we need to define a secret with the relevant credentials:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Secret</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>schemaoperator</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>schema-operator-system</span>
+<span style=color:#f92672>type</span>: <span style=color:#ae81ff>Opaque</span>
+<span style=color:#f92672>data</span>:
+  <span style=color:#f92672>AZURE_SUBSCRIPTION_ID</span>: <span style=color:#ae81ff>&lt;base64 encoding of the subscription&gt;</span>
+  <span style=color:#f92672>AZURE_TENANT_ID</span>: <span style=color:#ae81ff>&lt;base64 encoding of the tenant id&gt;</span>
+  <span style=color:#f92672>AZURE_CLIENT_ID</span>: <span style=color:#ae81ff>&lt;base64 encoding of the client id&gt;</span>
+  <span style=color:#f92672>AZURE_CLIENT_SECRET</span>: <span style=color:#ae81ff>&lt;base64 encoding of the client secret&gt;</span>
+
+</code></pre></div><p>and later define these as env entries:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>env</span>:
+  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>SCHEMAOP_USE_MSI</span>
+    <span style=color:#f92672>value</span>: <span style=color:#e6db74>&#39;false&#39;</span>
+  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>SCHEMAOP_CLIENT_ID</span>
+    <span style=color:#f92672>valueFrom</span>:
+      <span style=color:#f92672>secretKeyRef</span>:
+        <span style=color:#f92672>key</span>: <span style=color:#ae81ff>AZURE_CLIENT_ID</span>
+        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>schemaoperator</span>
+        <span style=color:#f92672>optional</span>: <span style=color:#66d9ef>true</span>
+  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>SCHEMAOP_CLIENT_SECRET</span>
+    <span style=color:#f92672>valueFrom</span>:
+      <span style=color:#f92672>secretKeyRef</span>:
+        <span style=color:#f92672>key</span>: <span style=color:#ae81ff>AZURE_CLIENT_SECRET</span>
+        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>schemaoperator</span>
+        <span style=color:#f92672>optional</span>: <span style=color:#66d9ef>true</span>
+  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>SCHEMAOP_TENANT_ID</span>
+    <span style=color:#f92672>valueFrom</span>:
+      <span style=color:#f92672>secretKeyRef</span>:
+        <span style=color:#f92672>key</span>: <span style=color:#ae81ff>AZURE_TENANT_ID</span>
+        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>schemaoperator</span>
+        <span style=color:#f92672>optional</span>: <span style=color:#66d9ef>true</span>
+</code></pre></div><h3 id=prerequisites>
+Prerequisites
+<a class=anchor href=#prerequisites>#</a>
+</h3>
+<p>The schema operator is written in <a href=https://go.dev>GO</a>.
+To develop the project you need to following:</p>
+<ul>
+<li>Go</li>
+<li>operator-sdk</li>
+<li>Docker</li>
+<li>sqlpackge</li>
+<li>delta-kusto</li>
+</ul>
+<h3 id=installing>
+Installing
+<a class=anchor href=#installing>#</a>
+</h3>
+<p>A step by step series of examples that tell you how to get a development environment running</p>
+<ol>
+<li>
+<p>Describe what needs to be done first</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-batch data-lang=batch>Give an example of performing step 1
+</code></pre></div></li>
+<li>
+<p>And then repeat for each step</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>Another example, this time <span style=color:#66d9ef>for</span> step <span style=color:#ae81ff>2</span>
+</code></pre></div></li>
+</ol>
+<h2 id=running-the-tests>
+Running the tests
+<a class=anchor href=#running-the-tests>#</a>
+</h2>
+<p>The project uses <a href=https://github.com/onsi/ginkgo>Ginkgo</a> with <a href=https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/envtest>envtest</a>
+To run the tests simple run:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>make test
+</code></pre></div><h2 id=deployment>
+Deployment
+<a class=anchor href=#deployment>#</a>
+</h2>
+<p>Add additional notes about how to deploy this on a live system</p>
+<h2 id=built-with>
+Built With
+<a class=anchor href=#built-with>#</a>
+</h2>
+<p>The project is build using the <a href=https://github.com/operator-framework/operator-sdk>Operator SDK</a></p>
+<h2 id=contributing>
+Contributing
+<a class=anchor href=#contributing>#</a>
+</h2>
+<p>Please read our <a href=CONTRIBUTING.md>CONTRIBUTING.md</a> which outlines all of our policies, procedures, and requirements for contributing to this project.</p>
+<h2 id=versioning-and-changelog>
+Versioning and changelog
+<a class=anchor href=#versioning-and-changelog>#</a>
+</h2>
+<p>We use <a href=http://semver.org/>SemVer</a> for versioning. For the versions available, see the <a href=link-to-tags-or-other-release-location>tags on this repository</a>.</p>
+<p>It is a good practice to keep <code>CHANGELOG.md</code> file in repository that can be updated as part of a pull request.</p>
+<h2 id=authors>
+Authors
+<a class=anchor href=#authors>#</a>
+</h2>
+<ul>
+<li>Jony Vesterman Cohen</li>
+<li>Dmitry Meytin</li>
+</ul>
+<h2 id=license>
+License
+<a class=anchor href=#license>#</a>
+</h2>
+<p>This project is licensed under the MIT License - see the <a href=LICENSE>LICENSE</a> file for details</p>
+<h2 id=acknowledgments>
+Acknowledgments
+<a class=anchor href=#acknowledgments>#</a>
+</h2>
+<ul>
+<li>Hat tip to anyone whose code was used</li>
+<li>Inspiration</li>
+<li>etc</li>
+</ul>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#status>Status</a></li>
+<li><a href=#usage>Usage</a></li>
+<li><a href=#authentication>Authentication</a>
+<ul>
+<li><a href=#prerequisites>Prerequisites</a></li>
+<li><a href=#installing>Installing</a></li>
+</ul>
+</li>
+<li><a href=#running-the-tests>Running the tests</a></li>
+<li><a href=#deployment>Deployment</a></li>
+<li><a href=#built-with>Built With</a></li>
+<li><a href=#contributing>Contributing</a></li>
+<li><a href=#versioning-and-changelog>Versioning and changelog</a></li>
+<li><a href=#authors>Authors</a></li>
+<li><a href=#license>License</a></li>
+<li><a href=#acknowledgments>Acknowledgments</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

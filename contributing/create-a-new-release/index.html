@@ -1,0 +1,216 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Creating a new release of ASO v2 #   Go to the releases page and draft a new release. In the tag dropdown, type the name of the new tag you&rsquo;d like to create (it should match the pattern of previous releases tags, for example: v1.0.0-alpha.1). The release target should be main (the default). Use the GitHub &ldquo;auto-generate release notes&rdquo; button to generate a set of release notes to work with.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content>
+<meta property="og:description" content="Creating a new release of ASO v2 #   Go to the releases page and draft a new release. In the tag dropdown, type the name of the new tag you&rsquo;d like to create (it should match the pattern of previous releases tags, for example: v1.0.0-alpha.1). The release target should be main (the default). Use the GitHub &ldquo;auto-generate release notes&rdquo; button to generate a set of release notes to work with.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/contributing/create-a-new-release/"><meta property="article:section" content="contributing">
+<title>Create a New Release | Azure Schema Operator</title>
+<link rel=manifest href=/azure-schema-operator/manifest.json>
+<link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/azure-schema-operator/flexsearch.min.js></script>
+<script defer src=/azure-schema-operator/en.search.min.43a778c1d9fb7764d0c81cacf65494b36cff64873d59f4f7e2bd58ab86ebc6ce.js integrity="sha256-Q6d4wdn7d2TQyBys9lSUs2z/ZIc9WfT34r1Yq4brxs4=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/azure-schema-operator/><span>Azure Schema Operator</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<span>User’s Guide</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/introduction/annotations/>Annotations</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/authentication/>Authentication</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/filter/>Filter</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+</ul>
+</li>
+<li>
+<span>For Contributors</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/contributing/contributing/>Contributing</a>
+</li>
+<li>
+<a href=/azure-schema-operator/contributing/create-a-new-release/ class=active>Create a New Release</a>
+</li>
+</ul>
+</li>
+<li>
+<span>Tutorials</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/tutorials/eventhub/>Eventhub</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/kusto/>Kusto</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/sqlserver/>Sqlserver</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Create a New Release</strong>
+<label for=toc-control>
+<img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents></nav>
+</aside>
+</header>
+<article class=markdown><h1 id=creating-a-new-release-of-aso-v2>
+Creating a new release of ASO v2
+<a class=anchor href=#creating-a-new-release-of-aso-v2>#</a>
+</h1>
+<ol>
+<li>Go to the <a href=https://github.com/Microsoft/azure-schema-operator/releases>releases</a> page and draft a new release.</li>
+<li>In the tag dropdown, type the name of the new tag you&rsquo;d like to create (it should match the pattern of previous releases tags, for example: <code>v1.0.0-alpha.1</code>). The release target should be <code>main</code> (the default).</li>
+<li>Use the GitHub &ldquo;auto-generate release notes&rdquo; button to generate a set of release notes to work with. You will need to clean this up quite a bit before actually publishing it.</li>
+<li>If publishing an alpha/beta, be sure to mark the release as a pre-release.</li>
+<li>Write a &ldquo;Release Notes&rdquo; section. You can edit the autogenerated section as a start. You can also look through the commits between the last release and now: <code>git log v1.0.0-alpha.6..main</code>.</li>
+<li>Publish the release. This will automatically trigger a GitHub action to build and publish an updated Docker image with the latest manager changes.</li>
+<li>Ensure that the action associated with your release finishes successfully.</li>
+</ol>
+<h1 id=testing-the-new-release>
+Testing the new release
+<a class=anchor href=#testing-the-new-release>#</a>
+</h1>
+<ol>
+<li>
+<p>Download the yaml file from the release page</p>
+</li>
+<li>
+<p>Create a kind cluster: <code>task controller:kind-create</code></p>
+</li>
+<li>
+<p>Create the namespace for the operator: <code>k create namespace azureserviceoperator-system</code></p>
+</li>
+<li>
+<p>Source the SP credentials to use for the secret and then run <code>./scripts/deploy_testing_secret.sh sp</code></p>
+</li>
+<li>
+<p>Deploy the operator from MCR: <code>k apply --server-side=true -f &lt;path-to-downloaded-yaml></code> (We need to use <a href=https://kubernetes.io/docs/reference/using-api/server-side-apply/>server-side apply</a> because the CRD for VirtualMachines is large enough that it can&rsquo;t fit in the <code>last-applied-configuration</code> annotation client-side <code>kubectl apply</code> uses.)</p>
+</li>
+<li>
+<p>Wait for it to start: <code>k get all -n azureserviceoperator-system</code></p>
+</li>
+<li>
+<p>Create a resource group and a vnet in it (the vnet is to check that conversion webhooks are working, since there aren&rsquo;t any for RGs):</p>
+<pre tabindex=0><code>k apply -f v2/config/samples/resources/v1alpha1api20200601_resourcegroup.yaml
+k apply -f v2/config/samples/network/v1alpha1api20201101_virtualnetwork.yaml
+</code></pre></li>
+<li>
+<p>Make sure they deploy successfully - check in the portal as well.</p>
+</li>
+</ol>
+<h1 id=creating-and-testing-helm-chart-for-new-release>
+Creating and testing Helm chart for new release
+<a class=anchor href=#creating-and-testing-helm-chart-for-new-release>#</a>
+</h1>
+<ol>
+<li>
+<p>Create a new branch from <code>&lt;NEW_RELEASE_TAG></code> HEAD</p>
+</li>
+<li>
+<p>Generate helm manifest for new release: <code>task controller:gen-helm-manifest</code></p>
+</li>
+<li>
+<p>Check the version in <code>/charts/azure-schema-operator/Chart.yaml</code> if matches with the latest release tag.</p>
+</li>
+<li>
+<p>Install helm chart:</p>
+<pre tabindex=0><code>helm install --set azureSubscriptionID=$AZURE_SUBSCRIPTION_ID \
+--set azureTenantID=$AZURE_TENANT_ID \
+--set azureClientSecret=$AZURE_CLIENT_SECRET \
+--set azureClientID=$AZURE_CLIENT_ID \
+schemaop -n azureschemaoperator-system --create-namespace ./charts/azure-schema-operator/.
+</code></pre></li>
+<li>
+<p>Wait for the chart installation.</p>
+</li>
+<li>
+<p>Wait for it to start: <code>k get all -n azureserviceoperator-system</code></p>
+</li>
+<li>
+<p>Create a resource group and a vnet in it (the vnet is to check that conversion webhooks are working, since there aren&rsquo;t any for RGs):</p>
+<pre tabindex=0><code>k apply -f v2/config/samples/resources/v1alpha1api20200601_resourcegroup.yaml
+k apply -f v2/config/samples/network/v1alpha1api20201101_virtualnetwork.yaml
+</code></pre></li>
+<li>
+<p>Make sure they deploy successfully - check in the portal as well.</p>
+</li>
+<li>
+<p>If installed successfully, commit the files under <code>v2/charts/azure-service-operator</code>.</p>
+</li>
+<li>
+<p>Send a PR.</p>
+</li>
+</ol>
+<h1 id=fixing-an-incorrect-release>
+Fixing an incorrect release
+<a class=anchor href=#fixing-an-incorrect-release>#</a>
+</h1>
+<p>If there was an issue publishing a new release, we may want to delete the existing release and try again.
+Only do this if you&rsquo;ve just published the release and there is something wrong with it. We shouldn&rsquo;t be deleting releases people are actually using.</p>
+<ol>
+<li>Delete the release in the <a href=https://github.com/Azure/azure-service-operator/releases>releases</a> page.</li>
+<li>Delete the tag: <code>git push &lt;origin> --delete &lt;tag></code>, for example <code>git push origin --delete v2.0.0-alpha.1</code>.</li>
+</ol>
+<p>At this point, you can safely publish a &ldquo;new&rdquo; release with the same name.</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents></nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

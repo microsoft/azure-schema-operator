@@ -1,0 +1,164 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Target Filter #  The operator uses the TargetFilter struct to Filter and aquire execution targets. The semantics change a bit between the different db technologies to match common use patterns.
+Although the general notions stay the same.
+ClusterUris holds a list of clusters/servers/Eventhub namespaces. Create flag indicates if we should create the DB/schema/registry if missing. Regexp flag indicates if we should regard the filter values as regular expressions or exact match.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content>
+<meta property="og:description" content="Target Filter #  The operator uses the TargetFilter struct to Filter and aquire execution targets. The semantics change a bit between the different db technologies to match common use patterns.
+Although the general notions stay the same.
+ClusterUris holds a list of clusters/servers/Eventhub namespaces. Create flag indicates if we should create the DB/schema/registry if missing. Regexp flag indicates if we should regard the filter values as regular expressions or exact match.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/introduction/filter/"><meta property="article:section" content="introduction">
+<title>Filter | Azure Schema Operator</title>
+<link rel=manifest href=/azure-schema-operator/manifest.json>
+<link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/azure-schema-operator/flexsearch.min.js></script>
+<script defer src=/azure-schema-operator/en.search.min.43a778c1d9fb7764d0c81cacf65494b36cff64873d59f4f7e2bd58ab86ebc6ce.js integrity="sha256-Q6d4wdn7d2TQyBys9lSUs2z/ZIc9WfT34r1Yq4brxs4=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/azure-schema-operator/><span>Azure Schema Operator</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<span>User’s Guide</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/introduction/annotations/>Annotations</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/authentication/>Authentication</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/filter/ class=active>Filter</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+</ul>
+</li>
+<li>
+<span>For Contributors</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/contributing/contributing/>Contributing</a>
+</li>
+<li>
+<a href=/azure-schema-operator/contributing/create-a-new-release/>Create a New Release</a>
+</li>
+</ul>
+</li>
+<li>
+<span>Tutorials</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/tutorials/eventhub/>Eventhub</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/kusto/>Kusto</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/sqlserver/>Sqlserver</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Filter</strong>
+<label for=toc-control>
+<img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#kusto-filtering>Kusto filtering</a></li>
+<li><a href=#sql-server-filtering>SQL Server filtering</a></li>
+<li><a href=#eventhub-schema-registry>Eventhub schema registry</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=target-filter>
+Target Filter
+<a class=anchor href=#target-filter>#</a>
+</h1>
+<p>The operator uses the <code>TargetFilter</code> struct to Filter and aquire execution targets.
+The semantics change a bit between the different db technologies to match common use patterns.</p>
+<p>Although the general notions stay the same.</p>
+<p><code>ClusterUris</code> holds a list of clusters/servers/Eventhub namespaces.
+<code>Create</code> flag indicates if we should create the DB/schema/registry if missing.
+<code>Regexp</code> flag indicates if we should regard the filter values as regular expressions or exact match.</p>
+<h2 id=kusto-filtering>
+Kusto filtering
+<a class=anchor href=#kusto-filtering>#</a>
+</h2>
+<p>In Kusto a common multi-tenantcy solution is DB per tenant,
+To support this scenario we use the <code>DB</code> field as a regular expression to filter all the database names in the clusters.</p>
+<p>Sometimes an external system is used to determain the schema type instead of DB name, e.g. if we have different tier users.
+To support this scenario we have a <code>Webhook</code> & <code>Label</code> system, we will make a rest call to that webhook and passing the label.
+The response is expected to be a json array with database names on which we should apply the schema.</p>
+<h2 id=sql-server-filtering>
+SQL Server filtering
+<a class=anchor href=#sql-server-filtering>#</a>
+</h2>
+<p>In Sql Server a common multi-tenantcy solution is Schema per tenant,
+to support this scenario we use the <code>Schema</code> field as a regular expression to filter all the schema names.
+<strong>Note</strong> In this scenario we regard the DB name as exact match.</p>
+<h2 id=eventhub-schema-registry>
+Eventhub schema registry
+<a class=anchor href=#eventhub-schema-registry>#</a>
+</h2>
+<p>In Eventhubs we can only define one schema registry - we match the name according to the <code>DB</code> field.</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#kusto-filtering>Kusto filtering</a></li>
+<li><a href=#sql-server-filtering>SQL Server filtering</a></li>
+<li><a href=#eventhub-schema-registry>Eventhub schema registry</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

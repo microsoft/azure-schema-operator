@@ -1,0 +1,160 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Installation Guide #  This document will guide you through the installation and configuration process. The Schema-Operator needs a client account that can access the Azure Data Explorer clusters you wish to manage and as this is an Operator we need an AKS cluster.
+Identity #  Schema operator uses a managed identity (MSI) to access kusto resources. Please create a managed identity and assign administrative permissions for the operator to change the databases.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content>
+<meta property="og:description" content="Installation Guide #  This document will guide you through the installation and configuration process. The Schema-Operator needs a client account that can access the Azure Data Explorer clusters you wish to manage and as this is an Operator we need an AKS cluster.
+Identity #  Schema operator uses a managed identity (MSI) to access kusto resources. Please create a managed identity and assign administrative permissions for the operator to change the databases.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/introduction/install/"><meta property="article:section" content="introduction">
+<title>Install | Azure Schema Operator</title>
+<link rel=manifest href=/azure-schema-operator/manifest.json>
+<link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/azure-schema-operator/flexsearch.min.js></script>
+<script defer src=/azure-schema-operator/en.search.min.43a778c1d9fb7764d0c81cacf65494b36cff64873d59f4f7e2bd58ab86ebc6ce.js integrity="sha256-Q6d4wdn7d2TQyBys9lSUs2z/ZIc9WfT34r1Yq4brxs4=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/azure-schema-operator/><span>Azure Schema Operator</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<span>User’s Guide</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/introduction/annotations/>Annotations</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/authentication/>Authentication</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/filter/>Filter</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/install/ class=active>Install</a>
+</li>
+</ul>
+</li>
+<li>
+<span>For Contributors</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/contributing/contributing/>Contributing</a>
+</li>
+<li>
+<a href=/azure-schema-operator/contributing/create-a-new-release/>Create a New Release</a>
+</li>
+</ul>
+</li>
+<li>
+<span>Tutorials</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/tutorials/eventhub/>Eventhub</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/kusto/>Kusto</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/sqlserver/>Sqlserver</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Install</strong>
+<label for=toc-control>
+<img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#identity>Identity</a></li>
+<li><a href=#deployment-in-dev-environment>Deployment in Dev environment</a></li>
+<li><a href=#deployment>Deployment</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=installation-guide>
+Installation Guide
+<a class=anchor href=#installation-guide>#</a>
+</h1>
+<p>This document will guide you through the installation and configuration process.
+The Schema-Operator needs a client account that can access the Azure Data Explorer clusters you wish to manage
+and as this is an Operator we need an AKS cluster.</p>
+<h2 id=identity>
+Identity
+<a class=anchor href=#identity>#</a>
+</h2>
+<p>Schema operator uses a managed identity (MSI) to access kusto resources.
+Please create a managed identity and assign administrative permissions for the operator to change the databases.</p>
+<h2 id=deployment-in-dev-environment>
+Deployment in Dev environment
+<a class=anchor href=#deployment-in-dev-environment>#</a>
+</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>export ACR<span style=color:#f92672>=</span>&lt;your acr&gt;    
+export VERSION<span style=color:#f92672>=</span>0.0.4  
+export OPERATOR_IMG<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>ACR<span style=color:#e6db74>}</span><span style=color:#e6db74>.azurecr.io/schema-operator:v</span><span style=color:#e6db74>${</span>VERSION<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>  
+az acr login -n <span style=color:#e6db74>${</span>ACR<span style=color:#e6db74>}</span>
+make docker-build-push IMG<span style=color:#f92672>=</span>$OPERATOR_IMG  
+make deploy IMG<span style=color:#f92672>=</span>$OPERATOR_IMG  
+</code></pre></div><h2 id=deployment>
+Deployment
+<a class=anchor href=#deployment>#</a>
+</h2>
+<p>Schema-Operator is deployed using a helm chart. In the provided values we need to pass the MSI name to bind.</p>
+<p>Helm (helm3 upgrade schema-operator-test azure-schema-operator &ndash;install &ndash;set namespace=wdatp-infra-system &ndash;dry-run &ndash;timeout 60s &ndash;debug)</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#identity>Identity</a></li>
+<li><a href=#deployment-in-dev-environment>Deployment in Dev environment</a></li>
+<li><a href=#deployment>Deployment</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

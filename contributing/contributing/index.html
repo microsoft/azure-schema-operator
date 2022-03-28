@@ -1,0 +1,286 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Contributing to Azure Schema Operator #  Developer setup (with VS Code) #  This is the recommended setup, especially if you are using Windows as your development platform.
+This repository contains a devcontainer configuration that can be used in conjunction with VS Code to set up an environment with all the required tools preinstalled.
+If you want to use this:
+ Make sure you have installed the prerequisites to use Docker, including WSL if on Windows.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Contributing">
+<meta property="og:description" content="Contributing to Azure Schema Operator #  Developer setup (with VS Code) #  This is the recommended setup, especially if you are using Windows as your development platform.
+This repository contains a devcontainer configuration that can be used in conjunction with VS Code to set up an environment with all the required tools preinstalled.
+If you want to use this:
+ Make sure you have installed the prerequisites to use Docker, including WSL if on Windows.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/contributing/contributing/"><meta property="article:section" content="contributing">
+<title>Contributing | Azure Schema Operator</title>
+<link rel=manifest href=/azure-schema-operator/manifest.json>
+<link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/azure-schema-operator/flexsearch.min.js></script>
+<script defer src=/azure-schema-operator/en.search.min.43a778c1d9fb7764d0c81cacf65494b36cff64873d59f4f7e2bd58ab86ebc6ce.js integrity="sha256-Q6d4wdn7d2TQyBys9lSUs2z/ZIc9WfT34r1Yq4brxs4=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/azure-schema-operator/><span>Azure Schema Operator</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<span>User’s Guide</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/introduction/annotations/>Annotations</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/authentication/>Authentication</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/filter/>Filter</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+</ul>
+</li>
+<li>
+<span>For Contributors</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/contributing/contributing/ class=active>Contributing</a>
+</li>
+<li>
+<a href=/azure-schema-operator/contributing/create-a-new-release/>Create a New Release</a>
+</li>
+</ul>
+</li>
+<li>
+<span>Tutorials</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/tutorials/eventhub/>Eventhub</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/kusto/>Kusto</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/sqlserver/>Sqlserver</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Contributing</strong>
+<label for=toc-control>
+<img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#developer-setup-with-vs-code>Developer setup (with VS Code)</a></li>
+<li><a href=#without-vs-code>Without VS Code</a>
+<ul>
+<li><a href=#option-1-dockerfile>Option 1: Dockerfile</a></li>
+<li><a href=#option-2-devsh>Option 2: ./dev.sh</a></li>
+</ul>
+</li>
+<li><a href=#directory-structure-of-the-operator>Directory structure of the operator</a></li>
+<li><a href=#running-integration-tests>Running integration tests</a>
+<ul>
+<li><a href=#recordreplay>Record/replay</a></li>
+<li><a href=#running-live-tests>Running live tests</a></li>
+<li><a href=#running-a-single-test>Running a single test</a></li>
+</ul>
+</li>
+<li><a href=#running-the-operator-locally>Running the operator locally</a></li>
+<li><a href=#submitting-a-pull-request>Submitting a pull request</a></li>
+<li><a href=#common-problems-and-their-solutions>Common problems and their solutions</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=contributing-to-azure-schema-operator>
+Contributing to Azure Schema Operator
+<a class=anchor href=#contributing-to-azure-schema-operator>#</a>
+</h1>
+<h2 id=developer-setup-with-vs-code>
+Developer setup (with VS Code)
+<a class=anchor href=#developer-setup-with-vs-code>#</a>
+</h2>
+<p>This is the recommended setup, especially if you are using Windows as your development platform.</p>
+<p>This repository contains a <a href=https://code.visualstudio.com/docs/remote/containers>devcontainer</a> configuration that can be used in conjunction with VS Code to set up an environment with all the required tools preinstalled.</p>
+<p>If you want to use this:</p>
+<ol start=0>
+<li>
+<p>Make sure you have installed <a href=https://code.visualstudio.com/docs/remote/containers#_system-requirements>the prerequisites to use Docker</a>, including WSL if on Windows.</p>
+</li>
+<li>
+<p>Install VS Code and the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">Remote Development</a> extension (check installation instructions there).</p>
+</li>
+<li>
+<p>Run the VS Code command (with <code>Ctrl-Shift-P</code>): <code>Remote Containers: Clone Repository in Container Volume...</code></p>
+<p><strong>Note</strong>: in Windows, it is important to clone directly into a container instead of cloning first and then loading that with the <code>Remote Containers</code> extension, as the tooling performs a lot of file I/O, and if this is performed against a volume mounted in WSL then it is unusably slow.</p>
+<p>To complete the clone:</p>
+<ol>
+<li>Select &ldquo;<code>GitHub</code>&rdquo;.</li>
+<li>Search for &ldquo;<code>Microsoft/azure-schema-operator</code>&rdquo;.</li>
+<li>Choose either of the following options about where to create the volume.</li>
+<li>The window will reload and run the <code>Dockerfile</code> setup. The first time, this will take some minutes to complete as it installs all dependencies.</li>
+<li>Run <code>git submodule init</code> and <code>git submodule update</code></li>
+</ol>
+</li>
+<li>
+<p>To validate everything is working correctly, you can open a terminal in VS Code and run <code>task -l</code>. This will show a list of all <code>task</code> commands. Running <code>task</code> by itself (or <code>task default</code>) will run quick local pre-checkin tests and validation.</p>
+</li>
+</ol>
+<h2 id=without-vs-code>
+Without VS Code
+<a class=anchor href=#without-vs-code>#</a>
+</h2>
+<h3 id=option-1-dockerfile>
+Option 1: Dockerfile
+<a class=anchor href=#option-1-dockerfile>#</a>
+</h3>
+<p>The same <code>Dockerfile</code> that the VS Code <code>devcontainer</code> extension uses can also be used outside of VS Code; it is stored in the root <code>.devcontainer</code> directory and can be used to create a development container with all the tooling preinstalled:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-console data-lang=console>$ docker build <span style=color:#66d9ef>$(</span>git rev-parse --show-toplevel<span style=color:#66d9ef>)</span>/.devcontainer -t asodev:latest
+… image will be created …
+<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span>$ <span style=color:#75715e># After that you can start a terminal in the development container with:</span>
+$ docker run --env-file ~/work/envs.env -v <span style=color:#66d9ef>$(</span>git rev-parse --show-toplevel<span style=color:#66d9ef>)</span>:/go/src -w /go/src -u <span style=color:#66d9ef>$(</span>id -u <span style=color:#e6db74>${</span>USER<span style=color:#e6db74>}</span><span style=color:#66d9ef>)</span>:<span style=color:#66d9ef>$(</span>id -g <span style=color:#e6db74>${</span>USER<span style=color:#e6db74>}</span><span style=color:#66d9ef>)</span> --group-add <span style=color:#66d9ef>$(</span>stat -c <span style=color:#e6db74>&#39;%g&#39;</span> /var/run/docker.sock<span style=color:#66d9ef>)</span> -v /var/run/docker.sock:/var/run/docker.sock --network<span style=color:#f92672>=</span>host  -it asodev:latest /bin/bash
+</code></pre></div><p>It is not recommended to mount the source like this on Windows (WSL2) as the cross-VM file operations are very slow.</p>
+<h3 id=option-2-devsh>
+Option 2: ./dev.sh
+<a class=anchor href=#option-2-devsh>#</a>
+</h3>
+<p>If you are using Linux, instead of using VS Code you can run the <code>dev.sh</code> script in the root of the repository. This will install all required tooling into the <code>hack/tools</code> directory and then start a new shell with the <code>PATH</code> updated to use it.</p>
+<h2 id=directory-structure-of-the-operator>
+Directory structure of the operator
+<a class=anchor href=#directory-structure-of-the-operator>#</a>
+</h2>
+<p><img src=schemaop-structure.svg alt=Overview></p>
+<h2 id=running-integration-tests>
+Running integration tests
+<a class=anchor href=#running-integration-tests>#</a>
+</h2>
+<p>Basic use: run <code>task controller:test-integration-envtest</code>.</p>
+<h3 id=recordreplay>
+Record/replay
+<a class=anchor href=#recordreplay>#</a>
+</h3>
+<p>The task <code>controller:test-integration-envtest</code> runs the tests in a record/replay mode by default, so that it does not touch any live Azure resources. (This uses the <a href=https://github.com/dnaeon/go-vcr>go-vcr</a> library.) If you change the controller or other code in such a way that the required requests/responses from ARM change, you will need to update the recordings.</p>
+<p>To do this, delete the recordings for the failing tests (under <code>{test-dir}/recordings/{test-name}.yml</code>), and re-run <code>controller:test-integration-envtest</code>. If the test passes, a new recording will be saved, which you can commit to include with your change. All authentication and subscription information is removed from the recording.</p>
+<p>To run the test and produce a new recording you will also need to have set the required authentication environment variables for an Azure Service Principal: <code>AZURE_SUBSCRIPTION_ID</code>, <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code>, and <code>AZURE_CLIENT_SECRET</code>. This Service Principal will need access to the subscription to create and delete resources.</p>
+<p>If you need to create a new Azure Service Principal, run the following commands:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-console data-lang=console>$ az login
+… follow the instructions …
+$ az account set --subscription <span style=color:#f92672>{</span>the subscription ID you would like to use<span style=color:#f92672>}</span>
+Creating a role assignment under the scope of &#34;/subscriptions/{subscription ID you chose}&#34;
+…
+$ az ad sp create-for-rbac --role contributor --name <span style=color:#f92672>{</span>the name you would like to use<span style=color:#f92672>}</span>
+{
+  &#34;appId&#34;: &#34;…&#34;,
+  &#34;displayName&#34;: &#34;{name you chose}&#34;,
+  &#34;name&#34;: &#34;{name you chose}&#34;,
+  &#34;password&#34;: &#34;…&#34;,
+  &#34;tenant&#34;: &#34;…&#34;
+}
+</code></pre></div><p>The output contains <code>appId</code> (<code>AZURE_CLIENT_ID</code>), <code>password</code> (<code>AZURE_CLIENT_SECRET</code>), and <code>tenant</code> (<code>AZURE_TENANT_ID</code>). Store these somewhere safe as the password cannot be viewed again, only reset. The Service Principal will be created as a “contributor” to your subscription which means it can create and delete resources, so <strong>ensure you keep the secrets secure</strong>.</p>
+<h3 id=running-live-tests>
+Running live tests
+<a class=anchor href=#running-live-tests>#</a>
+</h3>
+<p>If you want to skip all recordings and run all tests directly against live Azure resources, you can use the <code>controller:test-integration-envtest-live</code> task. This will also require you to set the authentication environment variables, as detailed above.</p>
+<h3 id=running-a-single-test>
+Running a single test
+<a class=anchor href=#running-a-single-test>#</a>
+</h3>
+<p>By default <code>task controller:test-integration-envtest</code> and its variants run all tests. This is often undesirable as you may just be working on a single feature or test. In order to run a subset of tests, use:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>TEST_FILTER<span style=color:#f92672>=</span>test_name_regex task controller:test-integration-envtest
+</code></pre></div><h2 id=running-the-operator-locally>
+Running the operator locally
+<a class=anchor href=#running-the-operator-locally>#</a>
+</h2>
+<p>If you would like to try something out but do not want to write an integration test, you can run the operation locally in a <a href=https://kind.sigs.k8s.io>kind</a> cluster.</p>
+<p>Before launching <code>kind</code>, make sure that your shell has the <code>AZURE_SUBSCRIPTION_ID</code>, <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code>, and <code>AZURE_CLIENT_SECRET</code> environment variables set. See <a href=#recordreplay>above</a> for more details about them.</p>
+<p>Once you&rsquo;ve set the environment variables above, run one of the following commands to create a <code>kind</code> cluster:</p>
+<ol>
+<li>Service Principal authentication cluster: <code>task controller:kind-create-with-service-principal</code>.</li>
+<li>AAD Pod Identity authentication enabled cluster (emulates Managed Identity): <code>controller:kind-create-with-podidentity</code>.</li>
+</ol>
+<p>You can use <code>kubectl</code> to interact with the local <code>kind</code> cluster.</p>
+<p>When you&rsquo;re done with the local cluster, tear it down with <code>task controller:kind-delete</code>.</p>
+<h2 id=submitting-a-pull-request>
+Submitting a pull request
+<a class=anchor href=#submitting-a-pull-request>#</a>
+</h2>
+<p>Pull requests opened from forks of the azure-service-operator repository will initially have a <code>skipped</code> <code>Validate Pull Request / integration-tests</code> check which
+will prevent merging even if all other checks pass. Once a maintainer has looked at your PR and determined it is ready they will comment <code>/ok-to-test sha=&lt;sha></code>
+to kick off an integration test pass. If this check passes along with the other checks the PR can be merged.</p>
+<h2 id=common-problems-and-their-solutions>
+Common problems and their solutions
+<a class=anchor href=#common-problems-and-their-solutions>#</a>
+</h2>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#developer-setup-with-vs-code>Developer setup (with VS Code)</a></li>
+<li><a href=#without-vs-code>Without VS Code</a>
+<ul>
+<li><a href=#option-1-dockerfile>Option 1: Dockerfile</a></li>
+<li><a href=#option-2-devsh>Option 2: ./dev.sh</a></li>
+</ul>
+</li>
+<li><a href=#directory-structure-of-the-operator>Directory structure of the operator</a></li>
+<li><a href=#running-integration-tests>Running integration tests</a>
+<ul>
+<li><a href=#recordreplay>Record/replay</a></li>
+<li><a href=#running-live-tests>Running live tests</a></li>
+<li><a href=#running-a-single-test>Running a single test</a></li>
+</ul>
+</li>
+<li><a href=#running-the-operator-locally>Running the operator locally</a></li>
+<li><a href=#submitting-a-pull-request>Submitting a pull request</a></li>
+<li><a href=#common-problems-and-their-solutions>Common problems and their solutions</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

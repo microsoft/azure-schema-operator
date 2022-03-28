@@ -1,0 +1,176 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="SQL Server Tutorial #  A tutorial for a simple scenario of a single db in a server with schema per tenant.
+we assume MSI is used to authenticate (because it&rsquo;s simpler :) )
+we need to add the MSI as a user to the DB:
+CREATE USER [dbset-operator-dataops-msi-erx-qds] FROM EXTERNAL PROVIDER; GO ALTER ROLE db_datareader ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; ALTER ROLE db_datawriter ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; ALTER ROLE db_owner ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; GRANT EXECUTE TO [dbset-operator-dataops-msi-erx-qds] GO Creating the ConfigMap:">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content>
+<meta property="og:description" content="SQL Server Tutorial #  A tutorial for a simple scenario of a single db in a server with schema per tenant.
+we assume MSI is used to authenticate (because it&rsquo;s simpler :) )
+we need to add the MSI as a user to the DB:
+CREATE USER [dbset-operator-dataops-msi-erx-qds] FROM EXTERNAL PROVIDER; GO ALTER ROLE db_datareader ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; ALTER ROLE db_datawriter ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; ALTER ROLE db_owner ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; GRANT EXECUTE TO [dbset-operator-dataops-msi-erx-qds] GO Creating the ConfigMap:">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/tutorials/sqlserver/"><meta property="article:section" content="tutorials">
+<title>Sqlserver | Azure Schema Operator</title>
+<link rel=manifest href=/azure-schema-operator/manifest.json>
+<link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/azure-schema-operator/flexsearch.min.js></script>
+<script defer src=/azure-schema-operator/en.search.min.43a778c1d9fb7764d0c81cacf65494b36cff64873d59f4f7e2bd58ab86ebc6ce.js integrity="sha256-Q6d4wdn7d2TQyBys9lSUs2z/ZIc9WfT34r1Yq4brxs4=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/azure-schema-operator/><span>Azure Schema Operator</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<span>User’s Guide</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/introduction/annotations/>Annotations</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/authentication/>Authentication</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/filter/>Filter</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+</ul>
+</li>
+<li>
+<span>For Contributors</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/contributing/contributing/>Contributing</a>
+</li>
+<li>
+<a href=/azure-schema-operator/contributing/create-a-new-release/>Create a New Release</a>
+</li>
+</ul>
+</li>
+<li>
+<span>Tutorials</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/tutorials/eventhub/>Eventhub</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/kusto/>Kusto</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/sqlserver/ class=active>Sqlserver</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Sqlserver</strong>
+<label for=toc-control>
+<img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#external-dacpacs>External Dacpacs</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=sql-server-tutorial>
+SQL Server Tutorial
+<a class=anchor href=#sql-server-tutorial>#</a>
+</h1>
+<p>A tutorial for a simple scenario of a single db in a server with schema per tenant.</p>
+<p>we assume MSI is used to authenticate (because it&rsquo;s simpler :) )</p>
+<p>we need to add the MSI as a user to the DB:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-TSQL data-lang=TSQL><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>USER</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span> <span style=color:#66d9ef>FROM</span> <span style=color:#66d9ef>EXTERNAL</span> PROVIDER;
+<span style=color:#66d9ef>GO</span>
+<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_datareader <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span>;
+<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_datawriter <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span>;
+<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_owner <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span>;
+<span style=color:#66d9ef>GRANT</span> <span style=color:#66d9ef>EXECUTE</span> <span style=color:#66d9ef>TO</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span>
+<span style=color:#66d9ef>GO</span>
+</code></pre></div><p>Creating the ConfigMap:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create configmap dacpac-config --from-literal templateName<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;SalesLT&#34;</span> --from-file<span style=color:#f92672>=</span>dacpac<span style=color:#f92672>=</span>./docs/assets/test.dacpac
+</code></pre></div><p>next we need to define a <code>SchemaDeployment</code> object that will reference the <code>ConfigMap</code>.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>dbschema.microsoft.com/v1alpha1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>SchemaDeployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>sql-demo-deployment</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>type</span>: <span style=color:#ae81ff>sqlServer</span>
+  <span style=color:#f92672>applyTo</span>:
+    <span style=color:#f92672>clusterUris</span>: [<span style=color:#e6db74>&#39;schematest.database.windows.net&#39;</span>]
+    <span style=color:#f92672>db</span>: <span style=color:#e6db74>&#39;db1&#39;</span>
+    <span style=color:#f92672>schema</span>: <span style=color:#ae81ff>test</span>
+  <span style=color:#f92672>failIfDataLoss</span>: <span style=color:#66d9ef>true</span>
+  <span style=color:#f92672>failurePolicy</span>: <span style=color:#ae81ff>abort</span>
+  <span style=color:#f92672>source</span>:
+    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dacpac-config</span>
+    <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>default</span>
+</code></pre></div><p>and apply it via kubectl:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl apply -f ./docs/assets/sql-demo-deployment.yaml
+</code></pre></div><h2 id=external-dacpacs>
+External Dacpacs
+<a class=anchor href=#external-dacpacs>#</a>
+</h2>
+<p>In case our project has external dacpac references we can add them as a reference from the schema ConfigMap:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create configmap common-config --from-file<span style=color:#f92672>=</span>dacpac<span style=color:#f92672>=</span>./DBOCommon.dacpac
+kubectl create configmap tenant-config --from-literal templateName<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;MasterSchema&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--from-literal externalDacpacs<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;{ &#34;DBOCommon&#34;: {&#34;name&#34;: &#34;common-config&#34;, &#34;namespace&#34;: &#34;default&#34;}}&#39;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--from-file<span style=color:#f92672>=</span>dacpac<span style=color:#f92672>=</span>./SevilleSqlDbTenant.dacpac
+</code></pre></div><p>The external Dacpac requires a seperate external <code>SchemaDeployment</code> object to deploy it ( to fully capsulate the &ldquo;externallism&rdquo; of it)</p>
+<p><em>Note</em> as the name of the external DacPac matters we need to pass this name - so it is the &ldquo;key&rdquo; for the reference.</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#external-dacpacs>External Dacpacs</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

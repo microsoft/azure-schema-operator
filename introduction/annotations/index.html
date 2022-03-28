@@ -1,0 +1,174 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Annotations understood by the operator #  Annotations specified by the user #  Note that unless otherwise specified, allowed values are case sensitive and should be provided in lower case.
+serviceoperator.azure.com/reconcile-policy #  Specifies the reconcile policy to use. Allowed values are:
+ manage: The operator performs all actions as normal. This is the default if no annotation is specified. skip: All modification actions on the backing Azure resource are skipped.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content>
+<meta property="og:description" content="Annotations understood by the operator #  Annotations specified by the user #  Note that unless otherwise specified, allowed values are case sensitive and should be provided in lower case.
+serviceoperator.azure.com/reconcile-policy #  Specifies the reconcile policy to use. Allowed values are:
+ manage: The operator performs all actions as normal. This is the default if no annotation is specified. skip: All modification actions on the backing Azure resource are skipped.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/introduction/annotations/"><meta property="article:section" content="introduction">
+<title>Annotations | Azure Schema Operator</title>
+<link rel=manifest href=/azure-schema-operator/manifest.json>
+<link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/azure-schema-operator/flexsearch.min.js></script>
+<script defer src=/azure-schema-operator/en.search.min.43a778c1d9fb7764d0c81cacf65494b36cff64873d59f4f7e2bd58ab86ebc6ce.js integrity="sha256-Q6d4wdn7d2TQyBys9lSUs2z/ZIc9WfT34r1Yq4brxs4=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/azure-schema-operator/><span>Azure Schema Operator</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<span>User’s Guide</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/introduction/annotations/ class=active>Annotations</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/authentication/>Authentication</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/filter/>Filter</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+</ul>
+</li>
+<li>
+<span>For Contributors</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/contributing/contributing/>Contributing</a>
+</li>
+<li>
+<a href=/azure-schema-operator/contributing/create-a-new-release/>Create a New Release</a>
+</li>
+</ul>
+</li>
+<li>
+<span>Tutorials</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/tutorials/eventhub/>Eventhub</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/kusto/>Kusto</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/sqlserver/>Sqlserver</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Annotations</strong>
+<label for=toc-control>
+<img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#annotations-specified-by-the-user>Annotations specified by the user</a>
+<ul>
+<li><a href=#serviceoperatorazurecomreconcile-policy><code>serviceoperator.azure.com/reconcile-policy</code></a></li>
+</ul>
+</li>
+<li><a href=#annotations-written-by-the-operator>Annotations written by the operator</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=annotations-understood-by-the-operator>
+Annotations understood by the operator
+<a class=anchor href=#annotations-understood-by-the-operator>#</a>
+</h1>
+<h2 id=annotations-specified-by-the-user>
+Annotations specified by the user
+<a class=anchor href=#annotations-specified-by-the-user>#</a>
+</h2>
+<p>Note that unless otherwise specified, allowed values are <em>case sensitive</em> and should be provided in lower case.</p>
+<h3 id=serviceoperatorazurecomreconcile-policy>
+<code>serviceoperator.azure.com/reconcile-policy</code>
+<a class=anchor href=#serviceoperatorazurecomreconcile-policy>#</a>
+</h3>
+<p>Specifies the reconcile policy to use. Allowed values are:</p>
+<ul>
+<li><code>manage</code>: The operator performs all actions as normal. This is the default if no annotation is specified.</li>
+<li><code>skip</code>: All modification actions on the backing Azure resource are skipped. GETs are still issued to ensure that the resource
+exists. If the resource doesn&rsquo;t exist, the <code>Ready</code> condition will show a <code>Warning</code> state with the details of the missing resource
+until the resource is created. If the resource is deleted in Kubernetes, it is <em>not</em> deleted in Azure. In REST API terminology,
+PUT and DELETE are skipped while GET is allowed.</li>
+<li><code>detach-on-delete</code>: Modifications are pushed to the backing Azure resource, but if the resource is deleted in Kubernetes,
+it is <em>not</em> deleted in Azure. In REST API terminology, PUT and GET are allowed while DELETE is skipped.</li>
+</ul>
+<p>Unknown values default to <code>manage</code>.</p>
+<h2 id=annotations-written-by-the-operator>
+Annotations written by the operator
+<a class=anchor href=#annotations-written-by-the-operator>#</a>
+</h2>
+<p>These annotations are written by the operator for its own internal use. Their existence and usage may change in the future.
+We recommend users avoid depending upon these annotations:</p>
+<ol>
+<li><code>serviceoperator.azure.com/resource-id</code>: The ARM resource ID.</li>
+<li><code>serviceoperator.azure.com/poller-resume-token</code>: JSON encoded token for polling long running operation.</li>
+<li><code>serviceoperator.azure.com/poller-resume-id</code>: ID describing the poller to use.</li>
+</ol>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#annotations-specified-by-the-user>Annotations specified by the user</a>
+<ul>
+<li><a href=#serviceoperatorazurecomreconcile-policy><code>serviceoperator.azure.com/reconcile-policy</code></a></li>
+</ul>
+</li>
+<li><a href=#annotations-written-by-the-operator>Annotations written by the operator</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>
