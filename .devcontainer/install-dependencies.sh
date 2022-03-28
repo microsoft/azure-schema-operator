@@ -71,7 +71,7 @@ fi
 
 # Install go-task (task runner)
 echo "Installing go-task…"
-curl -sL "https://github.com/go-task/task/releases/download/v3.7.0/task_linux_amd64.tar.gz" | tar xz -C "$TOOL_DEST" task
+sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b $TOOL_DEST
 
 # Install kubebuilder
 os=$(go env GOOS)
