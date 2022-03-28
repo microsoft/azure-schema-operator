@@ -1,0 +1,8 @@
+baseURL = 'https://microsoft.github.io/azure-schema-operator/'
+languageCode = 'en-us'
+title = 'Azure Schema Operator'
+theme = 'hugo-book'
+
+# theme-specific settings
+[params]
+BookSection = "*"

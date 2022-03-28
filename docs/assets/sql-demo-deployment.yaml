@@ -1,0 +1,15 @@
+apiVersion: dbschema.microsoft.com/v1alpha1
+kind: SchemaDeployment
+metadata:
+  name: sql-demo-deployment
+spec:
+  type: sqlServer
+  applyTo:
+    clusterUris: ['schematest.database.windows.net']
+    db: 'db1'
+    schema: test
+  failIfDataLoss: true
+  failurePolicy: abort
+  source:
+    name: dacpac-config
+    namespace: default

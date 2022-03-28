@@ -1,15 +1,64 @@
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
+bin
+testbin/*
 
-# Test binary, built with `go test -c`
+# Test binary, build with `go test -c`
 *.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+# Output of the test and coverage results
+reports/
+
+bin/
+vendor/
+coverage.txt
+report.xml
+cover.html
+coverage.json
+coverage.xml
+testlogs.txt
+
+# Generated CRDS
+config/crd/bases/
+config/crd/patches/
+config/crd/out
+config/crd/kustomization.yaml
+config/webhook/manifests.yaml
+config/rbac/role.yaml
+
+# Kubernetes Generated files - skip generated files, except for vendored files
+
+!vendor/**/zz_generated.*
+
+# editor and IDE paraphernalia
+.idea
+*.swp
+*.swo
+*~
+.env
+__debug_bin
+.vscode
+.DS_Store
+cover-existing.html
+coverage-existing.txt
+report-existing.xml
+testlogs-existing.txt
+
+
+# operator bundle artifacts
+bundle.Dockerfile
+bundle/
+
+# Docs site
+docs/site/public/*
+!docs/site/public/.nojekyll
+docs/site/resources/_gen/
+docs/site/tmp/

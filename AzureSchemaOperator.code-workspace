@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "gopls": {
+      "formatting.local": "github.com/Microsoft/azure-schema-operator"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: schema-operator-manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - clusterexecuters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - clusterexecuters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - clusterexecuters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - schemadeployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - schemadeployments/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - schemadeployments/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - versioneddeplyments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - versioneddeplyments/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - dbschema.microsoft.com
+  resources:
+  - versioneddeplyments/status
+  verbs:
+  - get
+  - patch
+  - update

@@ -1,0 +1,13 @@
+apiVersion: dbschema.microsoft.com/v1alpha1
+kind: SchemaDeployment
+metadata:
+  name: application-template-sample
+spec:
+  # Add fields here
+  clusterUris:
+    [
+      'https://cluster1.eastus2.kusto.windows.net/',
+      'https://cluster2.eastus2.kusto.windows.net/',
+    ]
+  applyTo: 'appdb_'
+  source: https://github.com/company/application/delta-objects/offline-delta.yaml

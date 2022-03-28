@@ -1,0 +1,6 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+- kusto_v1alpha1_template.yaml
+- kusto_v1alpha1_clusterexecuter.yaml
+- kusto_v1alpha1_versioneddeplyment.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

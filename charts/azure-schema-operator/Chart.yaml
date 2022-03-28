@@ -1,0 +1,7 @@
+apiVersion: v2
+name: azure-schema-operator
+version: v1.0.0-rev.1-dirty
+description: Deploy components and dependencies of azure-schema-operator
+home: https://github.com/Microsoft/azure-schema-operator
+sources:
+  - https://github.com/Microsoft/azure-schema-operator

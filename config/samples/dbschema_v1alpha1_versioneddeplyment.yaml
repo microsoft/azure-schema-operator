@@ -1,0 +1,7 @@
+apiVersion: dbschema.microsoft.com/v1alpha1
+kind: VersionedDeplyment
+metadata:
+  name: versioneddeplyment-sample
+spec:
+  # Add fields here
+  foo: bar

@@ -1,0 +1,193 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  PACKAGE: github.com/microsoft/azure-schema-operator
+
+  CONTROLLER_APP: manager
+  SCRIPTS_ROOT: ./scripts
+
+  TEST_RESOURCE_PREFIX: asotest
+  TEST_LIVE_RESOURCE_PREFIX: asolivetest
+
+  VERSION:
+    # Version tags for the controller must start with "v1", e.g. "v1.0.0-alpha.0".
+    sh: '{{.SCRIPTS_ROOT}}/build-version.py v1'
+
+  VERSION_FLAGS: -ldflags "-X {{.PACKAGE}}/internal/version.BuildVersion={{.VERSION}}"
+
+  ENVTEST_K8S_VERSION: 1.21
+
+  CONTROLLER_DOCKER_IMAGE: azureschemaoperator:{{.VERSION}}
+  PUBLIC_REGISTRY: mcr.microsoft.com/k8s/
+  LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE: rscomplianceacr.azurecr.io/schema-operator:v0.0.4
+
+env:
+  KUBEBUILDER_ASSETS:
+    sh: $(pwd)/bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
+
+tasks:
+  default:
+    cmds:
+      - echo "{{.ENVTEST}}"
+    silent: true
+
+  ci:
+    desc: Run all CI checks.
+    deps:
+      - controller:ci
+    cmds:
+      - task: verify-no-changes
+
+  ci-live:
+    desc: Run all CI checks with live Azure resources. Requires that auth environment variables are set.
+    deps:
+      # - controller:ci-live
+      - controller:ci
+
+  controller:gen-helm-manifest:
+    desc: Generate helm manifest using Kustomize for the release
+    cmds:
+      - '{{.SCRIPTS_ROOT}}/generate-helm-manifest.sh {{.LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE}} {{.PUBLIC_REGISTRY}} {{.VERSION}} `pwd`/'
+
+  controller:generate-crds:
+    desc: Run controller-gen to generate {{.CONTROLLER_APP}} CRD files.
+    cmds:
+      - make generate
+
+  controller:build:
+    desc: Generate the {{.CONTROLLER_APP}} binary.
+    deps: [controller:generate-crds]
+    sources:
+      # excluding the ./apis directory here
+      - 'go.mod'
+      - 'go.sum'
+      - '*.go'
+      - 'internal/**/*.go'
+      - 'pkg/**/*.go'
+      - 'cmd/main.go'
+    cmds:
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build {{.VERSION_FLAGS}} -o ./bin/{{.CONTROLLER_APP}} main.go
+
+  controller:docker-build:
+    desc: Builds the {{.CONTROLLER_APP}} Docker image.
+    deps: [controller:build]
+    sources:
+      - Dockerfile
+      - ./bin/{{.CONTROLLER_APP}}
+    cmds:
+      - docker build . -t {{.CONTROLLER_DOCKER_IMAGE}}
+
+  controller:docker-tag-version:
+    desc: Tags the {{.CONTROLLER_APP}} Docker image with the appropriate version.
+    deps: [controller:docker-build]
+    cmds:
+      - 'if [ -z "{{.DOCKER_PUSH_TARGET}}" ]; then echo "Error: DOCKER_PUSH_TARGET must be set"; exit 1; fi'
+      - docker tag {{.CONTROLLER_DOCKER_IMAGE}} "{{.DOCKER_PUSH_TARGET}}/{{.CONTROLLER_DOCKER_IMAGE}}"
+
+  controller:docker-push-local:
+    desc: Pushes the controller container image to a local registry
+    deps: [controller:docker-build]
+    cmds:
+      - docker tag {{.CONTROLLER_DOCKER_IMAGE}} {{.LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE}}
+      - docker push {{.LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE}}
+
+  controller:ci:
+    cmds:
+      - task: controller:test-cover
+      - task: controller:test-integration-ci
+      # checks must be after test as that will generate code
+      - task: basic-checks
+      # lint must be at end after code is formatted
+      - task: controller:lint-full
+
+  controller:lint:
+    desc: Run fast lint checks.
+    # deps: [controller:generate-crds]
+    dir: '{{.CONTROLLER_ROOT}}'
+    cmds:
+      - golangci-lint run -v ./...
+
+  controller:lint-full:
+    desc: Run all lint checks.
+    # deps: [controller:generate-crds]
+    dir: '{{.CONTROLLER_ROOT}}'
+    cmds:
+      - golangci-lint run -v --fast=false --timeout 5m ./...
+
+  controller:test:
+    desc: Run {{.CONTROLLER_APP}} unit tests.
+    dir: '{{.CONTROLLER_ROOT}}'
+    # controller:run-kustomize-for-envtest isn't strictly required here, but running it here so that
+    # integration tests can be run manually (via IDE) after running "task"
+    # deps: [controller:generate-crds, controller:run-kustomize-for-envtest]
+    cmds:
+      - go test -short -tags=noexit -timeout 10m -run '{{default ".*" .TEST_FILTER}}' ./pkg/...
+
+  controller:test-cover:
+    desc: Run {{.CONTROLLER_APP}} unit tests and output coverage.
+    # deps: [controller:generate-crds]
+    cmds:
+      # -race fails at the moment in gopter - possibly due to our shared generator variable?
+      - go test -short -tags=noexit -timeout 10m -covermode atomic -coverprofile=controller-coverage.out -coverpkg="./pkg/..." -run '{{default ".*" .TEST_FILTER}}' ./pkg/...
+
+  controller:test-integration-ci:
+    desc: Run integration tests for CI
+    deps: [controller:test-integration-envtest-cover]
+
+  controller:test-integration-envtest:
+    desc: Run integration tests with envtest using record/replay.
+    # deps: [controller:run-kustomize-for-envtest]
+    cmds:
+      # -race fails at the moment in controller-runtime
+      - go test -timeout 15m -run '{{default ".*" .TEST_FILTER}}' {{.VERBOSE}} ./...
+    vars:
+      VERBOSE:
+        sh: if [ $TEST_FILTER ];  then echo "-v"; fi
+
+  controller:test-integration-envtest-cover:
+    desc: Run integration tests with envtest using record/replay and output coverage.
+    # deps: [controller:run-kustomize-for-envtest]
+    cmds:
+      # -race fails at the moment in controller-runtime
+      - go test -covermode atomic -coverprofile=coverage-integration-envtest.out -coverpkg="./..." -timeout 15m -run '{{default ".*" .TEST_FILTER}}' ./...
+
+  basic-checks:
+    deps: [header-check] #, specifier-check]
+
+  header-check:
+    desc: Ensure all files have an appropriate license header.
+    cmds:
+      - '{{.SCRIPTS_ROOT}}/check_headers.py'
+
+  # specifier-check:
+  #   desc: Check that format specifiers %v and %+v are not used
+  #   # Both %v and %+v result in all the values from structs being dumped into the string. If that
+  #   # struct happens to contain a secret or sensitive information, it ends up dumped out in an
+  #   # uncontrolled way, potentially leading to a security issue or a problem with PII disclosure.
+  #   # The buried risk here is that while %v might be safe now, a future change to the struct might
+  #   # introduce a disclosure later on.
+  #   cmds:
+  #     - cmd: echo "==> Checking format specifiers <=="
+  #       silent: true
+  #     - cmd: '! git grep -e "%+v" -e "%v" --break --heading --line-number -I "*.go"'
+
+  format-code:
+    desc: Ensure all code is formatted
+    cmds:
+      - gofmt -l -s -w .
+
+  build-docs-site:
+    dir: docs/site
+    cmds:
+      - hugo
+
+  verify-no-changes:
+    desc: Checks that there are no uncommitted modifications to files
+    cmds:
+      - cmd: 'if [ -n "{{.CHANGED}}" ]; then echo "Error: files were modified during the build (did you forget to commit generated files?):"; echo "{{.CHANGED}}"; git diff; exit 1; fi'
+        silent: true
+    vars:
+      CHANGED:
+        sh: git status --porcelain

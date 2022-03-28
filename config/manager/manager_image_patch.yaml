@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-manager
+  namespace: system
+spec:
+  template:
+    metadata:
+      labels:
+        aadpodidbinding: azureschemaoperator-manager-binding
+    spec:
+      containers:
+        # Change the value of image field below to your controller image URL
+        - name: manager
+          envFrom:
+            - secretRef:
+                name: schema-operator-controller-settings
+                optional: true
+          env:
+            - name: SCHEMAOP_USE_MSI
+              value: 'true'
