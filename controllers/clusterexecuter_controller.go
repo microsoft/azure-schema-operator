@@ -12,6 +12,8 @@ import (
 	"time"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/meta"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/record"
@@ -160,6 +162,13 @@ func (r *ClusterExecuterReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	if err != nil {
 		log.Error(err, "failed executing the schema on the cluster")
 		clusterStatusGauge.WithLabelValues(clusterUtils.ClusterNameFromURI(executer.Spec.ClusterUri), strconv.Itoa(int(executer.Spec.Revision))).Set(0)
+		r.recorder.Eventf(executer, v1.EventTypeWarning, "Failed", "failed to execute cluster: %s ", executer.Spec.ClusterUri)
+		meta.SetStatusCondition(&executer.Status.Conditions, metav1.Condition{
+			Type:    schemav1alpha1.ConditionExecution,
+			Status:  metav1.ConditionFalse,
+			Reason:  "Failed",
+			Message: err.Error(),
+		})
 		executer.Status.Executed = false
 		executer.Status.Running = false
 		executer.Status.Failed = true
@@ -174,9 +183,15 @@ func (r *ClusterExecuterReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	clusterStatusGauge.WithLabelValues(clusterUtils.ClusterNameFromURI(executer.Spec.ClusterUri), strconv.Itoa(int(executer.Spec.Revision))).Set(1)
 	clusterSuccessTime.WithLabelValues(clusterUtils.ClusterNameFromURI(executer.Spec.ClusterUri), strconv.Itoa(int(executer.Spec.Revision))).SetToCurrentTime()
 	r.recorder.Event(executer, v1.EventTypeNormal, "Executed", "cluster executer finished")
+	meta.SetStatusCondition(&executer.Status.Conditions, metav1.Condition{
+		Type:   schemav1alpha1.ConditionExecution,
+		Status: metav1.ConditionTrue,
+		Reason: "Executed",
+	})
 	executer.Status.Running = false
 	executer.Status.Executed = true
 	executer.Status.DoneTargets = executer.Status.Targets
+
 	err = r.Status().Update(ctx, executer)
 	if err != nil {
 		log.Error(err, "failed updating executer status", "request", req.String())

@@ -33,6 +33,8 @@ const (
 	DBTypeKusto DBTypeEnum = "kusto"
 	// DBTypeEventhub eventhub schema registry enum entry
 	DBTypeEventhub DBTypeEnum = "eventhub"
+	// ConditionExecuted execution condition status
+	ConditionExecution string = "Execution"
 )
 
 // TargetFilter contains target filter configuration
@@ -78,11 +80,19 @@ type SchemaDeploymentStatus struct {
 	LastSuccessfulRevision int32            `json:"lastSuccessfulRevision"`
 	CurrentVerDeployment   NamespacedName   `json:"currentVerDeployment"`
 	OldVerDeployment       []NamespacedName `json:"oldVerDeployment,omitempty"`
+	// Conditions is an array of conditions.
+	// Known .status.conditions.type are: "Execution"
+	//+patchMergeKey=type
+	//+patchStrategy=merge
+	//+listType=map
+	//+listMapKey=type
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
-
+//+kubebuilder:printcolumn:name="TYPE",type="string",JSONPath=".spec.type"
+//+kubebuilder:printcolumn:name="Executed",type="string",JSONPath=".status.conditions[?(@.type=='Executed')].status"
 // SchemaDeployment is the Schema for the templates API
 type SchemaDeployment struct {
 	metav1.TypeMeta   `json:",inline"`

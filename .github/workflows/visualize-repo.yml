@@ -31,7 +31,7 @@ jobs:
       - name: Update Schema-Operator diagram
         uses: githubocto/repo-visualizer@main
         with:
-          excluded_paths: 'ignore,.github,scripts'
+          excluded_paths: 'ignore,.github,scripts,docs,charts,bin'
           output_file: 'docs/site/content/contributing/contributing/schemaop-structure.svg'
           commit_message: 'Updating visualization for the schema operator'
           artifact_name: 'schemaop-structure'

@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -65,7 +65,7 @@ func (r *SchemaDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	// Start logic here...
 
 	//a. get configMap to file
-	cfgMap := &v1.ConfigMap{}
+	cfgMap := &corev1.ConfigMap{}
 
 	err = r.Get(ctx, types.NamespacedName(template.Spec.Source), cfgMap)
 	if err != nil {
@@ -103,7 +103,7 @@ func (r *SchemaDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		log.Info("Creating Versioned deployment and immutable config map")
 		// Define a new deployment
 		imm := true
-		verCfgMap := &v1.ConfigMap{
+		verCfgMap := &corev1.ConfigMap{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      schemaversions.NameForConfigMap(template.Spec.Source.Name, template.Status.CurrentRevision),
 				Namespace: template.Spec.Source.Namespace,
@@ -176,7 +176,7 @@ func (r *SchemaDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		// Deployment created successfully - return and requeue
 		// return ctrl.Result{Requeue: true}, nil
 		log.Info("Versioned Deployment created successfully - return and requeue")
-		r.recorder.Eventf(template, v1.EventTypeNormal, "Created", "Created versioned deployment %q", dep.Name)
+		r.recorder.Eventf(template, corev1.EventTypeNormal, "Created", "Created versioned deployment %q", dep.Name)
 		return ctrl.Result{RequeueAfter: 1 * time.Minute}, nil
 
 	} else if err != nil {
@@ -207,6 +207,13 @@ func (r *SchemaDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		template.Status.LastSuccessfulRevision = template.Status.CurrentRevision
 
 		// template.Status = status
+
+		r.recorder.Eventf(template, corev1.EventTypeNormal, "Executed", "Scheme was deployed")
+		meta.SetStatusCondition(&template.Status.Conditions, metav1.Condition{
+			Type:   schemav1alpha1.ConditionExecution,
+			Status: metav1.ConditionTrue,
+			Reason: "Executed",
+		})
 		err = r.Status().Update(ctx, template)
 		if err != nil {
 			log.Error(err, "failed updating status to executed", "request", req.String())
@@ -217,6 +224,19 @@ func (r *SchemaDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		return ctrl.Result{RequeueAfter: 1 * time.Minute}, nil
 	} else if versionedDeployment.IsFailed() {
 		log.Info("Failed to execute schema change")
+
+		r.recorder.Eventf(template, corev1.EventTypeWarning, "Failed", "failed to deploy schema ")
+		meta.SetStatusCondition(&template.Status.Conditions, metav1.Condition{
+			Type:    schemav1alpha1.ConditionExecution,
+			Status:  metav1.ConditionFalse,
+			Reason:  "Failed",
+			Message: "Schema execution failure",
+		})
+		err = r.Status().Update(ctx, template)
+		if err != nil {
+			log.Error(err, "failed updating status ", "request", req.String())
+			return ctrl.Result{}, err
+		}
 		return r.handleFailure(template)
 	}
 
@@ -224,12 +244,12 @@ func (r *SchemaDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	return ctrl.Result{}, err
 }
 
-func (r *SchemaDeploymentReconciler) compareConfigMap(ctx context.Context, currentConfigMap schemav1alpha1.NamespacedName, cfgMap *v1.ConfigMap) bool {
+func (r *SchemaDeploymentReconciler) compareConfigMap(ctx context.Context, currentConfigMap schemav1alpha1.NamespacedName, cfgMap *corev1.ConfigMap) bool {
 	if currentConfigMap.Name == "" {
 		log.Info().Msg("current Map is empty - new template.")
 		return false
 	}
-	currCfgMap := &v1.ConfigMap{}
+	currCfgMap := &corev1.ConfigMap{}
 	err := r.Get(ctx, types.NamespacedName{Namespace: currentConfigMap.Namespace, Name: currentConfigMap.Name}, currCfgMap)
 	if err != nil {
 		// r.Telemetry.LogInfoByInstance("ignorable error", "error during fetch from api server", req.String())
@@ -323,7 +343,7 @@ func (r *SchemaDeploymentReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&schemav1alpha1.SchemaDeployment{}).
 		Owns(&schemav1alpha1.VersionedDeplyment{}).
-		Owns(&v1.ConfigMap{}).
+		Owns(&corev1.ConfigMap{}).
 		// WithOptions(controller.Options{MaxConcurrentReconciles: 2}).
 		Complete(r)
 }
