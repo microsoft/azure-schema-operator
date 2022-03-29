@@ -92,7 +92,7 @@ type SchemaDeploymentStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="TYPE",type="string",JSONPath=".spec.type"
-//+kubebuilder:printcolumn:name="Executed",type="string",JSONPath=".status.conditions[?(@.type=='Executed')].status"
+//+kubebuilder:printcolumn:name="Executed",type="string",JSONPath=".status.conditions[?(@.type=='Execution')].status"
 // SchemaDeployment is the Schema for the templates API
 type SchemaDeployment struct {
 	metav1.TypeMeta   `json:",inline"`
