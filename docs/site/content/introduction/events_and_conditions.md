@@ -19,6 +19,14 @@ NAME                   TYPE    EXECUTED
 master-test-template   kusto   True
 ```
 
+In case of failuer the `Execution` condition will be marked as such:
+
+```bash
+➜ kubectl get schemadeployments master-test-template
+NAME                   TYPE    EXECUTED
+master-test-template   kusto   False
+```
+
 ## Events
 
 Dureing the deployment process events will be reported on the different steps and changes that occur.
