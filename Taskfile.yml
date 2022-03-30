@@ -44,6 +44,7 @@ tasks:
     desc: Run all CI checks with live Azure resources. Requires that auth environment variables are set.
     deps:
       # - controller:ci-live
+      - controller:test-deps
       - controller:ci
 
   controller:gen-helm-manifest:
@@ -55,6 +56,11 @@ tasks:
     desc: Run controller-gen to generate {{.CONTROLLER_APP}} CRD files.
     cmds:
       - make generate
+
+  controller:test-deps:
+    desc: Run make to prepare for tests.
+    cmds:
+      - make manifests generate fmt vet envtest
 
   controller:build:
     desc: Generate the {{.CONTROLLER_APP}} binary.
@@ -94,6 +100,8 @@ tasks:
       - docker push {{.LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE}}
 
   controller:ci:
+    desc: Run Tests to make sure the code works as intended
+    deps: [controller:generate-crds]
     cmds:
       - task: controller:test-cover
       - task: controller:test-integration-ci
