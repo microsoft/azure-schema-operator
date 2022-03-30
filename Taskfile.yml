@@ -36,6 +36,7 @@ tasks:
   ci:
     desc: Run all CI checks.
     deps:
+      - controller:test-deps
       - controller:ci
     cmds:
       - task: verify-no-changes
