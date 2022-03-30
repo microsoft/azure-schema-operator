@@ -24,7 +24,7 @@ jobs:
           repo='${{ github.event.pull_request.head.repo.html_url}}'
           repo=${repo#"https://"} # trim prefix
 
-          if [ "$repo" != "github.com/Azure/azure-service-operator" ]; then
+          if [ "$repo" != "github.com/Microsoft/azure-schema-operator" ]; then
             echo "Skipping 'go get' check for fork…" 
             exit 0
           fi
@@ -35,7 +35,7 @@ jobs:
             sha='${{ github.sha }}'
           fi
 
-          go get "$repo/v2@$sha"
+          go get "$repo/main@$sha"
 
   test-generator:
     runs-on: ubuntu-latest
