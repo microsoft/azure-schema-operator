@@ -32,6 +32,13 @@ type VersionedDeplymentStatus struct {
 	Failed    int32            `json:"failed"`
 	Running   int32            `json:"running"`
 	Succeeded int32            `json:"succeeded"`
+	// Conditions is an array of conditions.
+	// Known .status.conditions.type are: "Execution"
+	//+patchMergeKey=type
+	//+patchStrategy=merge
+	//+listType=map
+	//+listMapKey=type
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 //+kubebuilder:object:root=true

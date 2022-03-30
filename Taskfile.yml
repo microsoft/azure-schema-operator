@@ -23,10 +23,6 @@ vars:
   PUBLIC_REGISTRY: mcr.microsoft.com/k8s/
   LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE: rscomplianceacr.azurecr.io/schema-operator:v0.0.4
 
-env:
-  KUBEBUILDER_ASSETS:
-    sh: $(pwd)/bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
-
 tasks:
   default:
     cmds:
@@ -36,6 +32,7 @@ tasks:
   ci:
     desc: Run all CI checks.
     deps:
+      - controller:test-deps
       - controller:ci
     cmds:
       - task: verify-no-changes
@@ -44,6 +41,7 @@ tasks:
     desc: Run all CI checks with live Azure resources. Requires that auth environment variables are set.
     deps:
       # - controller:ci-live
+      - controller:test-deps
       - controller:ci
 
   controller:gen-helm-manifest:
@@ -55,6 +53,11 @@ tasks:
     desc: Run controller-gen to generate {{.CONTROLLER_APP}} CRD files.
     cmds:
       - make generate
+
+  controller:test-deps:
+    desc: Run make to prepare for tests.
+    cmds:
+      - make manifests generate fmt vet envtest
 
   controller:build:
     desc: Generate the {{.CONTROLLER_APP}} binary.
@@ -94,9 +97,11 @@ tasks:
       - docker push {{.LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE}}
 
   controller:ci:
+    desc: Run Tests to make sure the code works as intended
+    deps: [controller:generate-crds]
     cmds:
       - task: controller:test-cover
-      - task: controller:test-integration-ci
+      # - task: controller:test-integration-ci
       # checks must be after test as that will generate code
       - task: basic-checks
       # lint must be at end after code is formatted
@@ -138,20 +143,26 @@ tasks:
 
   controller:test-integration-envtest:
     desc: Run integration tests with envtest using record/replay.
-    # deps: [controller:run-kustomize-for-envtest]
+    deps: [controller:test-deps]
     cmds:
       # -race fails at the moment in controller-runtime
       - go test -timeout 15m -run '{{default ".*" .TEST_FILTER}}' {{.VERBOSE}} ./...
     vars:
       VERBOSE:
         sh: if [ $TEST_FILTER ];  then echo "-v"; fi
+    env:
+      KUBEBUILDER_ASSETS:
+        sh: $(pwd)/bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
 
   controller:test-integration-envtest-cover:
     desc: Run integration tests with envtest using record/replay and output coverage.
-    # deps: [controller:run-kustomize-for-envtest]
+    deps: [controller:test-deps]
     cmds:
       # -race fails at the moment in controller-runtime
       - go test -covermode atomic -coverprofile=coverage-integration-envtest.out -coverpkg="./..." -timeout 15m -run '{{default ".*" .TEST_FILTER}}' ./...
+    env:
+      KUBEBUILDER_ASSETS:
+        sh: $(pwd)/bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
 
   basic-checks:
     deps: [header-check] #, specifier-check]
