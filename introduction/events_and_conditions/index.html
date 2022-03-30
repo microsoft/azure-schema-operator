@@ -2,17 +2,19 @@
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="Target Filter #  The operator uses the TargetFilter struct to Filter and aquire execution targets. The semantics change a bit between the different db technologies to match common use patterns.
-Although the general notions stay the same.
-ClusterUris holds a list of clusters/servers/Eventhub namespaces. Create flag indicates if we should create the DB/schema/registry if missing. Regexp flag indicates if we should regard the filter values as regular expressions or exact match.">
+<meta name=description content="Events and Conditions #  Azure Schema Operator exposes varios events and conditions to allow for simpler status observation.
+Conditions #  We can wait for a SchemaDeployment to finish by waiting on the Execution condition:
+➜ kubectl wait --for=condition=Execution --timeout=10s schemadeployment/master-test-template schemadeployment.dbschema.microsoft.com/master-test-template condition met The condition is also displayed when we get the SchemaDeployment object:
+➜ kubectl get schemadeployments master-test-template NAME TYPE EXECUTED master-test-template kusto True In case of failuer the Execution condition will be marked as such:">
 <meta name=theme-color content="#FFFFFF">
 <meta name=color-scheme content="light dark"><meta property="og:title" content>
-<meta property="og:description" content="Target Filter #  The operator uses the TargetFilter struct to Filter and aquire execution targets. The semantics change a bit between the different db technologies to match common use patterns.
-Although the general notions stay the same.
-ClusterUris holds a list of clusters/servers/Eventhub namespaces. Create flag indicates if we should create the DB/schema/registry if missing. Regexp flag indicates if we should regard the filter values as regular expressions or exact match.">
+<meta property="og:description" content="Events and Conditions #  Azure Schema Operator exposes varios events and conditions to allow for simpler status observation.
+Conditions #  We can wait for a SchemaDeployment to finish by waiting on the Execution condition:
+➜ kubectl wait --for=condition=Execution --timeout=10s schemadeployment/master-test-template schemadeployment.dbschema.microsoft.com/master-test-template condition met The condition is also displayed when we get the SchemaDeployment object:
+➜ kubectl get schemadeployments master-test-template NAME TYPE EXECUTED master-test-template kusto True In case of failuer the Execution condition will be marked as such:">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/introduction/filter/"><meta property="article:section" content="introduction">
-<title>Filter | Azure Schema Operator</title>
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/introduction/events_and_conditions/"><meta property="article:section" content="introduction">
+<title>Events and Conditions | Azure Schema Operator</title>
 <link rel=manifest href=/azure-schema-operator/manifest.json>
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
@@ -49,10 +51,10 @@ ClusterUris holds a list of clusters/servers/Eventhub namespaces. Create flag in
 <a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
 </li>
 <li>
-<a href=/azure-schema-operator/introduction/events_and_conditions/>Events and Conditions</a>
+<a href=/azure-schema-operator/introduction/events_and_conditions/ class=active>Events and Conditions</a>
 </li>
 <li>
-<a href=/azure-schema-operator/introduction/filter/ class=active>Filter</a>
+<a href=/azure-schema-operator/introduction/filter/>Filter</a>
 </li>
 <li>
 <a href=/azure-schema-operator/introduction/install/>Install</a>
@@ -95,7 +97,7 @@ ClusterUris holds a list of clusters/servers/Eventhub namespaces. Create flag in
 <label for=menu-control>
 <img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
 </label>
-<strong>Filter</strong>
+<strong>Events and Conditions</strong>
 <label for=toc-control>
 <img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
 </label>
@@ -103,44 +105,37 @@ ClusterUris holds a list of clusters/servers/Eventhub namespaces. Create flag in
 <aside class="hidden clearfix">
 <nav id=TableOfContents>
 <ul>
-<li><a href=#kusto-filtering>Kusto filtering</a></li>
-<li><a href=#sql-server-filtering>SQL Server filtering</a></li>
-<li><a href=#eventhub-schema-registry>Eventhub schema registry</a></li>
+<li><a href=#conditions>Conditions</a></li>
+<li><a href=#events>Events</a></li>
 </ul>
 </nav>
 </aside>
 </header>
-<article class=markdown><h1 id=target-filter>
-Target Filter
-<a class=anchor href=#target-filter>#</a>
+<article class=markdown><h1 id=events-and-conditions>
+Events and Conditions
+<a class=anchor href=#events-and-conditions>#</a>
 </h1>
-<p>The operator uses the <code>TargetFilter</code> struct to Filter and aquire execution targets.
-The semantics change a bit between the different db technologies to match common use patterns.</p>
-<p>Although the general notions stay the same.</p>
-<p><code>ClusterUris</code> holds a list of clusters/servers/Eventhub namespaces.
-<code>Create</code> flag indicates if we should create the DB/schema/registry if missing.
-<code>Regexp</code> flag indicates if we should regard the filter values as regular expressions or exact match.</p>
-<h2 id=kusto-filtering>
-Kusto filtering
-<a class=anchor href=#kusto-filtering>#</a>
+<p>Azure Schema Operator exposes varios events and conditions to allow for simpler status observation.</p>
+<h2 id=conditions>
+Conditions
+<a class=anchor href=#conditions>#</a>
 </h2>
-<p>In Kusto a common multi-tenantcy solution is DB per tenant,
-To support this scenario we use the <code>DB</code> field as a regular expression to filter all the database names in the clusters.</p>
-<p>Sometimes an external system is used to determain the schema type instead of DB name, e.g. if we have different tier users.
-To support this scenario we have a <code>Webhook</code> & <code>Label</code> system, we will make a rest call to that webhook and passing the label.
-The response is expected to be a json array with database names on which we should apply the schema.</p>
-<h2 id=sql-server-filtering>
-SQL Server filtering
-<a class=anchor href=#sql-server-filtering>#</a>
+<p>We can wait for a <code>SchemaDeployment</code> to finish by waiting on the <code>Execution</code> condition:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>➜ kubectl wait --for<span style=color:#f92672>=</span>condition<span style=color:#f92672>=</span>Execution --timeout<span style=color:#f92672>=</span>10s   schemadeployment/master-test-template
+schemadeployment.dbschema.microsoft.com/master-test-template condition met
+</code></pre></div><p>The condition is also displayed when we get the <code>SchemaDeployment</code> object:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>➜ kubectl get schemadeployments master-test-template
+NAME                   TYPE    EXECUTED
+master-test-template   kusto   True
+</code></pre></div><p>In case of failuer the <code>Execution</code> condition will be marked as such:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>➜ kubectl get schemadeployments master-test-template
+NAME                   TYPE    EXECUTED
+master-test-template   kusto   False
+</code></pre></div><h2 id=events>
+Events
+<a class=anchor href=#events>#</a>
 </h2>
-<p>In Sql Server a common multi-tenantcy solution is Schema per tenant,
-to support this scenario we use the <code>Schema</code> field as a regular expression to filter all the schema names.
-<strong>Note</strong> In this scenario we regard the DB name as exact match.</p>
-<h2 id=eventhub-schema-registry>
-Eventhub schema registry
-<a class=anchor href=#eventhub-schema-registry>#</a>
-</h2>
-<p>In Eventhubs we can only define one schema registry - we match the name according to the <code>DB</code> field.</p>
+<p>Dureing the deployment process events will be reported on the different steps and changes that occur.</p>
 </article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
@@ -155,9 +150,8 @@ Eventhub schema registry
 <div class=book-toc-content>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#kusto-filtering>Kusto filtering</a></li>
-<li><a href=#sql-server-filtering>SQL Server filtering</a></li>
-<li><a href=#eventhub-schema-registry>Eventhub schema registry</a></li>
+<li><a href=#conditions>Conditions</a></li>
+<li><a href=#events>Events</a></li>
 </ul>
 </nav>
 </div>
