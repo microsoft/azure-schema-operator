@@ -13,7 +13,7 @@ import (
 
 var _ = Describe("Schemas", func() {
 	Context("When Processing a cluster", func() {
-		cluster := sqlutils.NewSQLCluster("fakecluster.database.windows.net", nil)
+		cluster := sqlutils.NewSQLCluster("fakecluster.database.windows.net", nil, nil)
 		filter := schemav1alpha1.TargetFilter{
 			DB: "DB1",
 		}

@@ -104,7 +104,15 @@ func (r *ClusterExecuterReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		return ctrl.Result{Requeue: false}, fmt.Errorf("max retries exhosted")
 	}
 
-	cluster := clusterUtils.NewCluster(executer.Spec.Type, executer.Spec.ClusterUri, r.Client)
+	notifier := func(pct int) {
+		executer.Status.CompletedPCT = pct
+		err = r.Status().Update(ctx, executer)
+		if err != nil {
+			log.Error(err, "Failed to update execution PCT ", "completed", pct, "cluster", executer.Spec.ClusterUri)
+		}
+	}
+
+	cluster := clusterUtils.NewCluster(executer.Spec.Type, executer.Spec.ClusterUri, r.Client, notifier)
 	targets, err := cluster.AquireTargets(executer.Spec.ApplyTo)
 	if err != nil {
 		log.Error(err, "failed retriving targets from cluster", "request", req.String())

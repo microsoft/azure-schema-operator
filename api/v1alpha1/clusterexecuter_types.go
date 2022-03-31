@@ -47,13 +47,14 @@ type ClusterExecuterSpec struct {
 type ClusterExecuterStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	Executed    bool                   `json:"executed"`
-	Running     bool                   `json:"running"`
-	Failed      bool                   `json:"failed"`
-	Targets     ClusterTargets         `json:"targets"`
-	DoneTargets ClusterTargets         `json:"done"`
-	Config      ExecutionConfiguration `json:"config,omitempty"`
-	NumFailures int                    `json:"numFailures,omitempty"`
+	Executed     bool                   `json:"executed"`
+	Running      bool                   `json:"running"`
+	Failed       bool                   `json:"failed"`
+	Targets      ClusterTargets         `json:"targets"`
+	DoneTargets  ClusterTargets         `json:"done"`
+	Config       ExecutionConfiguration `json:"config,omitempty"`
+	NumFailures  int                    `json:"numFailures,omitempty"`
+	CompletedPCT int                    `json:"completedPct,omitempty"`
 	// Conditions is an array of conditions.
 	// Known .status.conditions.type are: "Execution"
 	//+patchMergeKey=type
@@ -67,6 +68,7 @@ type ClusterExecuterStatus struct {
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="TYPE",type="string",JSONPath=".spec.type"
 //+kubebuilder:printcolumn:name="Executed",type="string",JSONPath=".status.conditions[?(@.type=='Execution')].status"
+//+kubebuilder:printcolumn:name="CompletedPCT",type="string",JSONPath=".status.completedPct"
 // ClusterExecuter is the Schema for the clusterexecuters API
 type ClusterExecuter struct {
 	metav1.TypeMeta   `json:",inline"`

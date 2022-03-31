@@ -21,3 +21,5 @@ func CleanupFile(filename string) error {
 	}
 	return nil
 }
+
+type NotifyProgressFunc func(int)

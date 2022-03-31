@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/microsoft/azure-schema-operator/pkg/utils"
 	"github.com/rs/zerolog/log"
 
 	"github.com/denisenkom/go-mssqldb/azuread"
@@ -19,17 +20,19 @@ import (
 
 // SQLCluster represents a SQL Server Databse
 type SQLCluster struct {
-	URI       string
-	Databases []string
-	Schemas   []string
-	k8sClient client.Client
+	URI            string
+	Databases      []string
+	Schemas        []string
+	k8sClient      client.Client
+	notifyProgress utils.NotifyProgressFunc
 }
 
 // NewSQLCluster returns a new `SQLCluster`
-func NewSQLCluster(uri string, c client.Client) *SQLCluster {
+func NewSQLCluster(uri string, c client.Client, notifier utils.NotifyProgressFunc) *SQLCluster {
 	cls := &SQLCluster{
-		URI:       uri,
-		k8sClient: c,
+		URI:            uri,
+		k8sClient:      c,
+		notifyProgress: notifier,
 	}
 
 	return cls
@@ -69,7 +72,8 @@ func (c *SQLCluster) Execute(targets schemav1alpha1.ClusterTargets, config schem
 		}
 
 	} else {
-		log.Info().Msgf("will run the DacPac each schema: %d schemas to run", len(targets.Schemas))
+		total := len(targets.Schemas)
+		log.Info().Msgf("will run the DacPac each schema: %d schemas to run", total)
 		noOfWorkers := parallelWorkers
 		if workers, ok := config.Properties["parallelWorkers"]; ok {
 			noOfWorkers, _ = strconv.Atoi(workers)
@@ -80,7 +84,7 @@ func (c *SQLCluster) Execute(targets schemav1alpha1.ClusterTargets, config schem
 		var err error
 		go allocate(c.URI, targets.DBs[0], config.Properties["sqlpackageOptions"], config.DacPac, config.TemplateName, targets.Schemas, jobs)
 		done := make(chan bool)
-		go result(done, results, &executed, &err)
+		go result(c.notifyProgress, total, done, results, &executed, &err)
 		createWorkerPool(noOfWorkers, jobs, results)
 		<-done
 		if err != nil {

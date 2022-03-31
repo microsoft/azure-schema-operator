@@ -9,6 +9,7 @@ import (
 	"github.com/microsoft/azure-schema-operator/pkg/eventhubs"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
 	"github.com/microsoft/azure-schema-operator/pkg/sqlutils"
+	"github.com/microsoft/azure-schema-operator/pkg/utils"
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -21,12 +22,12 @@ type Cluster interface {
 }
 
 // NewCluster will create an appropriate cluster implementation for the given type.
-func NewCluster(clusterType schemav1alpha1.DBTypeEnum, uri string, c client.Client) Cluster {
+func NewCluster(clusterType schemav1alpha1.DBTypeEnum, uri string, c client.Client, notifier utils.NotifyProgressFunc) Cluster {
 	switch clusterType {
 	case schemav1alpha1.DBTypeKusto:
 		return kustoutils.NewKustoCluster(uri)
 	case schemav1alpha1.DBTypeSQLServer:
-		return sqlutils.NewSQLCluster(uri, c)
+		return sqlutils.NewSQLCluster(uri, c, notifier)
 	case schemav1alpha1.DBTypeEventhub:
 		return eventhubs.NewRegistry(uri)
 	}

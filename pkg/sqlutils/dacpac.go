@@ -83,15 +83,21 @@ func allocate(clusterUri, dbName, options, dacpac, templateName string, targetsS
 	}
 	close(jobs)
 }
-func result(done chan bool, results chan dacpacResult, executed *schemav1alpha1.ClusterTargets, err *error) {
+func result(notifier utils.NotifyProgressFunc, total int, done chan bool, results chan dacpacResult, executed *schemav1alpha1.ClusterTargets, err *error) {
+	soFar := 0
+	tenPCT := total / 10
 	doneSchemas := make([]string, 0)
 	for result := range results {
+		soFar = soFar + 1
 		if result.executed {
 			doneSchemas = append(doneSchemas, result.job.targetSchema)
 		} else {
 			// we just want to make sure we catch some error - we don't care which (consider replacing with multi-error impl.)
 			// *err = result.err
 			log.Error().Err(result.err).Msgf("Failed to run dacpac on %s", result.job.targetSchema)
+		}
+		if soFar%tenPCT == 0 {
+			notifier(soFar / tenPCT * 10)
 		}
 	}
 	done <- true
