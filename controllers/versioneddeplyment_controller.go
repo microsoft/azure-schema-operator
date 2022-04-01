@@ -270,6 +270,7 @@ func (r *VersionedDeplymentReconciler) statusCheck(ctx context.Context, versione
 	failed := 0
 	done := 0
 	running := 0
+	donePCT := 0
 	for i, exec := range versionedDeplyment.Status.Executers {
 		// TODO: check if all executers finished successfully
 		log.Info("Checking executer", "i", i, "exec", exec)
@@ -287,8 +288,10 @@ func (r *VersionedDeplymentReconciler) statusCheck(ctx context.Context, versione
 			if found.Status.Failed {
 				failed = failed + 1
 			}
+			donePCT = donePCT + found.Status.CompletedPCT
 		}
 	}
+	versionedDeplyment.Status.CompletedPCT = (donePCT / len(versionedDeplyment.Status.Executers))
 	versionedDeplyment.Status.Failed = int32(failed)
 	versionedDeplyment.Status.Running = int32(running)
 	versionedDeplyment.Status.Succeeded = int32(done)

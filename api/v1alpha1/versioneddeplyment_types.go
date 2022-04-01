@@ -27,11 +27,12 @@ type VersionedDeplymentSpec struct {
 type VersionedDeplymentStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	Executers []NamespacedName `json:"executers"`
-	Executed  bool             `json:"executed"`
-	Failed    int32            `json:"failed"`
-	Running   int32            `json:"running"`
-	Succeeded int32            `json:"succeeded"`
+	Executers    []NamespacedName `json:"executers"`
+	Executed     bool             `json:"executed"`
+	Failed       int32            `json:"failed"`
+	Running      int32            `json:"running"`
+	Succeeded    int32            `json:"succeeded"`
+	CompletedPCT int              `json:"completedPct,omitempty"`
 	// Conditions is an array of conditions.
 	// Known .status.conditions.type are: "Execution"
 	//+patchMergeKey=type
@@ -43,7 +44,7 @@ type VersionedDeplymentStatus struct {
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
-
+//+kubebuilder:printcolumn:name="CompletedPCT",type="string",JSONPath=".status.completedPct"
 // VersionedDeplyment is the Schema for the versioneddeplyments API
 type VersionedDeplyment struct {
 	metav1.TypeMeta   `json:",inline"`
