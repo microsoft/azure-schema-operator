@@ -6,9 +6,9 @@ FROM mcr.microsoft.com/vscode/devcontainers/go:0-1.17
 # APT dependencies
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-    && apt-get -y install --no-install-recommends bash-completion software-properties-common lsb-release \
-    # install az-cli
-    && curl -sL https://aka.ms/InstallAzureCLIDeb | bash -
+  && apt-get -y install --no-install-recommends bash-completion software-properties-common lsb-release \
+  # install az-cli
+  && curl -sL https://aka.ms/InstallAzureCLIDeb | bash -
 
 # install docker
 # - not yet needed?
@@ -34,7 +34,7 @@ RUN echo 'source <(kubectl completion bash)' >> "/home/vscode/.bashrc"
 
 # Setup go-task completions
 RUN curl -sL "https://raw.githubusercontent.com/go-task/task/v3.0.0/completion/bash/task.bash" > "/home/vscode/.task.completion.sh" \
-    && echo 'source /home/vscode/.task.completion.sh' >> /home/vscode/.bashrc
+  && echo 'source /home/vscode/.task.completion.sh' >> /home/vscode/.bashrc
 
 ENV KIND_CLUSTER_NAME=aso
 
@@ -45,6 +45,13 @@ COPY library-scripts/docker-debian.sh /tmp/library-scripts/
 # currently packages.microsoft.com does not have Moby packages for Debian Bullseye, which the 
 # devcontainer image is based on: https://github.com/microsoft/vscode-dev-containers/issues/1008
 RUN bash /tmp/library-scripts/docker-debian.sh true /var/run/docker-host.sock /var/run/docker.sock automatic false
+
+ARG delta_kusto_version=0.9.0.105
+
+RUN curl -L >delta-kusto-linux.tar.gz https://github.com/microsoft/delta-kusto/releases/download/${delta_kusto_version}/delta-kusto-linux.tar.gz \
+  && tar -xzvf delta-kusto-linux.tar.gz -C /bin \
+  && chmod +x /bin/delta-kusto \
+  && rm delta-kusto-linux.tar.gz 
 
 ENTRYPOINT ["/usr/local/share/docker-init.sh"]
 CMD ["sleep", "infinity"]
