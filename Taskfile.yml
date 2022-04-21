@@ -11,9 +11,9 @@ vars:
   TEST_RESOURCE_PREFIX: schematest
   TEST_LIVE_RESOURCE_PREFIX: schemalivetest
 
-  VERSION:
-    # Version tags for the controller must start with "v1", e.g. "v1.0.0-alpha.0".
-    sh: '{{.SCRIPTS_ROOT}}/build-version.py v1'
+  VERSION: v1.0.0
+  # Version tags for the controller must start with "v1", e.g. "v1.0.0-alpha.0".
+  # sh: '{{.SCRIPTS_ROOT}}/build-version.py v1'
 
   VERSION_FLAGS: -ldflags "-X {{.PACKAGE}}/internal/version.BuildVersion={{.VERSION}}"
 
