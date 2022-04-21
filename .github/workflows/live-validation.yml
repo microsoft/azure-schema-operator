@@ -22,9 +22,7 @@ jobs:
         # NB: if you update this also update create-release.yml
         id: devcontainer
         run: |
-          docker pull docker.pkg.github.com/microsoft/azure-schema-operator/schemaop-devcontainer:latest
-          docker build --cache-from docker.pkg.github.com/microsoft/azure-schema-operator/schemaop-devcontainer:latest --tag devcontainer:latest .devcontainer
-          # docker build --tag devcontainer:latest .devcontainer
+          docker build --tag devcontainer:latest .devcontainer
           container_id=$(docker create -w /workspace -v $GITHUB_WORKSPACE:/workspace -v /var/run/docker.sock:/var/run/docker.sock --network=host devcontainer:latest)
           docker start "$container_id"
           echo "::set-output name=id::$container_id"
