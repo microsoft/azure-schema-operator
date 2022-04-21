@@ -154,7 +154,8 @@ tasks:
         sh: if [ $TEST_FILTER ];  then echo "-v"; fi
     env:
       KUBEBUILDER_ASSETS:
-        sh: $(pwd)/bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
+        sh: setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
+        # sh: $(pwd)/bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
 
   controller:test-integration-envtest-cover:
     desc: Run integration tests with envtest using record/replay and output coverage.

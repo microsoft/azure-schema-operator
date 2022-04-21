@@ -13,8 +13,6 @@ require (
 	github.com/Azure/go-autorest/tracing v0.6.0
 	github.com/denisenkom/go-mssqldb v0.12.0
 	github.com/go-logr/logr v0.4.0
-	github.com/joho/godotenv v1.4.0 // indirect
-	github.com/lithammer/dedent v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.16.0
