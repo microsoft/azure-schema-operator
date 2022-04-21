@@ -23,6 +23,8 @@ vars:
   PUBLIC_REGISTRY: mcr.microsoft.com/k8s/
   LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE: rscomplianceacr.azurecr.io/schema-operator:v0.0.4
 
+dotenv: ['.env']
+
 tasks:
   default:
     cmds:
@@ -40,9 +42,8 @@ tasks:
   ci-live:
     desc: Run all CI checks with live Azure resources. Requires that auth environment variables are set.
     deps:
-      # - controller:ci-live
       - controller:test-deps
-      - controller:ci
+      - controller:test-integration-envtest
 
   controller:gen-helm-manifest:
     desc: Generate helm manifest using Kustomize for the release

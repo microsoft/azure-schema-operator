@@ -45,18 +45,20 @@ var _ = Describe("Schemaregistery", func() {
 			TemplateName: "schemaop",
 			Schema:       string(schemaContent),
 		}
+		if liveTest {
+			It("Should parse and extract configuration from configMap", func() {
+				registry := eventhubs.NewRegistry("jonytest.servicebus.windows.net")
+				ec, err := registry.CreateExecConfiguration(targets, cfgMap, false)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(ec).To(Equal(config))
+			})
+			It("It Should register the schema", func() {
+				registry := eventhubs.NewRegistry("jonytest.servicebus.windows.net")
+				_, err = registry.Execute(targets, config)
+				Expect(err).NotTo(HaveOccurred())
+			})
+		}
 
-		It("Should parse and extract configuration from configMap", func() {
-			registry := eventhubs.NewRegistry("jonytest.servicebus.windows.net")
-			ec, err := registry.CreateExecConfiguration(targets, cfgMap, false)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(ec).To(Equal(config))
-		})
-		It("It Should register the schema", func() {
-			registry := eventhubs.NewRegistry("jonytest.servicebus.windows.net")
-			_, err = registry.Execute(targets, config)
-			Expect(err).NotTo(HaveOccurred())
-		})
 	})
 
 })

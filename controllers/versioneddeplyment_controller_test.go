@@ -19,8 +19,8 @@ import (
 )
 
 var _ = Describe("VersioneddeplymentController", func() {
-	// const timeout = time.Second * 30
-	// const interval = time.Second * 3
+	const timeout = time.Second * 10
+	const interval = time.Second * 3
 
 	const templateName = "versioned-dep-template"
 	const kqlCfgName = "dev-versioned-kql"
@@ -45,9 +45,10 @@ var _ = Describe("VersioneddeplymentController", func() {
 					Namespace: kqlCfgNamespace,
 				},
 				ApplyTo: kutoschemav1.TargetFilter{
-					ClusterUris: []string{"https://sampleadx.westeurope.kusto.windows.net"},
-					DB:          "db11",
+					ClusterUris: []string{"https://" + testCluster + ".westeurope.kusto.windows.net"},
+					DB:          "db1337",
 				},
+				Type: schemav1alpha1.DBTypeKusto,
 			}
 			key := types.NamespacedName{
 				Name:      templateName,
@@ -61,23 +62,34 @@ var _ = Describe("VersioneddeplymentController", func() {
 				},
 				Spec: spec,
 			}
-			By("Creating the template successfully")
+			By("Creating the VersionedDeplyment CRDs successfully")
 			Expect(k8sClient.Create(context.Background(), cfgToCreate)).Should(Succeed())
 			time.Sleep(time.Second * 3)
 			Expect(k8sClient.Create(context.Background(), toCreate)).Should(Succeed())
 			time.Sleep(time.Second * 4)
 			By("deploying the ClusterExecuter")
 			fetched := &kutoschemav1.VersionedDeplyment{}
+			Eventually(func() bool {
+				err := k8sClient.Get(context.Background(), key, fetched)
+				Expect(err).NotTo(HaveOccurred())
+				fmt.Fprintf(GinkgoWriter, "versioned deployment status: %+v \n", fetched.Status)
+				return len(fetched.Status.Executers) == 1
+			}, timeout, interval).Should(BeTrue())
+			By("waiting for the ClusterExecuter")
+			ce := &kutoschemav1.ClusterExecuter{}
+			Eventually(func() bool {
+				err := k8sClient.Get(context.Background(), types.NamespacedName(fetched.Status.Executers[0]), ce)
+				Expect(err).NotTo(HaveOccurred())
+				fmt.Fprintf(GinkgoWriter, "versioned deployment - fetched ClusterExecuter: %+v \n", ce)
+				return ce.Status.Executed
+			}, timeout, interval).Should(BeTrue())
+			fmt.Fprintf(GinkgoWriter, "versioned deployment - fetched ClusterExecuter status: %+v \n", ce.Status)
+			By("checking the updates versioned deployment status")
+			err := k8sClient.Get(context.Background(), key, fetched)
+			Expect(err).NotTo(HaveOccurred())
 			fmt.Fprintf(GinkgoWriter, "versioned deployment status: %+v \n", fetched.Status)
-			// Eventually(func() bool {
-			// 	k8sClient.Get(context.Background(), key, fetched)
-			// 	fmt.Fprintf(GinkgoWriter, "versioned deployment status: %+v \n", fetched.Status)
-			// 	ce := &kutoschemav1.ClusterExecuter{}
-			// 	err := k8sClient.Get(context.Background(), types.NamespacedName(fetched.Status.Executers[0]), ce)
-			// 	return err == nil
-			// }, timeout, interval).Should(BeTrue())
-			// Expect(fetched.Status.Failed).To(Equal(int32(0)))
-			// Expect(fetched.Status.Succeeded).To(Equal(int32(1)))
+			Expect(fetched.Status.Failed).To(Equal(int32(0)))
+			Expect(fetched.Status.Succeeded).To(Equal(int32(1)))
 		})
 	})
 })

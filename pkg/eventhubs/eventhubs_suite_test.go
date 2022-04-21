@@ -8,9 +8,16 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/spf13/viper"
+)
+
+var (
+	liveTest bool
 )
 
 func TestEventhubs(t *testing.T) {
+	viper.SetDefault("live_test", false)
+	liveTest = viper.GetBool("live_test")
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Eventhubs Suite")
 }

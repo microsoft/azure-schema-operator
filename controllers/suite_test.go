@@ -5,6 +5,7 @@ package controllers
 
 import (
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/spf13/viper"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -27,9 +29,12 @@ import (
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
 // http://onsi.github.io/ginkgo/ to learn more about Ginkgo.
 
-var cfg *rest.Config
-var k8sClient client.Client
-var testEnv *envtest.Environment
+var (
+	cfg         *rest.Config
+	k8sClient   client.Client
+	testEnv     *envtest.Environment
+	testCluster = strings.TrimSpace(viper.GetString("schemaop_test_kusto_cluster_name"))
+)
 
 func TestAPIs(t *testing.T) {
 	RegisterFailHandler(Fail)
@@ -74,11 +79,12 @@ var _ = BeforeSuite(func() {
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 
-	// err = (&ClusterExecuterReconciler{
-	// 	Client: k8sManager.GetClient(),
-	// 	Scheme: k8sManager.GetScheme(),
-	// }).SetupWithManager(k8sManager)
-	// Expect(err).ToNot(HaveOccurred())
+	err = (&ClusterExecuterReconciler{
+		Client: k8sManager.GetClient(),
+		Scheme: k8sManager.GetScheme(),
+		Log:    ctrl.Log.WithName("controllers").WithName("kusto-template"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
 
 	err = (&VersionedDeplymentReconciler{
 		Client: k8sManager.GetClient(),

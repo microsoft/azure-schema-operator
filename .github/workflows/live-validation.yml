@@ -1,13 +1,13 @@
 name: Validate with live Azure resources
 on:
   schedule:
-  # 13:00 UTC is a time when both US and NZ are asleep (or headed in that direction)
+    # 13:00 UTC is a time when both US and NZ are asleep (or headed in that direction)
     - cron: '0 13 * * *'
   workflow_dispatch:
 
 jobs:
   test-generator:
-    concurrency: live-resources # only permit one run at a time 
+    concurrency: live-resources # only permit one run at a time
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -34,6 +34,9 @@ jobs:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_USE_MSI: ${{ secrets.AZURE_USE_MSI }}
+          SCHEMAOP_TEST_KUSTO_CLUSTER_NAME: ${{ secrets.SCHEMAOP_TEST_KUSTO_CLUSTER_NAME }}
+          SCHEMAOP_TEST_RG_NAME: ${{ secrets.SCHEMAOP_TEST_RG_NAME }}
 
       # We explicitly do not upload coverage for live tests as it messes with the diffs for PRs,
       # since they will not exercize the authorization codepaths.

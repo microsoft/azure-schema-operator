@@ -17,5 +17,5 @@ spec:
                 name: schema-operator-controller-settings
                 optional: true
           env:
-            - name: SCHEMAOP_USE_MSI
+            - name: AZURE_USE_MSI
               value: 'true'

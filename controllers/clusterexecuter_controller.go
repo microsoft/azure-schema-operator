@@ -19,8 +19,8 @@ import (
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 
+	"github.com/go-logr/logr"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
 	clusterUtils "github.com/microsoft/azure-schema-operator/pkg/cluster"
 	"github.com/prometheus/client_golang/prometheus"
@@ -54,6 +54,7 @@ func init() {
 // ClusterExecuterReconciler reconciles a ClusterExecuter object
 type ClusterExecuterReconciler struct {
 	client.Client
+	Log      logr.Logger
 	Scheme   *runtime.Scheme
 	recorder record.EventRecorder
 }
@@ -74,7 +75,7 @@ type ClusterExecuterReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.9.2/pkg/reconcile
 func (r *ClusterExecuterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := log.FromContext(ctx)
+	log := r.Log.WithValues("ClusterExecuter", req.NamespacedName)
 
 	// TODO: change to parameter
 	maxFailures := 3

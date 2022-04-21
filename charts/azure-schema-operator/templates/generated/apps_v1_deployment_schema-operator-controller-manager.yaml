@@ -35,7 +35,7 @@ spec:
         command:
         - /manager
         env:
-        - name: SCHEMAOP_USE_MSI
+        - name: AZURE_USE_MSI
           value: "true"
         envFrom:
         - secretRef:

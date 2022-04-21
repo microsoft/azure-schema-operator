@@ -83,7 +83,7 @@ The template defines the cluster list (`sampleadx`) and a regular expression
 the `schema-operator` needs access and perimssions on the target databases.
 Authorisation can be defined either by `MSI` (recommanded) or by defining a secret.
 
-To use `MSI`, `SCHEMAOP_USE_MSI` environemt variable needs to be defined on the manager pod.
+To use `MSI`, `AZURE_USE_MSI` environemt variable needs to be defined on the manager pod.
 
 To use a secret, we need to define a secret with the relevant credentials:
 
@@ -106,7 +106,7 @@ and later define these as env entries:
 
 ```yaml
 env:
-  - name: SCHEMAOP_USE_MSI
+  - name: AZURE_USE_MSI
     value: 'false'
   - name: SCHEMAOP_CLIENT_ID
     valueFrom:
