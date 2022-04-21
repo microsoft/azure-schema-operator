@@ -19,14 +19,10 @@ var _ = Describe("DeltaWrapper", func() {
 			w := kustoutils.NewDeltaWrapper()
 			uri := "https://" + cluster + ".westeurope.kusto.windows.net"
 			dbs := []string{"db1", "db2", "db3"}
-			kqlFile := "/Users/jocohe/Documents/delta-kusto/dev-state.kql"
+			kqlFile := "/path/to/schema.kql"
 			fileName, err := w.CreateExecConfiguration(uri, dbs, kqlFile, true)
 			Expect(err).NotTo(HaveOccurred())
 			fmt.Fprintf(GinkgoWriter, "generated config file: %s\n", fileName)
-			By("Should execute the generated job file", func() {
-				err = kustoutils.RunDeltaKusto(fileName)
-				Expect(err).NotTo(HaveOccurred())
-			})
 		})
 
 	})
