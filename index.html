@@ -191,7 +191,7 @@ Authentication
 </h2>
 <p>the <code>schema-operator</code> needs access and perimssions on the target databases.
 Authorisation can be defined either by <code>MSI</code> (recommanded) or by defining a secret.</p>
-<p>To use <code>MSI</code>, <code>SCHEMAOP_USE_MSI</code> environemt variable needs to be defined on the manager pod.</p>
+<p>To use <code>MSI</code>, <code>AZURE_USE_MSI</code> environemt variable needs to be defined on the manager pod.</p>
 <p>To use a secret, we need to define a secret with the relevant credentials:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
 <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Secret</span>
@@ -207,7 +207,7 @@ Authorisation can be defined either by <code>MSI</code> (recommanded) or by defi
 
 </code></pre></div><p>and later define these as env entries:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>env</span>:
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>SCHEMAOP_USE_MSI</span>
+  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>AZURE_USE_MSI</span>
     <span style=color:#f92672>value</span>: <span style=color:#e6db74>&#39;false&#39;</span>
   - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>SCHEMAOP_CLIENT_ID</span>
     <span style=color:#f92672>valueFrom</span>:
