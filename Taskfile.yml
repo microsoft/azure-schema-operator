@@ -43,6 +43,7 @@ tasks:
     desc: Run all CI checks with live Azure resources. Requires that auth environment variables are set.
     deps:
       - controller:test-deps
+    cmds:
       - controller:test-integration-envtest
 
   controller:gen-helm-manifest:
