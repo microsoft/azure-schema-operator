@@ -55,6 +55,7 @@ echo "Installing Go tools…"
 go get \
     k8s.io/code-generator/cmd/conversion-gen@v0.22.2 \
     sigs.k8s.io/controller-tools/cmd/controller-gen@v0.7.0 \
+    sigs.k8s.io/controller-runtime/tools/setup-envtest@latest \
     sigs.k8s.io/kind@v0.11.1 \
     sigs.k8s.io/kustomize/kustomize/v4@v4.2.0 
 
