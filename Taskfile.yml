@@ -44,7 +44,7 @@ tasks:
     deps:
       - controller:test-deps
     cmds:
-      - controller:test-integration-envtest
+      - task: controller:test-integration-envtest
 
   controller:gen-helm-manifest:
     desc: Generate helm manifest using Kustomize for the release
