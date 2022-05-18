@@ -46,7 +46,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
-          file: v2/bin/azureschemaoperator_*.yaml
+          file: bin/azureschemaoperator_*.yaml
           file_glob: true
 
       - name: Login to registry

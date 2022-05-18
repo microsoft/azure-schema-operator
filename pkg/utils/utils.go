@@ -22,4 +22,5 @@ func CleanupFile(filename string) error {
 	return nil
 }
 
+// NotifyProgressFunc Type representing a progress notification type
 type NotifyProgressFunc func(int)

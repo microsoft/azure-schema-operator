@@ -33,7 +33,7 @@ const (
 	DBTypeKusto DBTypeEnum = "kusto"
 	// DBTypeEventhub eventhub schema registry enum entry
 	DBTypeEventhub DBTypeEnum = "eventhub"
-	// ConditionExecuted execution condition status
+	// ConditionExecution execution condition status
 	ConditionExecution string = "Execution"
 )
 

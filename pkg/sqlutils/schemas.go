@@ -146,7 +146,13 @@ func filterSchemas(server, databaseName, schemaFilter string) ([]string, error) 
 	// connString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s;",
 	// 	server, sqlpackgeUser, sqlpackgePass, port, databaseName)
 	var err error
-	connString := fmt.Sprintf("sqlserver://%s?database=%s&fedauth=ActiveDirectoryMSI", server, databaseName)
+	var connString string
+	if useMSI {
+		connString = fmt.Sprintf("sqlserver://%s?database=%s&fedauth=ActiveDirectoryMSI", server, databaseName)
+	} else {
+		connString = fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s;",
+			server, sqlpackgeUser, sqlpackgePass, databaseName)
+	}
 	// Create connection pool
 	db, err = sql.Open(azuread.DriverName, connString)
 	if err != nil {

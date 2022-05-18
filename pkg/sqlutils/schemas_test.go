@@ -36,5 +36,19 @@ var _ = Describe("Schemas", func() {
 		})
 
 	})
+	if liveTest {
+		Context("when testing sqlpackage with a live server", func() {
+			cluster := sqlutils.NewSQLCluster(testCluster+".database.windows.net", nil, nil)
+			filter := schemav1alpha1.TargetFilter{
+				DB:     "DB1",
+				Schema: "db1111",
+			}
+			It("Should acquire requested targets and prepare for execution", func() {
+				clusterTargets, err := cluster.AquireTargets(filter)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(len(clusterTargets.Schemas)).To(Equal(1))
+			})
+		})
+	}
 
 })
