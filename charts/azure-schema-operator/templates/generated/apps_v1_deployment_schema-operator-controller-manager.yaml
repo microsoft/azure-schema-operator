@@ -18,20 +18,7 @@ spec:
     spec:
       containers:
       - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=10
-        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-      - args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
-        - --leader-elect
+        - --config=controller_manager_config.yaml
         command:
         - /manager
         env:
@@ -58,14 +45,33 @@ spec:
           periodSeconds: 10
         resources:
           limits:
-            cpu: "4"
+            cpu: "16"
             memory: 4Gi
           requests:
-            cpu: "2"
+            cpu: "8"
             memory: 1Gi
         securityContext:
           allowPrivilegeEscalation: false
+        volumeMounts:
+        - mountPath: /controller_manager_config.yaml
+          name: manager-config
+          subPath: controller_manager_config.yaml
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
       securityContext:
         runAsNonRoot: true
       serviceAccountName: schema-operator-controller-manager
       terminationGracePeriodSeconds: 10
+      volumes:
+      - configMap:
+          name: schema-operator-manager-config
+        name: manager-config

@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: mcr.microsoft.com/k8s/azureschemaoperator:v1.0.0-rev.1-dirty
+  repository: mcr.microsoft.com/k8s/azureschemaoperator:v1.0.1-rev.3
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ''
