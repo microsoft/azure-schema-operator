@@ -1,6 +1,9 @@
 name: Create new release
 
 on:
+  workflow_dispatch:
+  # no content, allows manual triggering
+
   # run when a release is published,
   # which creates a new tag
   push:
