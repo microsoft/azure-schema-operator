@@ -32,10 +32,10 @@ jobs:
           docker start "$container_id"
           echo "::set-output name=id::$container_id"
 
-      - name: Run Kustomize
-        run: |
-          container_id=${{steps.devcontainer.outputs.id}}
-          docker exec "$container_id" task controller:gen-helm-manifest
+      # - name: Run Kustomize
+      #   run: |
+      #     container_id=${{steps.devcontainer.outputs.id}}
+      #     docker exec "$container_id" task controller:gen-helm-manifest
 
       - name: Build & tag Docker image
         run: |
@@ -44,13 +44,13 @@ jobs:
         env:
           DOCKER_PUSH_TARGET: docker.pkg.github.com/microsoft/azure-schema-operator
 
-      - name: Upload release assets
-        uses: svenstaro/upload-release-action@2f88c7710e85b1f8b5f6c3a2fcadaa7f865af713 # this is v2, but pinned
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
-          file: bin/azureschemaoperator_*.yaml
-          file_glob: true
+      # - name: Upload release assets
+      #   uses: svenstaro/upload-release-action@2f88c7710e85b1f8b5f6c3a2fcadaa7f865af713 # this is v2, but pinned
+      #   with:
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #     tag: ${{ github.ref }}
+      #     file: bin/azureschemaoperator_*.yaml
+      #     file_glob: true
 
       - name: Login to registry
         # note that all creds are on host and never passed into devcontainer
