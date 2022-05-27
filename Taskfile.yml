@@ -20,7 +20,7 @@ vars:
   ENVTEST_K8S_VERSION: 1.21
 
   CONTROLLER_DOCKER_IMAGE: azureschemaoperator:{{.VERSION}}
-  PUBLIC_REGISTRY: mcr.microsoft.com/k8s/
+  PUBLIC_REGISTRY: ghcr.io/microsoft/azure-schema-operator/
   LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE: rscomplianceacr.azurecr.io/schema-operator:v0.0.4
 
 dotenv: ['.env']
@@ -49,7 +49,12 @@ tasks:
   controller:gen-helm-manifest:
     desc: Generate helm manifest using Kustomize for the release
     cmds:
-      - '{{.SCRIPTS_ROOT}}/generate-helm-manifest.sh {{.LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE}} {{.PUBLIC_REGISTRY}} {{.VERSION}} `pwd`/'
+      - '{{.SCRIPTS_ROOT}}/generate-helm-manifest_mac.sh {{.LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE}} {{.PUBLIC_REGISTRY}} {{.VERSION}} `pwd`/'
+
+  package-helm:
+    desc: Package the helm chart
+    cmds:
+      - helm package ./charts/azure-schema-operator/ -d ./charts
 
   controller:generate-crds:
     desc: Run controller-gen to generate {{.CONTROLLER_APP}} CRD files.

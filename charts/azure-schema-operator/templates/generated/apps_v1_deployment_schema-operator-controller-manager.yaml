@@ -28,7 +28,7 @@ spec:
         - secretRef:
             name: schema-operator-controller-settings
             optional: true
-        image: rscomplianceacr.azurecr.io/schema-operator:v0.0.4
+        image: {{.Values.image.repository}}
         imagePullPolicy: Always
         livenessProbe:
           httpGet:

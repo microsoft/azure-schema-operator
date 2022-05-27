@@ -42,23 +42,23 @@ jobs:
           container_id=${{steps.devcontainer.outputs.id}}
           docker exec -e DOCKER_PUSH_TARGET "$container_id" task controller:docker-tag-version
         env:
-          DOCKER_PUSH_TARGET: docker.pkg.github.com/microsoft/azure-schema-operator
+          DOCKER_PUSH_TARGET: ghcr.io/microsoft/azure-schema-operator
 
-      # - name: Upload release assets
-      #   uses: svenstaro/upload-release-action@2f88c7710e85b1f8b5f6c3a2fcadaa7f865af713 # this is v2, but pinned
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     tag: ${{ github.ref }}
-      #     file: bin/azureschemaoperator_*.yaml
-      #     file_glob: true
+      - name: Upload release assets
+        uses: svenstaro/upload-release-action@2f88c7710e85b1f8b5f6c3a2fcadaa7f865af713 # this is v2, but pinned
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          file: charts/azure-schema-operator-${{ github.ref_name }}.tgz
+          file_glob: true
 
       - name: Login to registry
         # note that all creds are on host and never passed into devcontainer
         uses: docker/login-action@v1
         with:
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push docker image
-        run: docker push --all-tags docker.pkg.github.com/microsoft/azure-schema-operator/azureschemaoperator
+        run: docker push --all-tags ghcr.io/microsoft/azure-schema-operator/azureschemaoperator
