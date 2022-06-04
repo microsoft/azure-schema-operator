@@ -7,6 +7,7 @@ vars:
 
   CONTROLLER_APP: manager
   SCRIPTS_ROOT: ./scripts
+  CHART_ROOT: ./charts/azure-schema-operator/
 
   TEST_RESOURCE_PREFIX: schematest
   TEST_LIVE_RESOURCE_PREFIX: schemalivetest
@@ -55,6 +56,12 @@ tasks:
     desc: Package the helm chart
     cmds:
       - helm package ./charts/azure-schema-operator/ -d ./charts
+
+  helm-docs:
+    desc: generate helm docs (readme file)
+    dir: '{{.CHART_ROOT}}'
+    cmds:
+      - helm-docs
 
   controller:generate-crds:
     desc: Run controller-gen to generate {{.CONTROLLER_APP}} CRD files.

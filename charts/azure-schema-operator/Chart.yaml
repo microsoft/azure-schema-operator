@@ -3,5 +3,8 @@ name: azure-schema-operator
 version: v1.0.1
 description: Deploy components and dependencies of azure-schema-operator
 home: https://github.com/Microsoft/azure-schema-operator
+maintainers:
+  - email: jony.cohen@microsoft.com
+    name: Jony Vesterman Cohen
 sources:
   - https://github.com/Microsoft/azure-schema-operator

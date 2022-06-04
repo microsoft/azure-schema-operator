@@ -22,6 +22,14 @@ make deploy IMG=$OPERATOR_IMG
 
 ## Deployment
 
-Schema-Operator is deployed using a helm chart. In the provided values we need to pass the MSI name to bind.
+Schema-Operator is deployed using a helm chart.
+In the provided values we need to pass the MSI name to bind.
 
-Helm (helm3 upgrade schema-operator-test azure-schema-operator --install --set namespace=wdatp-infra-system --dry-run --timeout 60s --debug)
+```bash
+export VERSION=1.0.1  
+chart=https://github.com/microsoft/azure-schema-operator/releases/download/v${VERSION}/azure-schema-operator-v${VERSION}.tgz
+chart=charts/azure-schema-operator-v${VERSION}.tgz
+helm install schema-operator-test $chart --namespace=schema-operator-test --create-namespace
+```
+
+more details on chart parameters can be found at the [chart docs](./helm-docs.md)

@@ -1,0 +1,22 @@
+{{- if .Values.createAzurePodIdentity -}}
+---
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  name: azureschemaoperator-identity
+  namespace: {{.Release.Namespace}}
+spec:
+  type: 0
+  resourceID: {{.Values.azureResourceId}}
+  clientID: {{.Values.azureClientID}}
+---
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+  name: azureschemaoperator-identity-binding
+  namespace: {{.Release.Namespace}}
+spec:
+  azureIdentity: azureschemaoperator-identity
+  selector: {{.Values.azureIdentitySelector}}
+---
+{{- end }}

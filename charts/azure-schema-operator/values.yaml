@@ -44,10 +44,17 @@ ServiceMonitor: false
 # Create secret or use an existing secret
 createAzureOperatorSecret: false
 
+# Create `AzureIdentityBinding` and `AzureIdentity` objects
+createAzurePodIdentity: false
+# azureIdentitySelector is the pod identity selector label
+azureIdentitySelector: azureschemaoperator-manager-binding
+
 # azureTenantID is the AAD tenant that the subscription is in
 azureTenantID: ''
 # azureClientID is the client ID of the Azure Service Principal or Managed Identity to use to authenticate with Azure.
 azureClientID: ''
+# azureResourceId is the Client resource ID of the Managed Identity to use to authenticate with Azure.
+azureResourceId: ''
 
 # azureClientSecret is the client secret of the Azure Service Principal used to authenticate with Azure.
 # This is required when using Service Principal authentication.
