@@ -1,0 +1,311 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="azure-schema-operator #  Deploy components and dependencies of azure-schema-operator
+Homepage: https://github.com/Microsoft/azure-schema-operator
+Maintainers #     Name Email Url     Jony Vesterman Cohen jony.cohen@microsoft.com     Source Code #   https://github.com/Microsoft/azure-schema-operator  Values #     Key Type Default Description     ServiceMonitor bool false    autoscaling.enabled bool false    autoscaling.maxReplicas int 100    autoscaling.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content>
+<meta property="og:description" content="azure-schema-operator #  Deploy components and dependencies of azure-schema-operator
+Homepage: https://github.com/Microsoft/azure-schema-operator
+Maintainers #     Name Email Url     Jony Vesterman Cohen jony.cohen@microsoft.com     Source Code #   https://github.com/Microsoft/azure-schema-operator  Values #     Key Type Default Description     ServiceMonitor bool false    autoscaling.enabled bool false    autoscaling.maxReplicas int 100    autoscaling.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/introduction/helm-docs/"><meta property="article:section" content="introduction">
+<title>Helm Docs | Azure Schema Operator</title>
+<link rel=manifest href=/azure-schema-operator/manifest.json>
+<link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/azure-schema-operator/flexsearch.min.js></script>
+<script defer src=/azure-schema-operator/en.search.min.b38d962a0ddebe4f31c1b28b510fe71b1c4115a4846c3a0bc3d324cb7034333d.js integrity="sha256-s42WKg3evk8xwbKLUQ/nGxxBFaSEbDoLw9Mky3A0Mz0=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/azure-schema-operator/><span>Azure Schema Operator</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<span>User’s Guide</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/introduction/helm-docs/ class=active>Helm Docs</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/annotations/>Annotations</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/authentication/>Authentication</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/configuration/>Configuration</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/events_and_conditions/>Events and Conditions</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/filter/>Filter</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+</ul>
+</li>
+<li>
+<span>For Contributors</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/contributing/contributing/>Contributing</a>
+</li>
+<li>
+<a href=/azure-schema-operator/contributing/create-a-new-release/>Create a New Release</a>
+</li>
+</ul>
+</li>
+<li>
+<span>Tutorials</span>
+<ul>
+<li>
+<a href=/azure-schema-operator/tutorials/eventhub/>Eventhub</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/kusto/>Kusto</a>
+</li>
+<li>
+<a href=/azure-schema-operator/tutorials/sqlserver/>Sqlserver</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Helm Docs</strong>
+<label for=toc-control>
+<img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#maintainers>Maintainers</a></li>
+<li><a href=#source-code>Source Code</a></li>
+<li><a href=#values>Values</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=azure-schema-operator>
+azure-schema-operator
+<a class=anchor href=#azure-schema-operator>#</a>
+</h1>
+<p><img src="https://img.shields.io/badge/Version-v1.0.1-informational?style=flat-square" alt="Version: v1.0.1"></p>
+<p>Deploy components and dependencies of azure-schema-operator</p>
+<p><strong>Homepage:</strong> <a href=https://github.com/Microsoft/azure-schema-operator>https://github.com/Microsoft/azure-schema-operator</a></p>
+<h2 id=maintainers>
+Maintainers
+<a class=anchor href=#maintainers>#</a>
+</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Url</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jony Vesterman Cohen</td>
+<td><a href=mailto:jony.cohen@microsoft.com>jony.cohen@microsoft.com</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id=source-code>
+Source Code
+<a class=anchor href=#source-code>#</a>
+</h2>
+<ul>
+<li><a href=https://github.com/Microsoft/azure-schema-operator>https://github.com/Microsoft/azure-schema-operator</a></li>
+</ul>
+<h2 id=values>
+Values
+<a class=anchor href=#values>#</a>
+</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ServiceMonitor</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td></td>
+</tr>
+<tr>
+<td>autoscaling.enabled</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td></td>
+</tr>
+<tr>
+<td>autoscaling.maxReplicas</td>
+<td>int</td>
+<td><code>100</code></td>
+<td></td>
+</tr>
+<tr>
+<td>autoscaling.minReplicas</td>
+<td>int</td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td>autoscaling.targetCPUUtilizationPercentage</td>
+<td>int</td>
+<td><code>80</code></td>
+<td></td>
+</tr>
+<tr>
+<td>azureClientID</td>
+<td>string</td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td>azureClientSecret</td>
+<td>string</td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td>azureIdentitySelector</td>
+<td>string</td>
+<td><code>"azureschemaoperator-manager-binding"</code></td>
+<td></td>
+</tr>
+<tr>
+<td>azureResourceId</td>
+<td>string</td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td>azureTenantID</td>
+<td>string</td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td>createAzureOperatorSecret</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td></td>
+</tr>
+<tr>
+<td>createAzurePodIdentity</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td></td>
+</tr>
+<tr>
+<td>image.pullPolicy</td>
+<td>string</td>
+<td><code>"IfNotPresent"</code></td>
+<td></td>
+</tr>
+<tr>
+<td>image.repository</td>
+<td>string</td>
+<td><code>"ghcr.io/microsoft/azure-schema-operator/azureschemaoperator:v1.0.1"</code></td>
+<td></td>
+</tr>
+<tr>
+<td>image.tag</td>
+<td>string</td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td>replicaCount</td>
+<td>int</td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td>resources</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td></td>
+</tr>
+<tr>
+<td>serviceAccount.annotations</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td></td>
+</tr>
+<tr>
+<td>serviceAccount.create</td>
+<td>bool</td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td>serviceAccount.name</td>
+<td>string</td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>Autogenerated from chart metadata using <a href=https://github.com/norwoodj/helm-docs/releases/v1.10.0>helm-docs v1.10.0</a></p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#maintainers>Maintainers</a></li>
+<li><a href=#source-code>Source Code</a></li>
+<li><a href=#values>Values</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>
