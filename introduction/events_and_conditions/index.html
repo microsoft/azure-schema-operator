@@ -19,7 +19,7 @@ Conditions #  We can wait for a SchemaDeployment to finish by waiting on the Exe
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/azure-schema-operator/flexsearch.min.js></script>
-<script defer src=/azure-schema-operator/en.search.min.b38d962a0ddebe4f31c1b28b510fe71b1c4115a4846c3a0bc3d324cb7034333d.js integrity="sha256-s42WKg3evk8xwbKLUQ/nGxxBFaSEbDoLw9Mky3A0Mz0=" crossorigin=anonymous></script>
+<script defer src=/azure-schema-operator/en.search.min.a6747451833ca529dd9a3c61dec06b1431b33cdb63fa7ff5d4384b40daa9c0d5.js integrity="sha256-pnR0UYM8pSndmjxh3sBrFDGzPNtj+n/11DhLQNqpwNU=" crossorigin=anonymous></script>
 </head>
 <body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
@@ -139,7 +139,22 @@ Events
 <a class=anchor href=#events>#</a>
 </h2>
 <p>Dureing the deployment process events will be reported on the different steps and changes that occur.</p>
-</article>
+<p>Events differ according to the type and required deployment, and can easily be seen from <code>kubectl</code>:</p>
+<div class=highlight><div style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4>
+<table style=border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block><tr><td style=vertical-align:top;padding:0;margin:0;border:0>
+<pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style=vertical-align:top;padding:0;margin:0;border:0;width:100%>
+<pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>➜ kubectl get events --field-selector involvedObject.name<span style=color:#f92672>=</span>master-test-template
+LAST SEEN   TYPE     REASON     OBJECT                                  MESSAGE
+6m36s       Normal   Created    schemadeployment/master-test-template   Created versioned deployment <span style=color:#e6db74>&#34;master-test-template-0&#34;</span>
+5m36s       Normal   Executed   schemadeployment/master-test-template   Scheme was deployed
+</code></pre></td></tr></table>
+</div>
+</div></article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
 </div>
