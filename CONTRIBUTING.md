@@ -4,34 +4,29 @@
 
 # Contributing
 
-Welcome contributors to your project then list particular contribution procedures your team follows including but not limited to the sections below.
+The Azure Schema Operator project accepts contributions via GitHub pull requests. This document outlines the process to help get your contribution accepted.
 
-Sample text may go like this. *Welcome and thank you for your interest
-in contributing to **project-name**! Before contributing to this
-project, please review this document for policies and procedures which
-will ease the contribution and review process for everyone. If you have
-questions, please contact **contact-method**. This project adopted Inner
-Source
-[model](https://oe-documentation.azurewebsites.net/inner-source/index.html).*
+## Contributor License Agreements
 
-## Issues and Feature Requests
+We'd love to accept your patches! Before we can take them, we have to jump a
+couple of legal hurdles.
 
-Describe procedures or other requirements on filing issues, fixing bugs, proposing new features, etc that you have including references to roadmaps or other considerations contributors should make before submitting anything to the project team for review.
+The [Microsoft CLA](https://cla.microsoft.com/) must be signed by all contributors. Please fill out either the individual or corporate Contributor License Agreement (CLA). Once you are CLA'ed, we'll be able to accept your pull requests.
 
-## Style Guidelines
+***NOTE***: Only original source code from you and other people that have signed the CLA can be accepted into the repository.
 
-Include any code and/or documentation style guidelines, linting requirements, etc.
+## How to Contribute a Patch
 
-## Pull Request Process
+1. If you haven't already done so, sign a Contributor License Agreement (see details above).
+2. Fork the desired repo, develop and test your code changes.
+3. Submit a pull request.
 
-Give very detailed instructions on your PR procedure to ensure contributions are made in the way your teams wants/expects them. This eases the process for everyone. An example process could include the following but this should align with your team's processes.
+See [Contributing to Azure Schema Operator](https://microsoft.github.io/azure-schema-operator/contributing/contributing/) for instructions on how to build and test your code.
 
-1. Ensure builds are still successful and tests, including any added or updated tests, pass prior to submitting the pull request.
-2. Update any documentation, user and contributor, that is impacted by your changes.
-3. Increase the version numbers in any examples and the `README.md` to the new version that this pull request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-4. Include your change description in `CHANGELOG.md` file as part of pull request.
-5. You may merge the pull request in once you have the sign-off of two other developers, or if you do not have permission to do that, you may request the second reviewer to merge it for you.
+## Reporting Security Issues
 
-## License Information
+Microsoft takes the security of our software products and services seriously, which includes all source code repositories managed through our GitHub organizations, including this one.
 
-Inform the user of the license(s) under which this project accepts and distributes contributions. If you have any license agreement or other legal requirements, include those here as well.
+**Please do not report security vulnerabilities through public GitHub issues.**
+
+Please see [reporting security issues](/SECURITY.md#reporting-security-issues) for more details on how to report a security issue.

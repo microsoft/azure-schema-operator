@@ -30,3 +30,12 @@ master-test-template   kusto   False
 ## Events
 
 Dureing the deployment process events will be reported on the different steps and changes that occur.
+
+Events differ according to the type and required deployment, and can easily be seen from `kubectl`:
+
+```bash {linenos=table}
+➜ kubectl get events --field-selector involvedObject.name=master-test-template
+LAST SEEN   TYPE     REASON     OBJECT                                  MESSAGE
+6m36s       Normal   Created    schemadeployment/master-test-template   Created versioned deployment "master-test-template-0"
+5m36s       Normal   Executed   schemadeployment/master-test-template   Scheme was deployed
+```

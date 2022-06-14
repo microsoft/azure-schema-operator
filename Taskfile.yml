@@ -209,6 +209,11 @@ tasks:
     cmds:
       - hugo
 
+  run-docs-site:
+    dir: docs/site
+    cmds:
+      - hugo server
+
   verify-no-changes:
     desc: Checks that there are no uncommitted modifications to files
     cmds:

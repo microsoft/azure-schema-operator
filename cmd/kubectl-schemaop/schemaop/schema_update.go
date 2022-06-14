@@ -17,8 +17,6 @@ import (
 	"k8s.io/cli-runtime/pkg/resource"
 )
 
-// kubectl create configmap test-sample-kql --from-file=kql=/Users/jocohe/Documents/delta-kusto/sample.kql --dry-run=client -o yaml | less
-
 var (
 	updateLong = `
 		update the schema configMap.`

@@ -19,7 +19,7 @@ Azure Schema Operator project is aimed to manage a schema changes of varios Azur
 A developer defines the schema in source location (e.g. configMap) and the
 operator will make sure to apply it on all the defined clusters.
 
-![Schema-Operator flow](/docs/images/SchemaOperator.drawio.png)
+![Schema-Operator flow](docs/images/SchemaOperator.drawio.png)
 
 The Operator offloads the heavy lifting to schema tools such as [delta-kusto](https://github.com/microsoft/delta-kusto)
 and instead focuses on ensuring the validity of the deployment process.  
