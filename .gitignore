@@ -62,3 +62,6 @@ docs/site/public/*
 !docs/site/public/.nojekyll
 docs/site/resources/_gen/
 docs/site/tmp/
+
+# Hugo lock file
+.hugo_build.lock
