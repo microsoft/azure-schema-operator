@@ -33,7 +33,7 @@ rules:
 - apiGroups:
   - dbschema.microsoft.com
   resources:
-  - clusterexecuters
+  - clusterexecutors
   verbs:
   - create
   - delete
@@ -45,13 +45,13 @@ rules:
 - apiGroups:
   - dbschema.microsoft.com
   resources:
-  - clusterexecuters/finalizers
+  - clusterexecutors/finalizers
   verbs:
   - update
 - apiGroups:
   - dbschema.microsoft.com
   resources:
-  - clusterexecuters/status
+  - clusterexecutors/status
   verbs:
   - get
   - patch

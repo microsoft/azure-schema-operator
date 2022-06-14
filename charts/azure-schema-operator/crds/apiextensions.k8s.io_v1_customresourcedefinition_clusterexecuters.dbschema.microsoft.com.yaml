@@ -4,14 +4,14 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.6.1
   creationTimestamp: null
-  name: clusterexecuters.dbschema.microsoft.com
+  name: clusterexecutors.dbschema.microsoft.com
 spec:
   group: dbschema.microsoft.com
   names:
-    kind: ClusterExecuter
-    listKind: ClusterExecuterList
-    plural: clusterexecuters
-    singular: clusterexecuter
+    kind: ClusterExecutor
+    listKind: ClusterExecutorList
+    plural: clusterexecutors
+    singular: clusterexecutor
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -27,7 +27,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ClusterExecuter is the Schema for the clusterexecuters API
+        description: ClusterExecutor is the Schema for the clusterexecutors API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
@@ -38,7 +38,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ClusterExecuterSpec defines the desired state of ClusterExecuter
+            description: ClusterExecutorSpec defines the desired state of ClusterExecutor
             properties:
               applyTo:
                 description: TargetFilter contains target filter configuration
@@ -97,7 +97,7 @@ spec:
             - type
             type: object
           status:
-            description: ClusterExecuterStatus defines the observed state of ClusterExecuter
+            description: ClusterExecutorStatus defines the observed state of ClusterExecutor
             properties:
               completedPct:
                 type: integer

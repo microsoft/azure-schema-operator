@@ -22,7 +22,7 @@ resources:
     controller: true
     domain: microsoft.com
     group: dbschema
-    kind: ClusterExecuter
+    kind: ClusterExecutor
     path: github.com/microsoft/azure-schema-operator/api/v1alpha1
     version: v1alpha1
   - api:

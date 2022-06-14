@@ -33,8 +33,8 @@ type ExecutionConfiguration struct {
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// ClusterExecuterSpec defines the desired state of ClusterExecuter
-type ClusterExecuterSpec struct {
+// ClusterExecutorSpec defines the desired state of ClusterExecutor
+type ClusterExecutorSpec struct {
 	ClusterUri     string         `json:"clusterUri,omitempty"`
 	ApplyTo        TargetFilter   `json:"applyTo"`
 	Type           DBTypeEnum     `json:"type"`
@@ -43,8 +43,8 @@ type ClusterExecuterSpec struct {
 	Revision       int32          `json:"revision"`
 }
 
-// ClusterExecuterStatus defines the observed state of ClusterExecuter
-type ClusterExecuterStatus struct {
+// ClusterExecutorStatus defines the observed state of ClusterExecutor
+type ClusterExecutorStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	Executed     bool                   `json:"executed"`
@@ -69,29 +69,29 @@ type ClusterExecuterStatus struct {
 //+kubebuilder:printcolumn:name="TYPE",type="string",JSONPath=".spec.type"
 //+kubebuilder:printcolumn:name="Executed",type="string",JSONPath=".status.conditions[?(@.type=='Execution')].status"
 //+kubebuilder:printcolumn:name="CompletedPCT",type="string",JSONPath=".status.completedPct"
-// ClusterExecuter is the Schema for the clusterexecuters API
-type ClusterExecuter struct {
+// ClusterExecutor is the Schema for the clusterexecutors API
+type ClusterExecutor struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   ClusterExecuterSpec   `json:"spec,omitempty"`
-	Status ClusterExecuterStatus `json:"status,omitempty"`
+	Spec   ClusterExecutorSpec   `json:"spec,omitempty"`
+	Status ClusterExecutorStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// ClusterExecuterList contains a list of ClusterExecuter
-type ClusterExecuterList struct {
+// ClusterExecutorList contains a list of ClusterExecutor
+type ClusterExecutorList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []ClusterExecuter `json:"items"`
+	Items           []ClusterExecutor `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&ClusterExecuter{}, &ClusterExecuterList{})
+	SchemeBuilder.Register(&ClusterExecutor{}, &ClusterExecutorList{})
 }
 
-// IsExecuted checks if the cluster executer already executed.
-func (t *ClusterExecuter) IsExecuted() bool {
+// IsExecuted checks if the cluster executor already executed.
+func (t *ClusterExecutor) IsExecuted() bool {
 	return t.Status.Executed
 }

@@ -1,13 +1,13 @@
-# permissions for end users to edit clusterexecuters.
+# permissions for end users to edit clusterexecutors.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: clusterexecuter-editor-role
+  name: clusterexecutor-editor-role
 rules:
   - apiGroups:
       - dbschema.microsoft.com
     resources:
-      - clusterexecuters
+      - clusterexecutors
     verbs:
       - create
       - delete
@@ -19,6 +19,6 @@ rules:
   - apiGroups:
       - dbschema.microsoft.com
     resources:
-      - clusterexecuters/status
+      - clusterexecutors/status
     verbs:
       - get

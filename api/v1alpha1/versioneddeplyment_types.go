@@ -27,7 +27,7 @@ type VersionedDeplymentSpec struct {
 type VersionedDeplymentStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	Executers    []NamespacedName `json:"executers"`
+	Executors    []NamespacedName `json:"executors"`
 	Executed     bool             `json:"executed"`
 	Failed       int32            `json:"failed"`
 	Running      int32            `json:"running"`

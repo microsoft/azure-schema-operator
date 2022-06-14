@@ -24,7 +24,7 @@ var (
 
 // Wrapper is a delta-kusto thin wrapper
 type Wrapper struct {
-	Executer string
+	Executor string
 }
 
 type execConfig struct {

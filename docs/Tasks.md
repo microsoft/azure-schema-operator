@@ -12,7 +12,7 @@
 1. failure handling
 1. history retention
 1. refactor names
-1. Remove cluster executers if no longer needed (if removed from cluster list)
+1. Remove cluster executors if no longer needed (if removed from cluster list)
 1. rollback - stop after several tries, stop at 0.
 1. dry-run mode (report changes but not execute)
 1. safe deployment docs

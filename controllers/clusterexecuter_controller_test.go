@@ -17,17 +17,17 @@ import (
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
 )
 
-var _ = Describe("ClusterexecuterController", func() {
+var _ = Describe("ClusterexecutorController", func() {
 	const timeout = time.Second * 30
 	const interval = time.Second * 10
 
 	const templateName = "cluster-exec-test"
 	const kqlCfgName = "dev-exec-kql"
 	const kqlCfgNamespace = "default"
-	Context("with new cluster executer CRD", func() {
+	Context("with new cluster executor CRD", func() {
 
 		It("Should execute the change", func() {
-			// re-write this test to check the cluster executer flows
+			// re-write this test to check the cluster executor flows
 			By("Configuring the CRDs")
 			cfgToCreate := &v1.ConfigMap{
 				ObjectMeta: metav1.ObjectMeta{
@@ -41,7 +41,7 @@ var _ = Describe("ClusterexecuterController", func() {
 				},
 			}
 
-			spec := kutoschemav1.ClusterExecuterSpec{
+			spec := kutoschemav1.ClusterExecutorSpec{
 				ClusterUri:     "https://" + testCluster + ".westeurope.kusto.windows.net",
 				Type:           schemav1alpha1.DBTypeKusto,
 				Revision:       1,
@@ -60,7 +60,7 @@ var _ = Describe("ClusterexecuterController", func() {
 				Namespace: "default",
 			}
 
-			toCreate := &kutoschemav1.ClusterExecuter{
+			toCreate := &kutoschemav1.ClusterExecutor{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      key.Name,
 					Namespace: key.Namespace,
@@ -73,10 +73,10 @@ var _ = Describe("ClusterexecuterController", func() {
 			Expect(k8sClient.Create(context.Background(), toCreate)).Should(Succeed())
 			time.Sleep(time.Second * 4)
 			By("waiting for execution to complete")
-			ce := &kutoschemav1.ClusterExecuter{}
+			ce := &kutoschemav1.ClusterExecutor{}
 			Eventually(func() bool {
 				k8sClient.Get(context.Background(), key, ce)
-				fmt.Fprintf(GinkgoWriter, "executer deployment status: %+v \n", ce)
+				fmt.Fprintf(GinkgoWriter, "executor deployment status: %+v \n", ce)
 				return ce.Status.Executed
 			}, timeout, interval).Should(BeTrue())
 		})

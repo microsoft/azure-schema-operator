@@ -87,12 +87,12 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "SchemaDeployment")
 		os.Exit(1)
 	}
-	if err = (&controllers.ClusterExecuterReconciler{
+	if err = (&controllers.ClusterExecutorReconciler{
 		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("ClusterExecuter"),
+		Log:    ctrl.Log.WithName("controllers").WithName("ClusterExecutor"),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "ClusterExecuter")
+		setupLog.Error(err, "unable to create controller", "controller", "ClusterExecutor")
 		os.Exit(1)
 	}
 	if err = (&controllers.VersionedDeplymentReconciler{

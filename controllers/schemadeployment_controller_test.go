@@ -106,7 +106,7 @@ var _ = Describe("SchemaDeploymentController", func() {
 		It("should deploy the DacPac on all the schmeas ", func() {
 			By("Creating the SQL Schema deployment successfully")
 			// TODO: create SQL test case
-			By("Createing a clustered executer and applying")
+			By("Createing a clustered executor and applying")
 			// TODO: define execution verification
 		})
 	})

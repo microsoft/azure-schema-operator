@@ -25,7 +25,7 @@ var _ = Describe("VersioneddeplymentController", func() {
 	const templateName = "versioned-dep-template"
 	const kqlCfgName = "dev-versioned-kql"
 	const kqlCfgNamespace = "default"
-	Context("with new cluster executer CRD", func() {
+	Context("with new cluster executor CRD", func() {
 		It("Should execute the change", func() {
 			cfgToCreate := &v1.ConfigMap{
 				ObjectMeta: metav1.ObjectMeta{
@@ -67,23 +67,23 @@ var _ = Describe("VersioneddeplymentController", func() {
 			time.Sleep(time.Second * 3)
 			Expect(k8sClient.Create(context.Background(), toCreate)).Should(Succeed())
 			time.Sleep(time.Second * 4)
-			By("deploying the ClusterExecuter")
+			By("deploying the ClusterExecutor")
 			fetched := &kutoschemav1.VersionedDeplyment{}
 			Eventually(func() bool {
 				err := k8sClient.Get(context.Background(), key, fetched)
 				Expect(err).NotTo(HaveOccurred())
 				fmt.Fprintf(GinkgoWriter, "versioned deployment status: %+v \n", fetched.Status)
-				return len(fetched.Status.Executers) == 1
+				return len(fetched.Status.Executors) == 1
 			}, timeout, interval).Should(BeTrue())
-			By("waiting for the ClusterExecuter")
-			ce := &kutoschemav1.ClusterExecuter{}
+			By("waiting for the ClusterExecutor")
+			ce := &kutoschemav1.ClusterExecutor{}
 			Eventually(func() bool {
-				err := k8sClient.Get(context.Background(), types.NamespacedName(fetched.Status.Executers[0]), ce)
+				err := k8sClient.Get(context.Background(), types.NamespacedName(fetched.Status.Executors[0]), ce)
 				Expect(err).NotTo(HaveOccurred())
-				fmt.Fprintf(GinkgoWriter, "versioned deployment - fetched ClusterExecuter: %+v \n", ce)
+				fmt.Fprintf(GinkgoWriter, "versioned deployment - fetched ClusterExecutor: %+v \n", ce)
 				return ce.Status.Executed
 			}, timeout, interval).Should(BeTrue())
-			fmt.Fprintf(GinkgoWriter, "versioned deployment - fetched ClusterExecuter status: %+v \n", ce.Status)
+			fmt.Fprintf(GinkgoWriter, "versioned deployment - fetched ClusterExecutor status: %+v \n", ce.Status)
 			By("checking the updates versioned deployment status")
 			err := k8sClient.Get(context.Background(), key, fetched)
 			Expect(err).NotTo(HaveOccurred())

@@ -79,7 +79,7 @@ var _ = BeforeSuite(func() {
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 
-	err = (&ClusterExecuterReconciler{
+	err = (&ClusterExecutorReconciler{
 		Client: k8sManager.GetClient(),
 		Scheme: k8sManager.GetScheme(),
 		Log:    ctrl.Log.WithName("controllers").WithName("kusto-template"),
