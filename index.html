@@ -263,9 +263,16 @@ Running the tests
 <a class=anchor href=#running-the-tests>#</a>
 </h2>
 <p>The project uses <a href=https://github.com/onsi/ginkgo>Ginkgo</a> with <a href=https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/envtest>envtest</a>
-To run the tests simple run:</p>
+To run the tests locally simple run:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>make test
-</code></pre></div><h2 id=deployment>
+</code></pre></div><table>
+<thead>
+<tr>
+<th>:exclamation: Mac M1 users (arm64) should run under rosetta or in the dev container, envtest does not support darwin/arm64.</th>
+</tr>
+</thead>
+</table>
+<h2 id=deployment>
 Deployment
 <a class=anchor href=#deployment>#</a>
 </h2>
