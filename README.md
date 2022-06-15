@@ -158,11 +158,13 @@ A step by step series of examples that tell you how to get a development environ
 ## Running the tests
 
 The project uses [Ginkgo](https://github.com/onsi/ginkgo) with [envtest](https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/envtest)
-To run the tests simple run:
+To run the tests locally simple run:
 
 ```bash
 make test
 ```
+| :exclamation:  Mac M1 users (arm64) should run under rosetta or in the dev container, envtest does not support darwin/arm64. |
+|------------------------------------------------------------------------------------------------------------------------------|
 
 ## Deployment
 
