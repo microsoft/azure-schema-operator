@@ -1,25 +1,28 @@
 # SQL Server Tutorial
 
-A tutorial for a simple scenario of a single db in a server with schema per tenant.
+A common multi-tenancy architecture for sqlserver is using a schema per tenant.
+This tutorial will show how to deploy the schema given in a DACPAC format to each schema in the database.
 
-we assume MSI is used to authenticate (because it's simpler :) )
+The tutorial uses a [sample dacpac](docs/samples/sqlserver/test.dacpac) with a sales schema.
 
-we need to add the MSI as a user to the DB:
+MSI is used to authenticate in the tutorial as it's simpler.
+
+we need to add the MSI as a user to the DB, e.g.:
 
 ```TSQL
-CREATE USER [dbset-operator-dataops-msi-erx-qds] FROM EXTERNAL PROVIDER;
+CREATE USER [schema-operator-msi] FROM EXTERNAL PROVIDER;
 GO
-ALTER ROLE db_datareader ADD MEMBER [dbset-operator-dataops-msi-erx-qds];
-ALTER ROLE db_datawriter ADD MEMBER [dbset-operator-dataops-msi-erx-qds];
-ALTER ROLE db_owner ADD MEMBER [dbset-operator-dataops-msi-erx-qds];
-GRANT EXECUTE TO [dbset-operator-dataops-msi-erx-qds]
+ALTER ROLE db_datareader ADD MEMBER [schema-operator-msi];
+ALTER ROLE db_datawriter ADD MEMBER [schema-operator-msi];
+ALTER ROLE db_owner ADD MEMBER [schema-operator-msi];
+GRANT EXECUTE TO [schema-operator-msi]
 GO
 ```
 
 Creating the ConfigMap:
 
 ```bash
-kubectl create configmap dacpac-config --from-literal templateName="SalesLT" --from-file=dacpac=./docs/assets/test.dacpac
+kubectl create configmap dacpac-config --from-literal templateName="SalesLT" --from-file=dacpac=docs/samples/sqlserver/test.dacpac
 ```
 
 next we need to define a `SchemaDeployment` object that will reference the `ConfigMap`.
@@ -45,18 +48,18 @@ spec:
 and apply it via kubectl:
 
 ```bash
-kubectl apply -f ./docs/assets/sql-demo-deployment.yaml
+kubectl apply -f docs/samples/sqlserver/sql-demo-deployment.yaml
 ```
 
 ## External Dacpacs
 
-In case our project has external dacpac references we can add them as a reference from the schema ConfigMap:
+For cases where the project has external dacpac references we can add them as a reference from the schema ConfigMap like this:
 
 ```bash
 kubectl create configmap common-config --from-file=dacpac=./DBOCommon.dacpac
 kubectl create configmap tenant-config --from-literal templateName="MasterSchema" \
 --from-literal externalDacpacs='{ "DBOCommon": {"name": "common-config", "namespace": "default"}}' \
---from-file=dacpac=./SevilleSqlDbTenant.dacpac
+--from-file=dacpac=tenant.dacpac
 ```
 
 The external Dacpac requires a seperate external `SchemaDeployment` object to deploy it ( to fully capsulate the "externallism" of it)
