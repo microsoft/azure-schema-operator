@@ -80,7 +80,7 @@ kubectl schemaop history --namespace default --name sample-adx
   default    sample-adx-3  3         
 ```
 
-further checking the history we can see that revision 2 (the 3rd revision) failed:
+Further checking the history we can see that revision 2 (the 3rd revision) failed:
 
 ```sh
 kubectl schemaop history --namespace default --name sample-adx  --revision 2
