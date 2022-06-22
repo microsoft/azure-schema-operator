@@ -89,7 +89,8 @@ kubectl schemaop history --namespace default --name sample-adx  --revision 2
   default    sample-adx-2  2         false     1       1        0     
 ```
 
-and we can see that the 4th and 2nd revisions are the same - we rolled back the bad revision as requested by the template object:
+We can also see, that the 4th and 2nd revisions are the same.
+That's because we rolled back the faulty schema revision as requested by the template object:
 
 ```yaml
 spec:
