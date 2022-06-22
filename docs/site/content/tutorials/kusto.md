@@ -35,7 +35,7 @@ With the schema in place we are ready to deploy to our test server:
 kubectl apply -f docs/samples/kusto/sample-sd.yml
 ```
 
-We can check the deployment status by getting the SchemaDeployment` object:
+Once we've created the necessary k8s objects, we should check the deployment status by getting the `SchemaDeployment` object:
 
 ```bash
 ➜ kubectl get schemadeployments sample-adx
