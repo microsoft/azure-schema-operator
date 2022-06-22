@@ -29,7 +29,7 @@ The first step is to upload the base schema by applying our first schema:
 kubectl apply -f docs/samples/kusto/sample-cm.yml
 ```
 
-With the schema in place we are ready to deploy to our test server:
+With the schema's `ConfigMap` in place we are ready to deploy to our test server:
 
 ```sh
 kubectl apply -f docs/samples/kusto/sample-sd.yml
