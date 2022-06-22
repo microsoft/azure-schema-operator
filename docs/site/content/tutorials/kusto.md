@@ -62,7 +62,7 @@ kubectl schemaop history --namespace default --name sample-adx
   default    sample-adx-1  1      
 ```
 
-Now, lets make things a bit more interesting, and apply a schema if an error:
+Now, lets make things a bit more interesting, and apply a schema that contains an error:
 
 ```sh
 kubectl apply -f docs/samples/kusto/sample-cm-err.yml
