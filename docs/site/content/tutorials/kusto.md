@@ -24,13 +24,13 @@ While not mandetory, a kubectl plugin exists that provides simpler access to the
 
 ## Tutorial steps
 
-The first step is to upload the base schema by applying our first schema:
+The first step is to create our first schema `ConfigMap`, later to be deployed to our cluster:
 
 ```sh
 kubectl apply -f docs/samples/kusto/sample-cm.yml
 ```
 
-With the schema's `ConfigMap` in place we are ready to deploy to our test server:
+With the schema's `ConfigMap` in place we are ready to deploy to our test cluster:
 
 ```sh
 kubectl apply -f docs/samples/kusto/sample-sd.yml
