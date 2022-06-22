@@ -10,7 +10,7 @@ Or simply download and review a [sample kql file](https://github.com/microsoft/d
 Once we have a kql describe our schema we can generate a `ConfigMap` using:
 
 ```sh
-kubectl create configmap test-sample-kql --from-file=kql=sample.kql --dry-run=client -o json | jq .
+kubectl create configmap test-sample-kql --from-file=kql=sample.kql --dry-run=client -o yaml
 ```
 
 We reference the ConfigMap object from the `SchemaDeployment` object to apply onto the clusters.
@@ -19,7 +19,8 @@ All The objects used throughout the tutorial can be found in [samples folder](do
 
 ## Pre-requisits
 
-the tutorial assumes that the Schema operator is already installed with the appropriate permissions - if not, please see [installation](Install.md)
+the tutorial assumes that the Schema operator is already installed with the appropriate permissions - if not, please see [installation](content/introduction/Install.md)
+While not mandetory, a kubectl plugin exists that provides simpler access to the schema revision history - see [plugin installation](content/introduction/plugin_installation.md) for details
 
 ## Tutorial steps
 
