@@ -10,9 +10,9 @@ import (
 	"strconv"
 
 	"github.com/microsoft/azure-schema-operator/pkg/utils"
+	"github.com/microsoft/go-mssqldb/azuread"
 	"github.com/rs/zerolog/log"
 
-	"github.com/denisenkom/go-mssqldb/azuread"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
