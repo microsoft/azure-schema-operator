@@ -77,12 +77,15 @@ sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b "${TOOL_DEST
 
 # Install kubebuilder
 echo "Installing kubebuilder…"
-# os=$(go env GOOS)
-# arch=$(go env GOARCH)
+os=$(go env GOOS)
+arch=$(go env GOARCH)
 # kubebuilder_version=3.1.0
 # echo "Installing kubebuilder ${kubebuilder_version} ($os $arch)…"
 # curl -L "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${kubebuilder_version}/kubebuilder_${kubebuilder_version}_${os}_${arch}.tar.gz" | tar -xz -C /tmp/
 # mv "/tmp/kubebuilder_${kubebuilder_version}_${os}_${arch}" "$KUBEBUILDER_DEST"
+# download kubebuilder and install locally.
+curl -L -o kubebuilder https://go.kubebuilder.io/dl/latest/${os}/${arch}
+chmod +x kubebuilder && mv kubebuilder $KUBEBUILDER_DEST
 
 # Install yq
 echo "Installing yq…"
