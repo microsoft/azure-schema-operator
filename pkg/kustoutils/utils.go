@@ -30,8 +30,10 @@ func NewKustoCluster(uri string) *KustoCluster {
 		wrapper: NewDeltaWrapper(),
 	}
 
-	a, _ := auth.NewAuthorizerFromEnvironmentWithResource(uri)
-	// a, _ := auth.NewAuthorizerFromEnvironmentWithResource(uri) //check error
+	a, err := auth.NewAuthorizerFromEnvironmentWithResource(uri)
+	if err != nil {
+		log.Error().Err(err).Msgf("failed to authorize from env to %s", uri)
+	}
 
 	authorizer := kusto.Authorization{
 		Authorizer: a,

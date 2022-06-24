@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/Azure/azure-kusto-go/kusto"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -29,4 +30,18 @@ var _ = Describe("Utils", func() {
 
 		})
 	})
+	if liveTest {
+		Context("when testing kusto with a live server", func() {
+			ClusterUri := "https://" + testCluster + ".westeurope.kusto.windows.net"
+			cluster := kustoutils.NewKustoCluster(ClusterUri)
+			filter := schemav1alpha1.TargetFilter{
+				DB: "db1948",
+			}
+			It("Should acquire requested targets and prepare for execution", func() {
+				clusterTargets, err := cluster.AquireTargets(filter)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(len(clusterTargets.DBs)).To(Equal(1))
+			})
+		})
+	}
 })
