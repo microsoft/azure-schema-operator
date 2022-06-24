@@ -44,7 +44,7 @@ NAME         TYPE    EXECUTED
 sample-adx   kusto   True
 ```
 
-To update the schema to a new version we can simply apply a new ConfigMap:
+To update the schema, we should simply patch the ConfigMap, which will trigger the schema operator to validate the schema, and apply updates if needed.
 
 ```sh
 kubectl apply -f docs/samples/kusto/sample-cm-v2.yml  
