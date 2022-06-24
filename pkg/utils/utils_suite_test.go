@@ -1,5 +1,7 @@
 package utils_test
 
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 import (
 	"testing"
 
