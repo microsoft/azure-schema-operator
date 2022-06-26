@@ -29,7 +29,7 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
 # dbschema.microsoft.com/schema-operator-bundle:$VERSION and dbschema.microsoft.com/schema-operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= someacr.azurecr.io/schema-operator
+IMAGE_TAG_BASE ?= someacr.azurecr.io/azureschemaoperator
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
@@ -93,6 +93,9 @@ test: manifests generate fmt vet envtest ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) -p path)" go test -v ./... -coverprofile cover.out
 
 ##@ Build
+
+binary: ## only Build manager binary.
+	go build -o bin/manager main.go
 
 build: generate fmt vet ## Build manager binary.
 	go build -o bin/manager main.go
