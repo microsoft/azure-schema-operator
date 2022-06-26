@@ -7,7 +7,7 @@ The schema is represented in `kql` field in a standard `ConfigMap` which contain
 More details on KQL files can be found in the [delta-kusto instructions](https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/README.md#download-dev)  
 Or simply download and review a [sample kql file](https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/dev-start-samples.kql)
 
-Once we have a kql describe our schema we can generate a `ConfigMap` using:
+Once we have a kql describe our schema we can generate an example `ConfigMap` using:
 
 ```sh
 kubectl create configmap test-sample-kql --from-file=kql=sample.kql --dry-run=client -o yaml
