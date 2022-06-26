@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-kql
+  namespace: default
+data:
+  kql: |
+    .create-or-alter function  Add(a:real,b:real) {a+b}
+
+    .alter database ProvTest policy merge
+    ```{
+      "RowCountUpperBoundForMerge": 16000000,
+      "OriginalSizeMBUpperBoundForMerge": 0,
+      "MaxExtentsToMerge": 100,
+      "LoopPeriod": "01:00:00",
+      "MaxRangeInHours": 24,
+      "AllowRebuild": true,
+      "AllowMerge": true,
+      "Lookback": {
+        "Kind": 0,
+        "CustomPeriod": null
+      }
+    }
+    ```

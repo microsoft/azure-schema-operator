@@ -4,7 +4,7 @@ Creating the ConfigMap:
 
 ```bash
 kubectl create configmap event-demo --from-literal templateName="schemaop"  --from-literal group="testsgr" \
---from-file=schema=./docs/assets/avro-schema.json   
+--from-file=schema=docs/samples/eventhubs/avro-schema.json   
 ```
 
 next we need to define a `SchemaDeployment` object that will reference the `ConfigMap`.
@@ -28,7 +28,7 @@ spec:
 and apply it via kubectl:
 
 ```bash
-kubectl apply -f ./docs/assets/eventhub-schema-demo.yaml
+kubectl apply -f docs/samples/eventhubs/eventhub-schema-demo.yaml
 ```
 
 To demonstrate schema evolution, we will add a new field:
@@ -44,7 +44,7 @@ let's run:
 
 ```bash
 kubectl create configmap event-demo --from-literal templateName="schemaop"  --from-literal group="testsgr" \
---from-file=schema=./docs/assets/avro-schema-v2.json --dry-run=client -o yaml | kubectl apply -f -
+--from-file=schema=docs/samples/eventhubs/avro-schema-v2.json --dry-run=client -o yaml | kubectl apply -f -
 ```
 
 To see the deplopyment status we can check the history:

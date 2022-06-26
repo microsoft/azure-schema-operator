@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-kql
+  namespace: default
+data:
+  kql: |
+    .create-or-alter function  Add(a:real,b:real) {a+b}
+
+    .create-or-alter function  Sub(a:real,b:real) {a-b}
+
+    .create-or-alter funct  err(a:real,b:real) {a+b}
