@@ -1,0 +1,15 @@
+apiVersion: dbschema.microsoft.com/v1alpha1
+kind: SchemaDeployment
+metadata:
+  name: eventhub-schema-demo
+spec:
+  type: eventhub
+  applyTo:
+    clusterUris: ['schematest.servicebus.windows.net']
+    db: 'db1'
+    schema: test
+  failIfDataLoss: false
+  failurePolicy: abort
+  source:
+    name: event-demo
+    namespace: default

@@ -1,0 +1,19 @@
+{
+  "name": "schemaop",
+  "namespace": "com.azure.schemaregistry.samples",
+  "type": "record",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "amount",
+      "type": "double"
+    },
+    {
+      "name": "description",
+      "type": "string"
+    }
+  ]
+}

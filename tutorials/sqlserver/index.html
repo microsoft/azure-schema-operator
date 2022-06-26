@@ -2,16 +2,16 @@
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="SQL Server Tutorial #  A tutorial for a simple scenario of a single db in a server with schema per tenant.
-we assume MSI is used to authenticate (because it&rsquo;s simpler :) )
-we need to add the MSI as a user to the DB:
-CREATE USER [dbset-operator-dataops-msi-erx-qds] FROM EXTERNAL PROVIDER; GO ALTER ROLE db_datareader ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; ALTER ROLE db_datawriter ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; ALTER ROLE db_owner ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; GRANT EXECUTE TO [dbset-operator-dataops-msi-erx-qds] GO Creating the ConfigMap:">
+<meta name=description content="SQL Server Tutorial #  A common multi-tenancy architecture for sqlserver is using a schema per tenant. This tutorial will show how to deploy the schema given in a DACPAC format to each schema in the database.
+The tutorial uses a sample dacpac with a sales schema.
+MSI is used to authenticate in the tutorial as it&rsquo;s simpler.
+we need to add the MSI as a user to the DB, e.">
 <meta name=theme-color content="#FFFFFF">
 <meta name=color-scheme content="light dark"><meta property="og:title" content>
-<meta property="og:description" content="SQL Server Tutorial #  A tutorial for a simple scenario of a single db in a server with schema per tenant.
-we assume MSI is used to authenticate (because it&rsquo;s simpler :) )
-we need to add the MSI as a user to the DB:
-CREATE USER [dbset-operator-dataops-msi-erx-qds] FROM EXTERNAL PROVIDER; GO ALTER ROLE db_datareader ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; ALTER ROLE db_datawriter ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; ALTER ROLE db_owner ADD MEMBER [dbset-operator-dataops-msi-erx-qds]; GRANT EXECUTE TO [dbset-operator-dataops-msi-erx-qds] GO Creating the ConfigMap:">
+<meta property="og:description" content="SQL Server Tutorial #  A common multi-tenancy architecture for sqlserver is using a schema per tenant. This tutorial will show how to deploy the schema given in a DACPAC format to each schema in the database.
+The tutorial uses a sample dacpac with a sales schema.
+MSI is used to authenticate in the tutorial as it&rsquo;s simpler.
+we need to add the MSI as a user to the DB, e.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/tutorials/sqlserver/"><meta property="article:section" content="tutorials">
 <title>Sqlserver | Azure Schema Operator</title>
@@ -19,7 +19,7 @@ CREATE USER [dbset-operator-dataops-msi-erx-qds] FROM EXTERNAL PROVIDER; GO ALTE
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/azure-schema-operator/flexsearch.min.js></script>
-<script defer src=/azure-schema-operator/en.search.min.a6747451833ca529dd9a3c61dec06b1431b33cdb63fa7ff5d4384b40daa9c0d5.js integrity="sha256-pnR0UYM8pSndmjxh3sBrFDGzPNtj+n/11DhLQNqpwNU=" crossorigin=anonymous></script>
+<script defer src=/azure-schema-operator/en.search.min.96bbba887b5aaad265a07f8a14a5dfc5dcbcf15eadb90c53c5de8021092af209.js integrity="sha256-lru6iHtaqtJloH+KFKXfxdy88V6tuQxTxd6AIQkq8gk=" crossorigin=anonymous></script>
 </head>
 <body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
@@ -61,6 +61,9 @@ CREATE USER [dbset-operator-dataops-msi-erx-qds] FROM EXTERNAL PROVIDER; GO ALTE
 </li>
 <li>
 <a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/plugin_installation/>Plugin Installation</a>
 </li>
 </ul>
 </li>
@@ -117,18 +120,20 @@ CREATE USER [dbset-operator-dataops-msi-erx-qds] FROM EXTERNAL PROVIDER; GO ALTE
 SQL Server Tutorial
 <a class=anchor href=#sql-server-tutorial>#</a>
 </h1>
-<p>A tutorial for a simple scenario of a single db in a server with schema per tenant.</p>
-<p>we assume MSI is used to authenticate (because it&rsquo;s simpler :) )</p>
-<p>we need to add the MSI as a user to the DB:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-TSQL data-lang=TSQL><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>USER</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span> <span style=color:#66d9ef>FROM</span> <span style=color:#66d9ef>EXTERNAL</span> PROVIDER;
+<p>A common multi-tenancy architecture for sqlserver is using a schema per tenant.
+This tutorial will show how to deploy the schema given in a DACPAC format to each schema in the database.</p>
+<p>The tutorial uses a <a href=docs/samples/sqlserver/test.dacpac>sample dacpac</a> with a sales schema.</p>
+<p>MSI is used to authenticate in the tutorial as it&rsquo;s simpler.</p>
+<p>we need to add the MSI as a user to the DB, e.g.:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-TSQL data-lang=TSQL><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>USER</span> <span style=color:#f92672>[</span>schema-operator-msi<span style=color:#f92672>]</span> <span style=color:#66d9ef>FROM</span> <span style=color:#66d9ef>EXTERNAL</span> PROVIDER;
 <span style=color:#66d9ef>GO</span>
-<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_datareader <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span>;
-<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_datawriter <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span>;
-<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_owner <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span>;
-<span style=color:#66d9ef>GRANT</span> <span style=color:#66d9ef>EXECUTE</span> <span style=color:#66d9ef>TO</span> <span style=color:#f92672>[</span>dbset-operator-dataops-msi-erx-qds<span style=color:#f92672>]</span>
+<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_datareader <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>schema-operator-msi<span style=color:#f92672>]</span>;
+<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_datawriter <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>schema-operator-msi<span style=color:#f92672>]</span>;
+<span style=color:#66d9ef>ALTER</span> <span style=color:#66d9ef>ROLE</span> db_owner <span style=color:#66d9ef>ADD</span> <span style=color:#66d9ef>MEMBER</span> <span style=color:#f92672>[</span>schema-operator-msi<span style=color:#f92672>]</span>;
+<span style=color:#66d9ef>GRANT</span> <span style=color:#66d9ef>EXECUTE</span> <span style=color:#66d9ef>TO</span> <span style=color:#f92672>[</span>schema-operator-msi<span style=color:#f92672>]</span>
 <span style=color:#66d9ef>GO</span>
 </code></pre></div><p>Creating the ConfigMap:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create configmap dacpac-config --from-literal templateName<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;SalesLT&#34;</span> --from-file<span style=color:#f92672>=</span>dacpac<span style=color:#f92672>=</span>./docs/assets/test.dacpac
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create configmap dacpac-config --from-literal templateName<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;SalesLT&#34;</span> --from-file<span style=color:#f92672>=</span>dacpac<span style=color:#f92672>=</span>docs/samples/sqlserver/test.dacpac
 </code></pre></div><p>next we need to define a <code>SchemaDeployment</code> object that will reference the <code>ConfigMap</code>.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>dbschema.microsoft.com/v1alpha1</span>
 <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>SchemaDeployment</span>
@@ -146,16 +151,16 @@ SQL Server Tutorial
     <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dacpac-config</span>
     <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>default</span>
 </code></pre></div><p>and apply it via kubectl:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl apply -f ./docs/assets/sql-demo-deployment.yaml
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl apply -f docs/samples/sqlserver/sql-demo-deployment.yaml
 </code></pre></div><h2 id=external-dacpacs>
 External Dacpacs
 <a class=anchor href=#external-dacpacs>#</a>
 </h2>
-<p>In case our project has external dacpac references we can add them as a reference from the schema ConfigMap:</p>
+<p>For cases where the project has external dacpac references we can add them as a reference from the schema ConfigMap like this:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>kubectl create configmap common-config --from-file<span style=color:#f92672>=</span>dacpac<span style=color:#f92672>=</span>./DBOCommon.dacpac
 kubectl create configmap tenant-config --from-literal templateName<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;MasterSchema&#34;</span> <span style=color:#ae81ff>\
 </span><span style=color:#ae81ff></span>--from-literal externalDacpacs<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;{ &#34;DBOCommon&#34;: {&#34;name&#34;: &#34;common-config&#34;, &#34;namespace&#34;: &#34;default&#34;}}&#39;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>--from-file<span style=color:#f92672>=</span>dacpac<span style=color:#f92672>=</span>./SevilleSqlDbTenant.dacpac
+</span><span style=color:#ae81ff></span>--from-file<span style=color:#f92672>=</span>dacpac<span style=color:#f92672>=</span>tenant.dacpac
 </code></pre></div><p>The external Dacpac requires a seperate external <code>SchemaDeployment</code> object to deploy it ( to fully capsulate the &ldquo;externallism&rdquo; of it)</p>
 <p><em>Note</em> as the name of the external DacPac matters we need to pass this name - so it is the &ldquo;key&rdquo; for the reference.</p>
 </article>

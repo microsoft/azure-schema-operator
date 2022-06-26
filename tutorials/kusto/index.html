@@ -2,14 +2,12 @@
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="Azure Data Explorer (ADX, AKA Kusto) Tutorial #  In this short tutorial we will review the process of managing a schema, performing a change and rollback in the case of an error.
-Pre-requisits #  the tutorial assumes that the Schema operator is already installed with the appropriate permissions - if not, please see installation
-Tutorial steps #  We start by creating a KQL file following the delta-kusto instructions">
+<meta name=description content="Azure Data Explorer (ADX, AKA Kusto) Tutorial #  In this short tutorial we will review the process of managing a schema, performing a change and rollback in the case of an error. We will deploy 3 revisions of our schema, with an error on the third schema triggering a rollback.
+The schema is represented in kql field in a standard ConfigMap which contains ADX schemas described as KQLs.. More details on KQL files can be found in the delta-kusto instructions">
 <meta name=theme-color content="#FFFFFF">
 <meta name=color-scheme content="light dark"><meta property="og:title" content>
-<meta property="og:description" content="Azure Data Explorer (ADX, AKA Kusto) Tutorial #  In this short tutorial we will review the process of managing a schema, performing a change and rollback in the case of an error.
-Pre-requisits #  the tutorial assumes that the Schema operator is already installed with the appropriate permissions - if not, please see installation
-Tutorial steps #  We start by creating a KQL file following the delta-kusto instructions">
+<meta property="og:description" content="Azure Data Explorer (ADX, AKA Kusto) Tutorial #  In this short tutorial we will review the process of managing a schema, performing a change and rollback in the case of an error. We will deploy 3 revisions of our schema, with an error on the third schema triggering a rollback.
+The schema is represented in kql field in a standard ConfigMap which contains ADX schemas described as KQLs.. More details on KQL files can be found in the delta-kusto instructions">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/tutorials/kusto/"><meta property="article:section" content="tutorials">
 <title>Kusto | Azure Schema Operator</title>
@@ -17,7 +15,7 @@ Tutorial steps #  We start by creating a KQL file following the delta-kusto inst
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/azure-schema-operator/flexsearch.min.js></script>
-<script defer src=/azure-schema-operator/en.search.min.a6747451833ca529dd9a3c61dec06b1431b33cdb63fa7ff5d4384b40daa9c0d5.js integrity="sha256-pnR0UYM8pSndmjxh3sBrFDGzPNtj+n/11DhLQNqpwNU=" crossorigin=anonymous></script>
+<script defer src=/azure-schema-operator/en.search.min.96bbba887b5aaad265a07f8a14a5dfc5dcbcf15eadb90c53c5de8021092af209.js integrity="sha256-lru6iHtaqtJloH+KFKXfxdy88V6tuQxTxd6AIQkq8gk=" crossorigin=anonymous></script>
 </head>
 <body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
@@ -59,6 +57,9 @@ Tutorial steps #  We start by creating a KQL file following the delta-kusto inst
 </li>
 <li>
 <a href=/azure-schema-operator/introduction/install/>Install</a>
+</li>
+<li>
+<a href=/azure-schema-operator/introduction/plugin_installation/>Plugin Installation</a>
 </li>
 </ul>
 </li>
@@ -117,50 +118,60 @@ Tutorial steps #  We start by creating a KQL file following the delta-kusto inst
 Azure Data Explorer (ADX, AKA Kusto) Tutorial
 <a class=anchor href=#azure-data-explorer-adx-aka-kusto-tutorial>#</a>
 </h1>
-<p>In this short tutorial we will review the process of managing a schema, performing a change and rollback in the case of an error.</p>
+<p>In this short tutorial we will review the process of managing a schema, performing a change and rollback in the case of an error.
+We will deploy 3 revisions of our schema, with an error on the third schema triggering a rollback.</p>
+<p>The schema is represented in <code>kql</code> field in a standard <code>ConfigMap</code> which contains ADX schemas described as KQLs..
+More details on KQL files can be found in the <a href=https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/README.md#download-dev>delta-kusto instructions</a><br>
+Or simply download and review a <a href=https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/dev-start-samples.kql>sample kql file</a></p>
+<p>Once we have a kql describe our schema we can generate an example <code>ConfigMap</code> using:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl create configmap test-sample-kql --from-file<span style=color:#f92672>=</span>kql<span style=color:#f92672>=</span>sample.kql --dry-run<span style=color:#f92672>=</span>client -o yaml
+</code></pre></div><p>We reference the ConfigMap object from the <code>SchemaDeployment</code> object to apply onto the clusters.</p>
+<p>All The objects used throughout the tutorial can be found in <a href=docs/samples/kusto>samples folder</a></p>
 <h2 id=pre-requisits>
 Pre-requisits
 <a class=anchor href=#pre-requisits>#</a>
 </h2>
-<p>the tutorial assumes that the Schema operator is already installed with the appropriate permissions - if not, please see <a href=Install.md>installation</a></p>
+<p>the tutorial assumes that the Schema operator is already installed with the appropriate permissions - if not, please see <a href=content/introduction/Install.md>installation</a>
+While not mandetory, a kubectl plugin exists that provides simpler access to the schema revision history - see <a href=content/introduction/plugin_installation.md>plugin installation</a> for details</p>
 <h2 id=tutorial-steps>
 Tutorial steps
 <a class=anchor href=#tutorial-steps>#</a>
 </h2>
-<p>We start by creating a KQL file following the <a href=https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/README.md#download-dev>delta-kusto instructions</a><br>
-Or simply download a <a href=https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/dev-start-samples.kql>sample kql file</a></p>
-<p>Once we have a kql file we need to generate a <code>ConfigMap</code> definition file:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl create configmap test-sample-kql --from-file<span style=color:#f92672>=</span>kql<span style=color:#f92672>=</span>/Users/jocohe/Documents/delta-kusto/sample.kql --dry-run<span style=color:#f92672>=</span>client -o json | jq .
-</code></pre></div><p>We reference the ConfigMap from our <code>SchemaDeployment</code> object (name to be changed&mldr;) to apply to our clusters</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl apply -f /Users/jocohe/Documents/delta-kusto/template-demo.yml
-</code></pre></div><p>To update the schema to a new version we can simply apply a new ConfigMap:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl apply -f /Users/jocohe/Documents/delta-kusto/cm-dev2.yml  
-</code></pre></div><p>or use the kuebctl <code>schemaop</code> plugin:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl schemaop update --namespace default --name dev-test-kql --schema-file /Users/jocohe/Documents/delta-kusto/dev-state.kql
+<p>The first step is to create our first schema <code>ConfigMap</code>, later to be deployed to our cluster:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl apply -f docs/samples/kusto/sample-cm.yml
+</code></pre></div><p>With the schema&rsquo;s <code>ConfigMap</code> in place we are ready to deploy to our test cluster:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl apply -f docs/samples/kusto/sample-sd.yml
+</code></pre></div><p>Once we&rsquo;ve created the necessary k8s objects, we should check the schema deployment execution status by getting the <code>SchemaDeployment</code> object:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>➜ kubectl get schemadeployments sample-adx
+NAME         TYPE    EXECUTED
+sample-adx   kusto   True
+</code></pre></div><p>To update the schema, we should simply patch the ConfigMap, which will trigger the schema operator to validate the schema, and apply updates if needed.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl apply -f docs/samples/kusto/sample-cm-v2.yml  
 </code></pre></div><p>To view current status and history we can use the provided plugin:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl schemaop status --namespace default --name master-test-template     
-  NAMESPACE  NAME                    REVISION  EXECUTED  FAILED  RUNNING  SUCCEEDED  
-  default    master-test-template-1  <span style=color:#ae81ff>1</span>         true      <span style=color:#ae81ff>0</span>       <span style=color:#ae81ff>0</span>        <span style=color:#ae81ff>1</span>          
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl schemaop status --namespace default --name sample-adx     
+  NAMESPACE  NAME          REVISION  EXECUTED  FAILED  RUNNING  SUCCEEDED  
+  default    sample-adx-1  <span style=color:#ae81ff>1</span>         true      <span style=color:#ae81ff>0</span>       <span style=color:#ae81ff>0</span>        <span style=color:#ae81ff>1</span>          
 
-kubectl schemaop history --namespace default --name master-test-template    
-  NAMESPACE  NAME                    REVISION  
-  default    master-test-template-0  <span style=color:#ae81ff>0</span>         
-  default    master-test-template-1  <span style=color:#ae81ff>1</span>      
-</code></pre></div><p>Now, lets make things a bit more interesting, and apply a bad schema:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl apply -f /Users/jocohe/Documents/delta-kusto/cm-dev-err.yml
+kubectl schemaop history --namespace default --name sample-adx    
+  NAMESPACE  NAME          REVISION  
+  default    sample-adx-0  <span style=color:#ae81ff>0</span>         
+  default    sample-adx-1  <span style=color:#ae81ff>1</span>      
+</code></pre></div><p>Now, lets make things a bit more interesting, and apply a schema that contains an error:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl apply -f docs/samples/kusto/sample-cm-err.yml
 </code></pre></div><p>If we check the status we will see we are now on our 4th revision!</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl schemaop history --namespace default --name master-test-template              
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl schemaop history --namespace default --name sample-adx              
 
-  NAMESPACE  NAME                    REVISION  
-  default    master-test-template-0  <span style=color:#ae81ff>0</span>         
-  default    master-test-template-1  <span style=color:#ae81ff>1</span>         
-  default    master-test-template-2  <span style=color:#ae81ff>2</span>         
-  default    master-test-template-3  <span style=color:#ae81ff>3</span>         
-</code></pre></div><p>further checking the history we can see that revisio 2 (the 3rd revision) failed:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl schemaop history --namespace default --name master-test-template  --revision <span style=color:#ae81ff>2</span>
-  NAMESPACE  NAME                    REVISION  EXECUTED  FAILED  RUNNING  SUCCEEDED  
-  default    master-test-template-2  <span style=color:#ae81ff>2</span>         false     <span style=color:#ae81ff>1</span>       <span style=color:#ae81ff>1</span>        <span style=color:#ae81ff>0</span>     
-</code></pre></div><p>and we can see that the 4th and 2nd revisions are the same - we rolled back the bad revision as requested by the template object:</p>
+  NAMESPACE  NAME          REVISION  
+  default    sample-adx-0  <span style=color:#ae81ff>0</span>         
+  default    sample-adx-1  <span style=color:#ae81ff>1</span>         
+  default    sample-adx-2  <span style=color:#ae81ff>2</span>         
+  default    sample-adx-3  <span style=color:#ae81ff>3</span>         
+</code></pre></div><p>Further checking the history we can see that revision 2 (the 3rd revision) failed:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl schemaop history --namespace default --name sample-adx  --revision <span style=color:#ae81ff>2</span>
+  NAMESPACE  NAME          REVISION  EXECUTED  FAILED  RUNNING  SUCCEEDED  
+  default    sample-adx-2  <span style=color:#ae81ff>2</span>         false     <span style=color:#ae81ff>1</span>       <span style=color:#ae81ff>1</span>        <span style=color:#ae81ff>0</span>     
+</code></pre></div><p>We can also see, that the 4th and 2nd revisions are the same.
+That&rsquo;s because we rolled back the faulty schema revision as requested by the template object:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>spec</span>:
   <span style=color:#f92672>failurePolicy</span>: <span style=color:#ae81ff>rollback</span>
 </code></pre></div><h2 id=summary>
@@ -168,7 +179,7 @@ Summary
 <a class=anchor href=#summary>#</a>
 </h2>
 <p>We&rsquo;ve looked at a common flow and how Schema-Operator can ease managment of large schema deployments.
-We suggest trying some of these scenarios in a dev environment to get familiar with the tool.</p>
+We suggest trying some of these scenarios in a dev environment to get familiar with the different options.</p>
 </article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">

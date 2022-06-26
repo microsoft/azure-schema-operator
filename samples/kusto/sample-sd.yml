@@ -1,0 +1,14 @@
+apiVersion: dbschema.microsoft.com/v1alpha1
+kind: SchemaDeployment
+metadata:
+  name: sample-adx
+spec:
+  type: kusto
+  applyTo:
+    clusterUris: ['https://sampleadx.westeurope.kusto.windows.net']
+    db: 'tenant_'
+  failIfDataLoss: false
+  failurePolicy: rollback
+  source:
+    name: sample-kql
+    namespace: default
