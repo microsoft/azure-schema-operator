@@ -54,12 +54,10 @@ export GO111MODULE=on
 echo "Installing Go tools…"
 
 # go tools for vscode are preinstalled by base image (see first comment in Dockerfile)
-go get \
-    k8s.io/code-generator/cmd/conversion-gen@v0.22.2 \
-    sigs.k8s.io/controller-tools/cmd/controller-gen@v0.7.0 \
-    sigs.k8s.io/kind@v0.11.1 \
-    sigs.k8s.io/kustomize/kustomize/v4@v4.2.0 
-
+go install k8s.io/code-generator/cmd/conversion-gen@v0.22.2 
+go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.8.0 
+go install sigs.k8s.io/kind@v0.11.1 
+# go install sigs.k8s.io/kustomize/kustomize/v3@v3.8.7
 go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
 # for docs site
@@ -79,12 +77,15 @@ sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b "${TOOL_DEST
 
 # Install kubebuilder
 echo "Installing kubebuilder…"
-# os=$(go env GOOS)
-# arch=$(go env GOARCH)
+os=$(go env GOOS)
+arch=$(go env GOARCH)
 # kubebuilder_version=3.1.0
 # echo "Installing kubebuilder ${kubebuilder_version} ($os $arch)…"
 # curl -L "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${kubebuilder_version}/kubebuilder_${kubebuilder_version}_${os}_${arch}.tar.gz" | tar -xz -C /tmp/
 # mv "/tmp/kubebuilder_${kubebuilder_version}_${os}_${arch}" "$KUBEBUILDER_DEST"
+# download kubebuilder and install locally.
+curl -L -o kubebuilder https://go.kubebuilder.io/dl/latest/${os}/${arch}
+chmod +x kubebuilder && mv kubebuilder $KUBEBUILDER_DEST
 
 # Install yq
 echo "Installing yq…"

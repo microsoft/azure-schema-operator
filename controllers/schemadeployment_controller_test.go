@@ -20,7 +20,7 @@ import (
 
 var _ = Describe("SchemaDeploymentController", func() {
 	const timeout = time.Second * 30
-	const interval = time.Second * 1
+	const interval = time.Second * 10
 
 	const templateName = "master-test-template"
 	const kqlCfgName = "dev-template-kql"
