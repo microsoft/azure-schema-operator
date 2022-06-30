@@ -7,20 +7,34 @@ import (
 	"regexp"
 	"strings"
 
+	"io"
+	"net/http"
+
 	"github.com/Azure/azure-kusto-go/kusto"
 	"github.com/Azure/azure-kusto-go/kusto/data/table"
-	"github.com/Azure/azure-kusto-go/kusto/ingest"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
 	"github.com/rs/zerolog/log"
 	v1 "k8s.io/api/core/v1"
 )
 
+// Note: This is a temporary solution to the issue of the Kusto client not aligned with v1 Azure SDK.
+// QueryClient interface is taken from https://github.com/Azure/azure-kusto-go/blob/master/kusto/ingest/query_client.go
+// Replace with import once versions align.
+type QueryClient interface {
+	io.Closer
+	Auth() kusto.Authorization
+	Endpoint() string
+	Query(ctx context.Context, db string, query kusto.Stmt, options ...kusto.QueryOption) (*kusto.RowIterator, error)
+	Mgmt(ctx context.Context, db string, query kusto.Stmt, options ...kusto.MgmtOption) (*kusto.RowIterator, error)
+	HttpClient() *http.Client
+}
+
 // KustoCluster represents a kusto cluster
 type KustoCluster struct {
 	URI       string
 	Databases []string
-	Client    ingest.QueryClient
+	Client    QueryClient
 	// Client    *kusto.Client
 	wrapper *Wrapper
 }
