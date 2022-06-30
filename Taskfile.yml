@@ -143,7 +143,7 @@ tasks:
     # integration tests can be run manually (via IDE) after running "task"
     # deps: [controller:generate-crds, controller:run-kustomize-for-envtest]
     cmds:
-      - go test -short -tags=noexit -timeout 10m -run '{{default ".*" .TEST_FILTER}}' ./pkg/...
+      - go test -short -tags=noexit -v -timeout 10m -run '{{default ".*" .TEST_FILTER}}' ./pkg/...
 
   controller:test-cover:
     desc: Run {{.CONTROLLER_APP}} unit tests and output coverage.

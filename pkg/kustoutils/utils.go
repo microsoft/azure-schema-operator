@@ -9,6 +9,7 @@ import (
 
 	"github.com/Azure/azure-kusto-go/kusto"
 	"github.com/Azure/azure-kusto-go/kusto/data/table"
+	"github.com/Azure/azure-kusto-go/kusto/ingest"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
 	"github.com/rs/zerolog/log"
@@ -19,8 +20,9 @@ import (
 type KustoCluster struct {
 	URI       string
 	Databases []string
-	Client    *kusto.Client
-	wrapper   *Wrapper
+	Client    ingest.QueryClient
+	// Client    *kusto.Client
+	wrapper *Wrapper
 }
 
 // NewKustoCluster returns a new KustoCluster object with a client initialized
@@ -88,7 +90,7 @@ func (c *KustoCluster) ListDatabases(expression string) ([]string, error) {
 
 	dbs := make([]string, 0)
 
-	iter, err := c.Client.Mgmt(ctx, "", kusto.NewStmt(".show databases"))
+	iter, err := c.Client.Mgmt(ctx, "", kusto.NewStmt(".show databases | project DatabaseName"))
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to query mgmt api")
 		return nil, err
