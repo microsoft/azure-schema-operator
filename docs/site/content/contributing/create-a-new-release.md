@@ -1,4 +1,4 @@
-# Creating a new release of ASO v2
+# Creating a new release of the Azure-Schema-Operator
 
 1. Go to the [releases](https://github.com/Microsoft/azure-schema-operator/releases) page and draft a new release.
 2. In the tag dropdown, type the name of the new tag you'd like to create (it should match the pattern of previous releases tags, for example: `v1.0.0-alpha.1`). The release target should be `main` (the default).
@@ -8,23 +8,6 @@
 6. Publish the release. This will automatically trigger a GitHub action to build and publish an updated Docker image with the latest manager changes.
 7. Ensure that the action associated with your release finishes successfully.
 
-# Testing the new release
-
-1. Download the yaml file from the release page
-1. Create a kind cluster: `task controller:kind-create`
-1. Create the namespace for the operator: `k create namespace azureserviceoperator-system`
-1. Source the SP credentials to use for the secret and then run `./scripts/deploy_testing_secret.sh sp`
-1. Deploy the operator from MCR: `k apply --server-side=true -f <path-to-downloaded-yaml>` (We need to use [server-side apply](https://kubernetes.io/docs/reference/using-api/server-side-apply/) because the CRD for VirtualMachines is large enough that it can't fit in the `last-applied-configuration` annotation client-side `kubectl apply` uses.)
-1. Wait for it to start: `k get all -n azureserviceoperator-system`
-1. Create a resource group and a vnet in it (the vnet is to check that conversion webhooks are working, since there aren't any for RGs):
-
-   ```
-   k apply -f v2/config/samples/resources/v1alpha1api20200601_resourcegroup.yaml
-   k apply -f v2/config/samples/network/v1alpha1api20201101_virtualnetwork.yaml
-   ```
-
-9. Make sure they deploy successfully - check in the portal as well.
-
 # Creating and testing Helm chart for new release
 
 1. Create a new branch from `<NEW_RELEASE_TAG>` HEAD
@@ -33,32 +16,22 @@
 4. Install helm chart:
 
     ```
-   helm install --set azureSubscriptionID=$AZURE_SUBSCRIPTION_ID \
-   --set azureTenantID=$AZURE_TENANT_ID \
-   --set azureClientSecret=$AZURE_CLIENT_SECRET \
-   --set azureClientID=$AZURE_CLIENT_ID \
+   helm install \
    schemaop -n azureschemaoperator-system --create-namespace ./charts/azure-schema-operator/.
     ```
 
 5. Wait for the chart installation.
-6. Wait for it to start: `k get all -n azureserviceoperator-system`
-7. Create a resource group and a vnet in it (the vnet is to check that conversion webhooks are working, since there aren't any for RGs):
-
-   ```
-   k apply -f v2/config/samples/resources/v1alpha1api20200601_resourcegroup.yaml
-   k apply -f v2/config/samples/network/v1alpha1api20201101_virtualnetwork.yaml
-   ```
-
-8. Make sure they deploy successfully - check in the portal as well.
-9. If installed successfully, commit the files under `v2/charts/azure-service-operator`.
-10. Send a PR.
+6. Wait for it to start: `k get all -n azureschemaoperator-system`
+7. Run through the [kusto tutorial](../tutorials/kusto.md) and validate the changes.
+8. If installed successfully, commit the files under `charts/azure-schema-operator`.
+9. Send a PR.
 
 # Fixing an incorrect release
 
 If there was an issue publishing a new release, we may want to delete the existing release and try again.
 Only do this if you've just published the release and there is something wrong with it. We shouldn't be deleting releases people are actually using.
 
-1. Delete the release in the [releases](https://github.com/Azure/azure-service-operator/releases) page.
+1. Delete the release in the [releases](https://github.com/microsoft/azure-schema-operator/releases) page.
 2. Delete the tag: `git push <origin> --delete <tag>`, for example `git push origin --delete v2.0.0-alpha.1`.
 
 At this point, you can safely publish a "new" release with the same name.
