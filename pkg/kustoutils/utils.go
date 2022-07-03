@@ -142,7 +142,7 @@ func (c *KustoCluster) Execute(targets schemav1alpha1.ClusterTargets, config sch
 // CreateExecConfiguration creates execution configuration for the given targets and `ConfigMap` configuration.
 func (c *KustoCluster) CreateExecConfiguration(targets schemav1alpha1.ClusterTargets, cfgMap *v1.ConfigMap, failIfDataLoss bool) (schemav1alpha1.ExecutionConfiguration, error) {
 	config := schemav1alpha1.ExecutionConfiguration{}
-	kqlFile, err := ConfigMapToFile(cfgMap.Data["kql"])
+	kqlFile, err := StoreKQLSchemaToFile(cfgMap.Data["kql"])
 	if err != nil {
 		log.Error().Err(err).Msg("failed downloading kql to file")
 		return config, err

@@ -8,9 +8,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// ConfigMapToFile stores the data given from the `ConfigMap` in a file
-// TODO: rename?
-func ConfigMapToFile(data string) (string, error) {
+// StoreKQLSchemaToFile stores the data given from the `ConfigMap` in a file
+func StoreKQLSchemaToFile(data string) (string, error) {
 
 	log.Debug().Msgf("config map data: %v", data)
 
