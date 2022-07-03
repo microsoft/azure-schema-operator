@@ -5,12 +5,10 @@ package kustoutils_test
 import (
 	"fmt"
 	"io/ioutil"
-	"strings"
 
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/spf13/viper"
 )
 
 const tstCfgContent = `
@@ -59,7 +57,6 @@ tokenProvider:
 
 var _ = Describe("DeltaWrapper", func() {
 	Context("when creating configuration", func() {
-		cluster := strings.TrimSpace(viper.GetString("schemaop_test_kusto_cluster_name"))
 		It("Should generate configuration", func() {
 			w := kustoutils.NewDeltaWrapper()
 			uri := "https://testcluster.westeurope.kusto.windows.net"
