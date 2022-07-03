@@ -20,7 +20,7 @@ jobs:
   push-db1-to-prod:
     current:
       adx:
-        clusterUri:  https://mcasrs02euw1jony.westeurope.kusto.windows.net 
+        clusterUri:  https://testcluster.westeurope.kusto.windows.net 
         database: db1
     target:
       scripts:
@@ -31,7 +31,7 @@ jobs:
   push-db2-to-prod:
     current:
       adx:
-        clusterUri:  https://mcasrs02euw1jony.westeurope.kusto.windows.net 
+        clusterUri:  https://testcluster.westeurope.kusto.windows.net 
         database: db2
     target:
       scripts:
@@ -42,7 +42,7 @@ jobs:
   push-db3-to-prod:
     current:
       adx:
-        clusterUri:  https://mcasrs02euw1jony.westeurope.kusto.windows.net 
+        clusterUri:  https://testcluster.westeurope.kusto.windows.net 
         database: db3
     target:
       scripts:
@@ -62,7 +62,7 @@ var _ = Describe("DeltaWrapper", func() {
 		cluster := strings.TrimSpace(viper.GetString("schemaop_test_kusto_cluster_name"))
 		It("Should generate configuration", func() {
 			w := kustoutils.NewDeltaWrapper()
-			uri := "https://" + cluster + ".westeurope.kusto.windows.net"
+			uri := "https://testcluster.westeurope.kusto.windows.net"
 			dbs := []string{"db1", "db2", "db3"}
 			kqlFile := "/path/to/schema.kql"
 
