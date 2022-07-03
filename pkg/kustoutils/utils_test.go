@@ -56,8 +56,8 @@ func (m *mockKusto) Mgmt(ctx context.Context, db string, query kusto.Stmt, optio
 		}
 	}
 	ri := &kusto.RowIterator{}
-	ri.Mock(mr)
-	return ri, nil
+	err = ri.Mock(mr)
+	return ri, err
 }
 
 func (m *mockKusto) HttpClient() *http.Client {

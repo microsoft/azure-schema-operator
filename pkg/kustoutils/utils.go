@@ -11,6 +11,7 @@ import (
 	"net/http"
 
 	"github.com/Azure/azure-kusto-go/kusto"
+	"github.com/Azure/azure-kusto-go/kusto/data/errors"
 	"github.com/Azure/azure-kusto-go/kusto/data/table"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
@@ -111,16 +112,20 @@ func (c *KustoCluster) ListDatabases(expression string) ([]string, error) {
 	}
 	defer iter.Stop()
 
-	// .Do() will call the function for every row in the table.
-	err = iter.Do(
-		func(row *table.Row) error {
-			dbName := row.Values[0].String()
-			if nameFilter.MatchString(dbName) {
-				dbs = append(dbs, dbName)
-				// log.Debug().Msgf("dbname passed filter: %s", dbName)
+	// .DoOnRowOrError() will call the function for every row in the table.
+	err = iter.DoOnRowOrError(
+		func(row *table.Row, inlineError *errors.Error) error {
+			if row != nil {
+				dbName := row.Values[0].String()
+				if nameFilter.MatchString(dbName) {
+					dbs = append(dbs, dbName)
+					// log.Debug().Msgf("dbname passed filter: %s", dbName)
+				}
+			} else {
+				// ignore inline errors - not relevant for this use case
+				log.Error().Msgf("got inline error: %s", inlineError.Error())
 			}
 			// log.Debug().Msgf("dbname: %s", dbName)
-
 			return nil
 		},
 	)
