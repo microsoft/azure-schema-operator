@@ -162,7 +162,7 @@ As well as the [contribution docs](https://github.com/Microsoft/azure-schema-ope
 
 ## Versioning and changelog
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/microsoft/azure-schema-operator/releases).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [releases on this repository](https://github.com/microsoft/azure-schema-operator/releases).
 
 ## Authors
 
