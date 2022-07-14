@@ -24,7 +24,7 @@
 6. Wait for it to start: `kubectl get all -n azureschemaoperator-system`
 7. Run through the [kusto tutorial](../tutorials/kusto.md) and validate the changes.
 8. If installed successfully, commit the files under `charts/azure-schema-operator`.
-9. Send a PR.
+9. Create a pool request following the PR template.
 
 # Fixing an incorrect release
 
