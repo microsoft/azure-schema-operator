@@ -66,7 +66,7 @@ func (c *SQLCluster) Execute(targets schemav1alpha1.ClusterTargets, config schem
 
 	if len(targets.Schemas) == 0 {
 		log.Info().Msg("will run the DacPac on the DB without modifications")
-		err := runDacPac(config.DacPac, c.URI, targets.DBs[0], config.Properties["sqlpackageOptions"])
+		err := RunDacPac(config.DacPac, c.URI, targets.DBs[0], config.Properties["sqlpackageOptions"])
 		if err != nil {
 			return executed, err
 		}
