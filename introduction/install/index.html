@@ -3,11 +3,11 @@
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=description content="Installation Guide #  This document will guide you through the installation and configuration process. The Schema-Operator needs a client account that can access the Azure Data Explorer clusters you wish to manage and as this is an Operator we need an AKS cluster.
-Identity #  Schema operator uses a managed identity (MSI) to access kusto resources. Please create a managed identity and assign administrative permissions for the operator to change the databases.">
+Prerequisits #   An Azure Subscription to provision resources into. An Azure Service Principal for the operator to use. see Authentication docs for further details. A Kubernetes Cluster created and running.">
 <meta name=theme-color content="#FFFFFF">
 <meta name=color-scheme content="light dark"><meta property="og:title" content>
 <meta property="og:description" content="Installation Guide #  This document will guide you through the installation and configuration process. The Schema-Operator needs a client account that can access the Azure Data Explorer clusters you wish to manage and as this is an Operator we need an AKS cluster.
-Identity #  Schema operator uses a managed identity (MSI) to access kusto resources. Please create a managed identity and assign administrative permissions for the operator to change the databases.">
+Prerequisits #   An Azure Subscription to provision resources into. An Azure Service Principal for the operator to use. see Authentication docs for further details. A Kubernetes Cluster created and running.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/introduction/install/"><meta property="article:section" content="introduction">
 <title>Install | Azure Schema Operator</title>
@@ -15,7 +15,7 @@ Identity #  Schema operator uses a managed identity (MSI) to access kusto resour
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/azure-schema-operator/flexsearch.min.js></script>
-<script defer src=/azure-schema-operator/en.search.min.96bbba887b5aaad265a07f8a14a5dfc5dcbcf15eadb90c53c5de8021092af209.js integrity="sha256-lru6iHtaqtJloH+KFKXfxdy88V6tuQxTxd6AIQkq8gk=" crossorigin=anonymous></script>
+<script defer src=/azure-schema-operator/en.search.min.82e05aa9e4f6daddadd92f805554a90b51685caf4ce980b9486ebf51e0161cfc.js integrity="sha256-guBaqeT22t2t2S+AVVSpC1FoXK9M6YC5SG6/UeAWHPw=" crossorigin=anonymous></script>
 </head>
 <body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
@@ -107,9 +107,13 @@ Identity #  Schema operator uses a managed identity (MSI) to access kusto resour
 <aside class="hidden clearfix">
 <nav id=TableOfContents>
 <ul>
+<li><a href=#prerequisits>Prerequisits</a>
+<ul>
 <li><a href=#identity>Identity</a></li>
+</ul>
+</li>
+<li><a href=#installation>Installation</a></li>
 <li><a href=#deployment-in-dev-environment>Deployment in Dev environment</a></li>
-<li><a href=#deployment>Deployment</a></li>
 </ul>
 </nav>
 </aside>
@@ -121,25 +125,24 @@ Installation Guide
 <p>This document will guide you through the installation and configuration process.
 The Schema-Operator needs a client account that can access the Azure Data Explorer clusters you wish to manage
 and as this is an Operator we need an AKS cluster.</p>
-<h2 id=identity>
+<h2 id=prerequisits>
+Prerequisits
+<a class=anchor href=#prerequisits>#</a>
+</h2>
+<ol>
+<li>An Azure Subscription to provision resources into.</li>
+<li>An Azure Service Principal for the operator to use. see <a href=./authentication.md>Authentication docs</a> for further details.</li>
+<li>A Kubernetes Cluster created and running.</li>
+</ol>
+<h3 id=identity>
 Identity
 <a class=anchor href=#identity>#</a>
-</h2>
-<p>Schema operator uses a managed identity (MSI) to access kusto resources.
-Please create a managed identity and assign administrative permissions for the operator to change the databases.</p>
-<h2 id=deployment-in-dev-environment>
-Deployment in Dev environment
-<a class=anchor href=#deployment-in-dev-environment>#</a>
-</h2>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>export ACR<span style=color:#f92672>=</span>&lt;your acr&gt;    
-export VERSION<span style=color:#f92672>=</span>0.0.4  
-export OPERATOR_IMG<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>ACR<span style=color:#e6db74>}</span><span style=color:#e6db74>.azurecr.io/schema-operator:v</span><span style=color:#e6db74>${</span>VERSION<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>  
-az acr login -n <span style=color:#e6db74>${</span>ACR<span style=color:#e6db74>}</span>
-make docker-build-push IMG<span style=color:#f92672>=</span>$OPERATOR_IMG  
-make deploy IMG<span style=color:#f92672>=</span>$OPERATOR_IMG  
-</code></pre></div><h2 id=deployment>
-Deployment
-<a class=anchor href=#deployment>#</a>
+</h3>
+<p>Schema operator uses a managed identity (MSI) to access the managed clusters.
+Please create a managed identity and assign administrative permissions for the operator to change the databases and schemas.</p>
+<h2 id=installation>
+Installation
+<a class=anchor href=#installation>#</a>
 </h2>
 <p>Schema-Operator is deployed using a helm chart.
 In the provided values we need to pass the MSI name to bind.</p>
@@ -148,7 +151,19 @@ chart<span style=color:#f92672>=</span>https://github.com/microsoft/azure-schema
 chart<span style=color:#f92672>=</span>charts/azure-schema-operator-v<span style=color:#e6db74>${</span>VERSION<span style=color:#e6db74>}</span>.tgz
 helm install schema-operator-test $chart --namespace<span style=color:#f92672>=</span>schema-operator-test --create-namespace
 </code></pre></div><p>more details on chart parameters can be found at the <a href=./helm-docs.md>chart docs</a></p>
-</article>
+<h2 id=deployment-in-dev-environment>
+Deployment in Dev environment
+<a class=anchor href=#deployment-in-dev-environment>#</a>
+</h2>
+<p>When developing it&rsquo;s possible to deploy from the repo using <code>make deploy</code><br>
+It will use the aks configured in the local system to deploy the crds and deployment from the <code>config/</code> folder.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>export ACR<span style=color:#f92672>=</span>&lt;your acr&gt;    
+export VERSION<span style=color:#f92672>=</span>0.0.4  
+export OPERATOR_IMG<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>ACR<span style=color:#e6db74>}</span><span style=color:#e6db74>.azurecr.io/schema-operator:v</span><span style=color:#e6db74>${</span>VERSION<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>  
+az acr login -n <span style=color:#e6db74>${</span>ACR<span style=color:#e6db74>}</span>
+make docker-build-push IMG<span style=color:#f92672>=</span>$OPERATOR_IMG  
+make deploy IMG<span style=color:#f92672>=</span>$OPERATOR_IMG  
+</code></pre></div></article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
 </div>
@@ -162,9 +177,13 @@ helm install schema-operator-test $chart --namespace<span style=color:#f92672>=<
 <div class=book-toc-content>
 <nav id=TableOfContents>
 <ul>
+<li><a href=#prerequisits>Prerequisits</a>
+<ul>
 <li><a href=#identity>Identity</a></li>
+</ul>
+</li>
+<li><a href=#installation>Installation</a></li>
 <li><a href=#deployment-in-dev-environment>Deployment in Dev environment</a></li>
-<li><a href=#deployment>Deployment</a></li>
 </ul>
 </nav>
 </div>

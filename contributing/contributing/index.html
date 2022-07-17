@@ -19,7 +19,7 @@ If you want to use this:
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/azure-schema-operator/flexsearch.min.js></script>
-<script defer src=/azure-schema-operator/en.search.min.96bbba887b5aaad265a07f8a14a5dfc5dcbcf15eadb90c53c5de8021092af209.js integrity="sha256-lru6iHtaqtJloH+KFKXfxdy88V6tuQxTxd6AIQkq8gk=" crossorigin=anonymous></script>
+<script defer src=/azure-schema-operator/en.search.min.82e05aa9e4f6daddadd92f805554a90b51685caf4ce980b9486ebf51e0161cfc.js integrity="sha256-guBaqeT22t2t2S+AVVSpC1FoXK9M6YC5SG6/UeAWHPw=" crossorigin=anonymous></script>
 </head>
 <body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
@@ -121,7 +121,6 @@ If you want to use this:
 <li><a href=#directory-structure-of-the-operator>Directory structure of the operator</a></li>
 <li><a href=#running-integration-tests>Running integration tests</a>
 <ul>
-<li><a href=#recordreplay>Record/replay</a></li>
 <li><a href=#running-live-tests>Running live tests</a></li>
 <li><a href=#running-a-single-test>Running a single test</a></li>
 </ul>
@@ -197,33 +196,13 @@ Running integration tests
 <a class=anchor href=#running-integration-tests>#</a>
 </h2>
 <p>Basic use: run <code>task controller:test-integration-envtest</code>.</p>
-<h3 id=recordreplay>
-Record/replay
-<a class=anchor href=#recordreplay>#</a>
-</h3>
-<p>The task <code>controller:test-integration-envtest</code> runs the tests in a record/replay mode by default, so that it does not touch any live Azure resources. (This uses the <a href=https://github.com/dnaeon/go-vcr>go-vcr</a> library.) If you change the controller or other code in such a way that the required requests/responses from ARM change, you will need to update the recordings.</p>
-<p>To do this, delete the recordings for the failing tests (under <code>{test-dir}/recordings/{test-name}.yml</code>), and re-run <code>controller:test-integration-envtest</code>. If the test passes, a new recording will be saved, which you can commit to include with your change. All authentication and subscription information is removed from the recording.</p>
-<p>To run the test and produce a new recording you will also need to have set the required authentication environment variables for an Azure Service Principal: <code>AZURE_SUBSCRIPTION_ID</code>, <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code>, and <code>AZURE_CLIENT_SECRET</code>. This Service Principal will need access to the subscription to create and delete resources.</p>
-<p>If you need to create a new Azure Service Principal, run the following commands:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-console data-lang=console>$ az login
-… follow the instructions …
-$ az account set --subscription <span style=color:#f92672>{</span>the subscription ID you would like to use<span style=color:#f92672>}</span>
-Creating a role assignment under the scope of &#34;/subscriptions/{subscription ID you chose}&#34;
-…
-$ az ad sp create-for-rbac --role contributor --name <span style=color:#f92672>{</span>the name you would like to use<span style=color:#f92672>}</span>
-{
-  &#34;appId&#34;: &#34;…&#34;,
-  &#34;displayName&#34;: &#34;{name you chose}&#34;,
-  &#34;name&#34;: &#34;{name you chose}&#34;,
-  &#34;password&#34;: &#34;…&#34;,
-  &#34;tenant&#34;: &#34;…&#34;
-}
-</code></pre></div><p>The output contains <code>appId</code> (<code>AZURE_CLIENT_ID</code>), <code>password</code> (<code>AZURE_CLIENT_SECRET</code>), and <code>tenant</code> (<code>AZURE_TENANT_ID</code>). Store these somewhere safe as the password cannot be viewed again, only reset. The Service Principal will be created as a “contributor” to your subscription which means it can create and delete resources, so <strong>ensure you keep the secrets secure</strong>.</p>
+<p>The task <code>controller:test-integration-envtest</code> runs the tests on mocks by default, so that it does not touch any live Azure database.</p>
 <h3 id=running-live-tests>
 Running live tests
 <a class=anchor href=#running-live-tests>#</a>
 </h3>
-<p>If you want to skip all recordings and run all tests directly against live Azure resources, you can use the <code>controller:test-integration-envtest-live</code> task. This will also require you to set the authentication environment variables, as detailed above.</p>
+<p>If you want to run tests against live Azure databases, you can use the <code>controller:test-integration-envtest-live</code> task. This will run tests with <code>LIVE_TEST=true</code> environemnt variable which add tests versos live Azure databases.
+This will also require you to set the authentication environment variables, as detailed in the <a href=../../introduction/authentication.md>authentication document</a>.</p>
 <h3 id=running-a-single-test>
 Running a single test
 <a class=anchor href=#running-a-single-test>#</a>
@@ -247,7 +226,7 @@ Running the operator locally
 Submitting a pull request
 <a class=anchor href=#submitting-a-pull-request>#</a>
 </h2>
-<p>Pull requests opened from forks of the azure-service-operator repository will initially have a <code>skipped</code> <code>Validate Pull Request / integration-tests</code> check which
+<p>Pull requests opened from forks of the azure-schema-operator repository will initially have a <code>skipped</code> <code>Validate Pull Request / integration-tests</code> check which
 will prevent merging even if all other checks pass. Once a maintainer has looked at your PR and determined it is ready they will comment <code>/ok-to-test sha=&lt;sha></code>
 to kick off an integration test pass. If this check passes along with the other checks the PR can be merged.</p>
 <h2 id=common-problems-and-their-solutions>
@@ -278,7 +257,6 @@ Common problems and their solutions
 <li><a href=#directory-structure-of-the-operator>Directory structure of the operator</a></li>
 <li><a href=#running-integration-tests>Running integration tests</a>
 <ul>
-<li><a href=#recordreplay>Record/replay</a></li>
 <li><a href=#running-live-tests>Running live tests</a></li>
 <li><a href=#running-a-single-test>Running a single test</a></li>
 </ul>
