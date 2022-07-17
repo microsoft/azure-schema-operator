@@ -16,8 +16,7 @@
 4. Install helm chart:
 
     ```
-   helm install \
-   schemaop -n azureschemaoperator-system --create-namespace ./charts/azure-schema-operator/.
+   helm install schemaop -n azureschemaoperator-system --create-namespace ./charts/azure-schema-operator/.
     ```
 
 5. Wait for the chart installation.
