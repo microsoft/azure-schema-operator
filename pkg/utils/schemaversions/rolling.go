@@ -37,6 +37,7 @@ func RollbackToVersion(c client.Client, schema *schemav1alpha1.SchemaDeployment,
 		return err
 	}
 	sourceMap.Data = versionedMap.Data
+	sourceMap.BinaryData = versionedMap.BinaryData
 	err = c.Update(context.Background(), sourceMap)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to update source Map to revision")
