@@ -139,22 +139,6 @@ To develop the project you need to following:
 - sqlpackge
 - delta-kusto
 
-### Installing
-
-A step by step series of examples that tell you how to get a development environment running
-
-1. Describe what needs to be done first
-
-    ``` batch
-    Give an example of performing step 1
-    ```
-
-2. And then repeat for each step
-
-    ``` sh
-    Another example, this time for step 2
-    ```
-
 ## Running the tests
 
 The project uses [Ginkgo](https://github.com/onsi/ginkgo) with [envtest](https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/envtest)
@@ -163,12 +147,9 @@ To run the tests locally simple run:
 ```bash
 make test
 ```
+
 | :exclamation:  Mac M1 users (arm64) should run under rosetta or in the dev container, envtest does not support darwin/arm64. |
 |------------------------------------------------------------------------------------------------------------------------------|
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
@@ -177,12 +158,11 @@ The project is build using the [Operator SDK](https://github.com/operator-framew
 ## Contributing
 
 Please read our [CONTRIBUTING.md](CONTRIBUTING.md) which outlines all of our policies, procedures, and requirements for contributing to this project.
+As well as the [contribution docs](https://github.com/Microsoft/azure-schema-operator/contributing) on development and testing.
 
 ## Versioning and changelog
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](link-to-tags-or-other-release-location).
-
-It is a good practice to keep `CHANGELOG.md` file in repository that can be updated as part of a pull request.
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [releases on this repository](https://github.com/microsoft/azure-schema-operator/releases).
 
 ## Authors
 
@@ -195,6 +175,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
+- [Delta-Kusto](https://github.com/microsoft/delta-kusto) for the cooperation when we developed this operator.
+- [Azure-service-operator](https://github.com/Azure/azure-service-operator) for a source on how to write a good operator.  
+- [operator-sdk](https://sdk.operatorframework.io) for fast development process.  

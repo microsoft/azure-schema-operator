@@ -56,37 +56,12 @@ If you are using Linux, instead of using VS Code you can run the `dev.sh` script
 
 Basic use: run `task controller:test-integration-envtest`.
 
-### Record/replay
-
-The task `controller:test-integration-envtest` runs the tests in a record/replay mode by default, so that it does not touch any live Azure resources. (This uses the [go-vcr](https://github.com/dnaeon/go-vcr) library.) If you change the controller or other code in such a way that the required requests/responses from ARM change, you will need to update the recordings.
-
-To do this, delete the recordings for the failing tests (under `{test-dir}/recordings/{test-name}.yml`), and re-run `controller:test-integration-envtest`. If the test passes, a new recording will be saved, which you can commit to include with your change. All authentication and subscription information is removed from the recording.
-
-To run the test and produce a new recording you will also need to have set the required authentication environment variables for an Azure Service Principal: `AZURE_SUBSCRIPTION_ID`, `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, and `AZURE_CLIENT_SECRET`. This Service Principal will need access to the subscription to create and delete resources.
-
-If you need to create a new Azure Service Principal, run the following commands:
-
-```console
-$ az login
-… follow the instructions …
-$ az account set --subscription {the subscription ID you would like to use}
-Creating a role assignment under the scope of "/subscriptions/{subscription ID you chose}"
-…
-$ az ad sp create-for-rbac --role contributor --name {the name you would like to use}
-{
-  "appId": "…",
-  "displayName": "{name you chose}",
-  "name": "{name you chose}",
-  "password": "…",
-  "tenant": "…"
-}
-```
-
-The output contains `appId` (`AZURE_CLIENT_ID`), `password` (`AZURE_CLIENT_SECRET`), and `tenant` (`AZURE_TENANT_ID`). Store these somewhere safe as the password cannot be viewed again, only reset. The Service Principal will be created as a “contributor” to your subscription which means it can create and delete resources, so **ensure you keep the secrets secure**.
+The task `controller:test-integration-envtest` runs the tests on mocks by default, so that it does not touch any live Azure database.
 
 ### Running live tests
 
-If you want to skip all recordings and run all tests directly against live Azure resources, you can use the `controller:test-integration-envtest-live` task. This will also require you to set the authentication environment variables, as detailed above.
+If you want to run tests against live Azure databases, you can use the `controller:test-integration-envtest-live` task. This will run tests with `LIVE_TEST=true` environemnt variable which add tests versos live Azure databases.
+This will also require you to set the authentication environment variables, as detailed in the [authentication document](../../introduction/authentication.md).
 
 ### Running a single test
 
@@ -113,7 +88,7 @@ When you're done with the local cluster, tear it down with `task controller:kind
 
 ## Submitting a pull request
 
-Pull requests opened from forks of the azure-service-operator repository will initially have a `skipped` `Validate Pull Request / integration-tests` check which
+Pull requests opened from forks of the azure-schema-operator repository will initially have a `skipped` `Validate Pull Request / integration-tests` check which
 will prevent merging even if all other checks pass. Once a maintainer has looked at your PR and determined it is ready they will comment `/ok-to-test sha=<sha>`
 to kick off an integration test pass. If this check passes along with the other checks the PR can be merged.
 

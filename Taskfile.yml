@@ -170,6 +170,19 @@ tasks:
         sh: setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
         # sh: $(pwd)/bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
 
+  test-integration-envtest-live:
+    desc: Run integration tests with envtest using record/replay.
+    deps: [controller:test-deps]
+    cmds:
+      - go test -timeout 15m -run '{{default ".*" .TEST_FILTER}}' {{.VERBOSE}} ./...
+    vars:
+      VERBOSE:
+        sh: if [ $TEST_FILTER ];  then echo "-v"; fi
+    env:
+      LIVE_TEST: true
+      KUBEBUILDER_ASSETS:
+        sh: setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
+
   controller:test-integration-envtest-cover:
     desc: Run integration tests with envtest using record/replay and output coverage.
     deps: [controller:test-deps]
