@@ -87,7 +87,7 @@ func NewCmdSchemaHistory(streams genericclioptions.IOStreams) *cobra.Command {
 	}
 
 	cmd.Flags().Int64Var(&o.Revision, "revision", o.Revision, "See the details, including podSchemaDeployment of the revision specified")
-	cmd.Flags().StringVar(&o.Namespace, "namespace", o.Namespace, "namespace of schema")
+	cmd.Flags().StringVar(&o.Namespace, "namespace", "default", "namespace of schema")
 	cmd.Flags().StringVar(&o.Name, "name", o.Name, "name of schema template")
 	o.PrintFlags.AddFlags(cmd)
 
@@ -149,11 +149,10 @@ func (o *SchemaHistoryOptions) Run() error {
 		table.Append(data)
 		table.Render()
 	} else {
-		table := o.newTable([]string{"Namespace", "Name", "Revision"}, o.Out)
+		table := o.newTable([]string{"Namespace", "Name", "Revision", "Succeeded"}, o.Out)
 		vdList, _ := o.getVersionedDeployments(template)
 		for _, item := range vdList {
-			data := []string{item.Namespace, item.Name}
-			data = append(data, strconv.Itoa(int(item.Spec.Revision)))
+			data := []string{item.Namespace, item.Name, strconv.Itoa(int(item.Spec.Revision)), strconv.Itoa(int(item.Status.Succeeded))}
 			// fmt.Printf("%d) got resource: %s, namespace: %s, revision: %d \n", i, item.Name, item.Namespace, item.Spec.Revision)
 			table.Append(data)
 		}

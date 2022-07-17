@@ -7,7 +7,11 @@ import (
 	"regexp"
 	"strings"
 
+	"io"
+	"net/http"
+
 	"github.com/Azure/azure-kusto-go/kusto"
+	"github.com/Azure/azure-kusto-go/kusto/data/errors"
 	"github.com/Azure/azure-kusto-go/kusto/data/table"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
@@ -15,12 +19,25 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
+// Note: This is a temporary solution to the issue of the Kusto client not aligned with v1 Azure SDK.
+// QueryClient interface is taken from https://github.com/Azure/azure-kusto-go/blob/master/kusto/ingest/query_client.go
+// Replace with import once versions align.
+type QueryClient interface {
+	io.Closer
+	Auth() kusto.Authorization
+	Endpoint() string
+	Query(ctx context.Context, db string, query kusto.Stmt, options ...kusto.QueryOption) (*kusto.RowIterator, error)
+	Mgmt(ctx context.Context, db string, query kusto.Stmt, options ...kusto.MgmtOption) (*kusto.RowIterator, error)
+	HttpClient() *http.Client
+}
+
 // KustoCluster represents a kusto cluster
 type KustoCluster struct {
 	URI       string
 	Databases []string
-	Client    *kusto.Client
-	wrapper   *Wrapper
+	Client    QueryClient
+	// Client    *kusto.Client
+	wrapper *Wrapper
 }
 
 // NewKustoCluster returns a new KustoCluster object with a client initialized
@@ -88,23 +105,27 @@ func (c *KustoCluster) ListDatabases(expression string) ([]string, error) {
 
 	dbs := make([]string, 0)
 
-	iter, err := c.Client.Mgmt(ctx, "", kusto.NewStmt(".show databases"))
+	iter, err := c.Client.Mgmt(ctx, "", kusto.NewStmt(".show databases | project DatabaseName"))
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to query mgmt api")
 		return nil, err
 	}
 	defer iter.Stop()
 
-	// .Do() will call the function for every row in the table.
-	err = iter.Do(
-		func(row *table.Row) error {
-			dbName := row.Values[0].String()
-			if nameFilter.MatchString(dbName) {
-				dbs = append(dbs, dbName)
-				// log.Debug().Msgf("dbname passed filter: %s", dbName)
+	// .DoOnRowOrError() will call the function for every row in the table.
+	err = iter.DoOnRowOrError(
+		func(row *table.Row, inlineError *errors.Error) error {
+			if row != nil {
+				dbName := row.Values[0].String()
+				if nameFilter.MatchString(dbName) {
+					dbs = append(dbs, dbName)
+					// log.Debug().Msgf("dbname passed filter: %s", dbName)
+				}
+			} else {
+				// ignore inline errors - not relevant for this use case
+				log.Error().Msgf("got inline error: %s", inlineError.Error())
 			}
 			// log.Debug().Msgf("dbname: %s", dbName)
-
 			return nil
 		},
 	)
@@ -126,7 +147,7 @@ func (c *KustoCluster) Execute(targets schemav1alpha1.ClusterTargets, config sch
 // CreateExecConfiguration creates execution configuration for the given targets and `ConfigMap` configuration.
 func (c *KustoCluster) CreateExecConfiguration(targets schemav1alpha1.ClusterTargets, cfgMap *v1.ConfigMap, failIfDataLoss bool) (schemav1alpha1.ExecutionConfiguration, error) {
 	config := schemav1alpha1.ExecutionConfiguration{}
-	kqlFile, err := ConfigMapToFile(cfgMap.Data["kql"])
+	kqlFile, err := StoreKQLSchemaToFile(cfgMap.Data["kql"])
 	if err != nil {
 		log.Error().Err(err).Msg("failed downloading kql to file")
 		return config, err

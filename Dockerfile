@@ -30,7 +30,7 @@ RUN curl -L >sqlpackage.zip https://aka.ms/sqlpackage-linux \
 
 
 # Build the manager binary
-FROM golang:1.16 as builder
+FROM golang:1.18 as builder
 
 ARG delta_kusto_version=0.9.0.105
 WORKDIR /workspace

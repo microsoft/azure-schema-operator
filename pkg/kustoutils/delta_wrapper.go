@@ -110,6 +110,7 @@ func (w *Wrapper) CreateExecConfiguration(uri string, dbs []string, kqlFile stri
 	err = t.Execute(f, exConfig)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to execute template")
+		return f.Name(), err
 	}
 
 	if useMSI {

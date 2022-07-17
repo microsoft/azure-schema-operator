@@ -3,21 +3,73 @@ package kustoutils_test
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 import (
+	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/Azure/azure-kusto-go/kusto"
+	"github.com/Azure/azure-kusto-go/kusto/data/table"
+	"github.com/Azure/azure-kusto-go/kusto/data/types"
+	"github.com/Azure/azure-kusto-go/kusto/data/value"
+	"github.com/Azure/go-autorest/autorest"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
+	"github.com/microsoft/azure-schema-operator/pkg/utils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
+type mockKusto struct {
+}
+
+func (m *mockKusto) Close() error {
+	return nil
+}
+
+func (m *mockKusto) Auth() kusto.Authorization {
+	return kusto.Authorization{Authorizer: autorest.NewBasicAuthorizer("", "")}
+}
+
+func (m *mockKusto) Endpoint() string {
+	return "https://mock.eastus.kusto.windows.net"
+}
+
+func (m *mockKusto) Query(ctx context.Context, db string, query kusto.Stmt, options ...kusto.QueryOption) (*kusto.RowIterator, error) {
+	panic("not implemented") // TODO: Implement
+}
+
+func (m *mockKusto) Mgmt(ctx context.Context, db string, query kusto.Stmt, options ...kusto.MgmtOption) (*kusto.RowIterator, error) {
+	columns := table.Columns{
+		{Name: "DatabaseName", Type: types.String},
+	}
+	rows := []value.Values{
+		{value.String{Valid: true, Value: "tenant_1"}},
+		{value.String{Valid: true, Value: "tenant_2"}},
+	}
+	mr, err := kusto.NewMockRows(columns)
+	if err != nil {
+		panic(err) // This panic and all others are setup errors, not test errors
+	}
+	for _, row := range rows {
+		if err := mr.Row(row); err != nil {
+			panic(err)
+		}
+	}
+	ri := &kusto.RowIterator{}
+	err = ri.Mock(mr)
+	return ri, err
+}
+
+func (m *mockKusto) HttpClient() *http.Client {
+	return &http.Client{}
+}
+
 var _ = Describe("Utils", func() {
 	// add utils tests
-	Context("fake until we make it", func() {
+	Context("Filter results from mock client", func() {
 		var mockClient *kustoutils.KustoCluster
-		It("should mock client", func() {
-			client := kusto.NewMockClient()
+		It("should return all dbs", func() {
+			client := &mockKusto{}
 			mockClient = &kustoutils.KustoCluster{
 				Client: client,
 			}
@@ -25,9 +77,29 @@ var _ = Describe("Utils", func() {
 			dbs, err := mockClient.ListDatabases(expression)
 			Expect(err).NotTo(HaveOccurred())
 			fmt.Fprintf(GinkgoWriter, "List of DBs in Mock Cluster: %+v \n", dbs)
+			Expect(len(dbs)).To(Equal(2))
+		})
+		It("should return only filtered results", func() {
+			client := &mockKusto{}
+			mockClient = &kustoutils.KustoCluster{
+				Client: client,
+			}
+			expression := "tenant_1"
+			dbs, err := mockClient.ListDatabases(expression)
+			Expect(err).NotTo(HaveOccurred())
+			fmt.Fprintf(GinkgoWriter, "List of DBs in Mock Cluster: %+v \n", dbs)
+			Expect(len(dbs)).To(Equal(1))
+		})
+		It("should filter everything", func() {
+			client := &mockKusto{}
+			mockClient = &kustoutils.KustoCluster{
+				Client: client,
+			}
+			expression := "db_1"
+			dbs, err := mockClient.ListDatabases(expression)
+			Expect(err).NotTo(HaveOccurred())
+			fmt.Fprintf(GinkgoWriter, "List of DBs in Mock Cluster: %+v \n", dbs)
 			Expect(len(dbs)).To(Equal(0))
-			//TODO - mock some dbs into this so we can actually test...
-
 		})
 	})
 	if liveTest {
@@ -44,4 +116,15 @@ var _ = Describe("Utils", func() {
 			})
 		})
 	}
+	Context("when testing fake schema data", func() {
+		It("should store the schema in a file", func() {
+			schema := "fake schema"
+			fileName, err := kustoutils.StoreKQLSchemaToFile(schema)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(fileName).NotTo(BeNil())
+			fmt.Fprintf(GinkgoWriter, "generated config file: %s\n", fileName)
+			err = utils.CleanupFile(fileName)
+			Expect(err).NotTo(HaveOccurred())
+		})
+	})
 })

@@ -24,6 +24,8 @@ const (
 	SQLPackagePass = "schemaop_sqlpackage_pass"
 	// ParallelWorkers Number of parallel worker groups
 	ParallelWorkers = "schemaop_parallel_workers"
+	// AllowLocalDacPac adds support for local dacpac files
+	AllowLocalDacPac = "schemaop_allow_local_dacpac"
 )
 
 func init() {

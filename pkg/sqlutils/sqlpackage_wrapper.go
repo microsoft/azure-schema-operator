@@ -31,6 +31,7 @@ func init() {
 	viper.AutomaticEnv()
 	viper.SetDefault(config.SQLPackageCMDKey, "/sqlpackage/sqlpackage")
 	viper.SetDefault(config.ParallelWorkers, 10)
+	viper.SetDefault(config.AllowLocalDacPac, false)
 	useMSI = viper.GetBool(config.AzureUseMSIKey)
 	sqlpackgeUser = strings.TrimSpace(viper.GetString(config.SQLPackageUser))
 	sqlpackgePass = strings.TrimSpace(viper.GetString(config.SQLPackagePass))
@@ -97,33 +98,6 @@ func updateDacPac(dstDacPac string, srcDacPac string, sourceSchema, tenantSchema
 			}
 			fileInArchive.Close()
 		}
-		// if f.Name == "model.xml" {
-		// 	dstChecksum, srcChecksum = replaceContent(zipWriter, f, sourceSchema, tenantSchema)
-		// } else if f.Name == "Origin.xml" {
-		// 	log.Info().Msg("handeling origin file - getting content")
-		// 	fileInArchive, err := f.Open()
-		// 	if err != nil {
-		// 		panic(err)
-		// 	}
-		// 	originContent, err = ioutil.ReadAll(fileInArchive)
-		// 	if err != nil {
-		// 		panic(err)
-		// 	}
-		// } else {
-		// 	log.Info().Msg("other files - just copy")
-		// 	dstFile, err := zipWriter.Create(f.Name)
-		// 	if err != nil {
-		// 		panic(err)
-		// 	}
-		// 	fileInArchive, err := f.Open()
-		// 	if err != nil {
-		// 		panic(err)
-		// 	}
-		// 	if _, err := io.Copy(dstFile, fileInArchive); err != nil {
-		// 		panic(err)
-		// 	}
-		// 	fileInArchive.Close()
-		// }
 	}
 
 	log.Info().Msg("updating origin file with new checksum")
@@ -195,8 +169,8 @@ func updateOriginXML(zipWriter *zip.Writer, originContent []byte, srcChecksum, d
 	return nil
 }
 
-// runDacPac runs DacPac on a target DB by using sqlpackage.
-func runDacPac(dacPacFile string, targetServer string, targetDB string, sqlpackageOptions string) error {
+// RunDacPac runs DacPac on a target DB by using sqlpackage.
+func RunDacPac(dacPacFile string, targetServer string, targetDB string, sqlpackageOptions string) error {
 	log.Debug().Str("targetServer", targetServer).Str("targetDB", targetDB).Msgf("about to run sqlpackage on: %s", dacPacFile)
 	args := []string{"/SourceFile:" + dacPacFile, "/Action:Publish"}
 

@@ -5,12 +5,16 @@ package sqlutils
 import (
 	"context"
 	"encoding/json"
+	"io"
+	"net/http"
 	"os"
 	"sync"
 
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	"github.com/microsoft/azure-schema-operator/pkg/config"
 	"github.com/microsoft/azure-schema-operator/pkg/utils"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -32,7 +36,9 @@ type dacpacResult struct {
 	err      error
 }
 
-func targetDacpacExecution(clusterUri, dbName, options, dacpac, templateName, targetSchema string) (bool, error) {
+// TargetDacpacExecution runs dacpac on the target cluster for a specific schema
+// the template schema in the DacPac will be replaced by the target schema.
+func TargetDacpacExecution(clusterUri, dbName, options, dacpac, templateName, targetSchema string) (bool, error) {
 	log.Info().Msgf("will run the DacPac on %s schema", targetSchema)
 	dstDacPac := "/tmp/" + targetSchema + ".dacpac"
 
@@ -42,7 +48,7 @@ func targetDacpacExecution(clusterUri, dbName, options, dacpac, templateName, ta
 		return false, err
 	}
 	log.Info().Msgf("updated dacpac with target schema - created: %s", dstDacPac)
-	err = runDacPac(dstDacPac, clusterUri, dbName, options)
+	err = RunDacPac(dstDacPac, clusterUri, dbName, options)
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to run dacpac on %s schema - returning", targetSchema)
 		return false, err
@@ -52,7 +58,7 @@ func targetDacpacExecution(clusterUri, dbName, options, dacpac, templateName, ta
 }
 func worker(wg *sync.WaitGroup, jobs chan dacpacJob, results chan dacpacResult) {
 	for job := range jobs {
-		executed, err := targetDacpacExecution(job.clusterUri, job.dbName, job.options, job.dacpac, job.templateName, job.targetSchema)
+		executed, err := TargetDacpacExecution(job.clusterUri, job.dbName, job.options, job.dacpac, job.templateName, job.targetSchema)
 		output := dacpacResult{job, executed, err}
 		results <- output
 	}
@@ -165,4 +171,37 @@ func downloadNamedDacfromCfg(cfgMap *v1.ConfigMap, dacpacName string) (string, e
 	log.Debug().Msgf("wrote %d bytes to %s", n, f.Name())
 	return f.Name(), err
 
+}
+
+// DownloadDacpac downloads the dacpac from a URL and returns the path to the dacpac
+func DownloadDacPacFromURL(url string) (string, error) {
+	var f *os.File
+	var err error
+	jobPath := "/tmp/"
+	f, err = os.CreateTemp(jobPath, "downloaded-*.dacpac")
+	if err != nil {
+		log.Error().Err(err).Msg("failed to open file")
+		return "", err
+	}
+	defer f.Close()
+
+	t := &http.Transport{}
+	if viper.GetBool(config.AllowLocalDacPac) {
+		// To support file protocal we need to register a custom transport (urls like "file:///etc/passwd")
+		t.RegisterProtocol("file", http.NewFileTransport(http.Dir("/")))
+	}
+	httpClient := &http.Client{Transport: t}
+	resp, err := httpClient.Get(url)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to download dacpac from url")
+		return "", err
+	}
+	defer resp.Body.Close()
+	n, err := io.Copy(f, resp.Body)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to write into dacpac file")
+		return "", err
+	}
+	log.Debug().Msgf("wrote %d bytes to %s", n, f.Name())
+	return f.Name(), err
 }
