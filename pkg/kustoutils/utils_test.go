@@ -101,6 +101,31 @@ var _ = Describe("Utils", func() {
 			fmt.Fprintf(GinkgoWriter, "List of DBs in Mock Cluster: %+v \n", dbs)
 			Expect(len(dbs)).To(Equal(0))
 		})
+		It("should AquireTargets filtered results", func() {
+			client := &mockKusto{}
+			mockClient = &kustoutils.KustoCluster{
+				Client: client,
+			}
+			filter := schemav1alpha1.TargetFilter{
+				DB: "tenant_1",
+			}
+			targets, err := mockClient.AquireTargets(filter)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(len(targets.DBs)).To(Equal(1))
+		})
+		It("should AquireTargets all dbs without filter", func() {
+			client := &mockKusto{}
+			mockClient = &kustoutils.KustoCluster{
+				Client: client,
+			}
+			filter := schemav1alpha1.TargetFilter{}
+			targets, err := mockClient.AquireTargets(filter)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(len(targets.DBs)).To(Equal(2))
+		})
+
 	})
 	if liveTest {
 		Context("when testing kusto with a live server", func() {
@@ -125,6 +150,13 @@ var _ = Describe("Utils", func() {
 			fmt.Fprintf(GinkgoWriter, "generated config file: %s\n", fileName)
 			err = utils.CleanupFile(fileName)
 			Expect(err).NotTo(HaveOccurred())
+		})
+	})
+	Context("simple test for utile", func() {
+		It("should get the kusto cluster name from url", func() {
+			uri := "https://testcluster.westeurope.kusto.windows.net"
+			kustoCluster := kustoutils.ClusterNameFromURI(uri)
+			Expect(kustoCluster).To(Equal("testcluster"))
 		})
 	})
 })

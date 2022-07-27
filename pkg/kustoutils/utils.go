@@ -4,6 +4,7 @@ package kustoutils
 // Licensed under the MIT License.
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -147,7 +148,11 @@ func (c *KustoCluster) Execute(targets schemav1alpha1.ClusterTargets, config sch
 // CreateExecConfiguration creates execution configuration for the given targets and `ConfigMap` configuration.
 func (c *KustoCluster) CreateExecConfiguration(targets schemav1alpha1.ClusterTargets, cfgMap *v1.ConfigMap, failIfDataLoss bool) (schemav1alpha1.ExecutionConfiguration, error) {
 	config := schemav1alpha1.ExecutionConfiguration{}
-	kqlFile, err := StoreKQLSchemaToFile(cfgMap.Data["kql"])
+	kql, ok := cfgMap.Data["kql"]
+	if !ok {
+		return config, fmt.Errorf("no kql found in configmap")
+	}
+	kqlFile, err := StoreKQLSchemaToFile(kql)
 	if err != nil {
 		log.Error().Err(err).Msg("failed downloading kql to file")
 		return config, err
@@ -162,20 +167,20 @@ func (c *KustoCluster) CreateExecConfiguration(targets schemav1alpha1.ClusterTar
 	return config, nil
 }
 
-// Difference returns the elements in `a` that aren't in `b`.
-func Difference(a, b []string) []string {
-	mb := make(map[string]struct{}, len(b))
-	for _, x := range b {
-		mb[x] = struct{}{}
-	}
-	var diff []string
-	for _, x := range a {
-		if _, found := mb[x]; !found {
-			diff = append(diff, x)
-		}
-	}
-	return diff
-}
+// // Difference returns the elements in `a` that aren't in `b`.
+// func Difference(a, b []string) []string {
+// 	mb := make(map[string]struct{}, len(b))
+// 	for _, x := range b {
+// 		mb[x] = struct{}{}
+// 	}
+// 	var diff []string
+// 	for _, x := range a {
+// 		if _, found := mb[x]; !found {
+// 			diff = append(diff, x)
+// 		}
+// 	}
+// 	return diff
+// }
 
 // ClusterNameFromURI returns the cluster name from the given URI
 func ClusterNameFromURI(uri string) string {
