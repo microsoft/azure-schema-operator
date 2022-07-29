@@ -65,7 +65,7 @@ func (c *SQLCluster) Execute(targets schemav1alpha1.ClusterTargets, config schem
 	executed := schemav1alpha1.ClusterTargets{}
 
 	if len(targets.Schemas) == 0 {
-		log.Info().Msg("will run the DacPac on the DB without modifications")
+		log.Info().Msg("will run the DacPac on the entire DB without modifications")
 		err := RunDacPac(config.DacPac, c.URI, targets.DBs[0], config.Properties["sqlpackageOptions"])
 		if err != nil {
 			return executed, err
@@ -74,6 +74,12 @@ func (c *SQLCluster) Execute(targets schemav1alpha1.ClusterTargets, config schem
 	} else {
 		total := len(targets.Schemas)
 		log.Info().Msgf("will run the DacPac each schema: %d schemas to run", total)
+
+		//verify we have the required template name configuration
+		if config.TemplateName == "" {
+			log.Error().Msg("the template name is required to run the dacpac per schema")
+			return executed, fmt.Errorf("the template name is required to run the dacpac per schema")
+		}
 		noOfWorkers := parallelWorkers
 		if workers, ok := config.Properties["parallelWorkers"]; ok {
 			noOfWorkers, _ = strconv.Atoi(workers)
