@@ -75,21 +75,21 @@ var _ = BeforeSuite(func() {
 	err = (&SchemaDeploymentReconciler{
 		Client: k8sManager.GetClient(),
 		Scheme: k8sManager.GetScheme(),
-		Log:    ctrl.Log.WithName("controllers").WithName("kusto-template"),
+		Log:    ctrl.Log.WithName("controllers").WithName("SchemaDeploymentTest"),
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 
 	err = (&ClusterExecuterReconciler{
 		Client: k8sManager.GetClient(),
 		Scheme: k8sManager.GetScheme(),
-		Log:    ctrl.Log.WithName("controllers").WithName("kusto-template"),
+		Log:    ctrl.Log.WithName("controllers").WithName("ClusterExecuterTest"),
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 
 	err = (&VersionedDeplymentReconciler{
 		Client: k8sManager.GetClient(),
 		Scheme: k8sManager.GetScheme(),
-		Log:    ctrl.Log.WithName("controllers").WithName("kusto-template"),
+		Log:    ctrl.Log.WithName("controllers").WithName("VersionedDeplymentTest"),
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 

@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	v1 "k8s.io/api/core/v1"
 )
 
 const tstCfgContent = `
@@ -72,6 +74,36 @@ var _ = Describe("DeltaWrapper", func() {
 			genCfgStr := string(b) // convert content to a 'string'
 			Expect(genCfgStr).To(Equal(tstCfgContent))
 
+		})
+		It("Should generate configuration from targets", func() {
+			client := &mockKusto{}
+			mockClient := &kustoutils.KustoCluster{
+				Client: client,
+			}
+			targets := schemav1alpha1.ClusterTargets{
+				DBs: []string{"db1", "db2", "db3"},
+			}
+			cfgMap := &v1.ConfigMap{
+				Data: map[string]string{"kql": "add tables and stuff"},
+			}
+			failIfDataLoss := false
+			exeCfg, err := mockClient.CreateExecConfiguration(targets, cfgMap, failIfDataLoss)
+			Expect(err).NotTo(HaveOccurred())
+			fmt.Fprintf(GinkgoWriter, "generated config: %v\n", exeCfg)
+
+		})
+		It("Should generate configuration from targets", func() {
+			client := &mockKusto{}
+			mockClient := &kustoutils.KustoCluster{
+				Client: client,
+			}
+			targets := schemav1alpha1.ClusterTargets{
+				DBs: []string{"db1", "db2", "db3"},
+			}
+			cfgMap := &v1.ConfigMap{}
+			failIfDataLoss := false
+			_, err := mockClient.CreateExecConfiguration(targets, cfgMap, failIfDataLoss)
+			Expect(err).To(HaveOccurred())
 		})
 
 	})
