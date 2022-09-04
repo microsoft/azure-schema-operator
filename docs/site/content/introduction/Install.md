@@ -36,9 +36,17 @@ It will use the aks configured in the local system to deploy the crds and deploy
 
 ```bash
 export ACR=<your acr>    
-export VERSION=0.0.4  
+export VERSION=1.0.1  
 export OPERATOR_IMG="${ACR}.azurecr.io/schema-operator:v${VERSION}"  
 az acr login -n ${ACR}
 make docker-build-push IMG=$OPERATOR_IMG  
 make deploy IMG=$OPERATOR_IMG  
+```
+
+Then install using:
+
+```bash
+chart=https://github.com/microsoft/azure-schema-operator/releases/download/v${VERSION}/azure-schema-operator-v${VERSION}.tgz
+chart=charts/azure-schema-operator-v${VERSION}.tgz
+helm install schema-operator-test $chart --namespace=schema-operator-test --create-namespace --set image.repository=$OPERATOR_IMG
 ```
