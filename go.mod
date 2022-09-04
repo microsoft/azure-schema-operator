@@ -12,7 +12,7 @@ require (
 	github.com/Azure/go-autorest/autorest/validation v0.3.1
 	github.com/Azure/go-autorest/tracing v0.6.0
 	github.com/go-logr/logr v1.2.3
-	github.com/microsoft/go-mssqldb v0.15.1-0.20220621220141-56f24f566f68
+	github.com/microsoft/go-mssqldb v0.16.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.17.0
