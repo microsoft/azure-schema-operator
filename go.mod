@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Azure/azure-kusto-go v0.7.0
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.1.0
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.1.2
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.1.0
 	github.com/Azure/go-autorest/autorest v0.11.27
 	github.com/Azure/go-autorest/autorest/adal v0.9.20
@@ -12,7 +12,7 @@ require (
 	github.com/Azure/go-autorest/autorest/validation v0.3.1
 	github.com/Azure/go-autorest/tracing v0.6.0
 	github.com/go-logr/logr v1.2.3
-	github.com/microsoft/go-mssqldb v0.16.0
+	github.com/microsoft/go-mssqldb v0.17.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.17.0
