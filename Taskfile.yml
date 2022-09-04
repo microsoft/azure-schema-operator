@@ -14,7 +14,7 @@ vars:
 
   VERSION:
     # Version tags for the controller must start with "v1", e.g. "v1.0.0-alpha.0".
-    sh: '{{.SCRIPTS_ROOT}}/build-version.py v1'
+    sh: '{{.SCRIPTS_ROOT}}/build-version.py v0'
 
   DEBUG:
     sh: if [ $DEBUG ];  then echo "-v"; fi
