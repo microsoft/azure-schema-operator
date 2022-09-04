@@ -2,13 +2,21 @@
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="Plugin Installation Guide #  TBD">
+<meta name=description content="Contributing to the Documentation #  The documentation site is hosted on GitHub Pages
+The site is generated using Hugo
+Pre-requisits #  To work on the decumentation you will need:
+ a text file editor, perferably with Markdown support. Hugo installed locally to test the changes. Task - to run the taskfile tasks.  How-To #  The documentation sits in the docs/site folder.
+The content sits in the contenet folder.">
 <meta name=theme-color content="#FFFFFF">
 <meta name=color-scheme content="light dark"><meta property="og:title" content>
-<meta property="og:description" content="Plugin Installation Guide #  TBD">
+<meta property="og:description" content="Contributing to the Documentation #  The documentation site is hosted on GitHub Pages
+The site is generated using Hugo
+Pre-requisits #  To work on the decumentation you will need:
+ a text file editor, perferably with Markdown support. Hugo installed locally to test the changes. Task - to run the taskfile tasks.  How-To #  The documentation sits in the docs/site folder.
+The content sits in the contenet folder.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/introduction/plugin_installation/"><meta property="article:section" content="introduction">
-<title>Plugin Installation | Azure Schema Operator</title>
+<meta property="og:url" content="https://microsoft.github.io/azure-schema-operator/contributing/documentation/"><meta property="article:section" content="contributing">
+<title>Documentation | Azure Schema Operator</title>
 <link rel=manifest href=/azure-schema-operator/manifest.json>
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
@@ -57,7 +65,7 @@
 <a href=/azure-schema-operator/introduction/install/>Install</a>
 </li>
 <li>
-<a href=/azure-schema-operator/introduction/plugin_installation/ class=active>Plugin Installation</a>
+<a href=/azure-schema-operator/introduction/plugin_installation/>Plugin Installation</a>
 </li>
 </ul>
 </li>
@@ -71,7 +79,7 @@
 <a href=/azure-schema-operator/contributing/create-a-new-release/>Create a New Release</a>
 </li>
 <li>
-<a href=/azure-schema-operator/contributing/documentation/>Documentation</a>
+<a href=/azure-schema-operator/contributing/documentation/ class=active>Documentation</a>
 </li>
 </ul>
 </li>
@@ -100,21 +108,55 @@
 <label for=menu-control>
 <img src=/azure-schema-operator/svg/menu.svg class=book-icon alt=Menu>
 </label>
-<strong>Plugin Installation</strong>
+<strong>Documentation</strong>
 <label for=toc-control>
 <img src=/azure-schema-operator/svg/toc.svg class=book-icon alt="Table of Contents">
 </label>
 </div>
 <aside class="hidden clearfix">
-<nav id=TableOfContents></nav>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#pre-requisits>Pre-requisits</a></li>
+<li><a href=#how-to>How-To</a></li>
+<li><a href=#helm-chart-documentation>Helm Chart Documentation</a></li>
+</ul>
+</nav>
 </aside>
 </header>
-<article class=markdown><h1 id=plugin-installation-guide>
-Plugin Installation Guide
-<a class=anchor href=#plugin-installation-guide>#</a>
+<article class=markdown><h1 id=contributing-to-the-documentation>
+Contributing to the Documentation
+<a class=anchor href=#contributing-to-the-documentation>#</a>
 </h1>
-<p>TBD</p>
-</article>
+<p>The documentation site is hosted on <a href=https://pages.github.com>GitHub Pages</a><br>
+The site is generated using <a href=https://gohugo.io>Hugo</a></p>
+<h2 id=pre-requisits>
+Pre-requisits
+<a class=anchor href=#pre-requisits>#</a>
+</h2>
+<p>To work on the decumentation you will need:</p>
+<ol>
+<li>a text file editor, perferably with Markdown support.</li>
+<li>Hugo installed locally to test the changes.</li>
+<li>Task - to run the taskfile tasks.</li>
+</ol>
+<h2 id=how-to>
+How-To
+<a class=anchor href=#how-to>#</a>
+</h2>
+<p>The documentation sits in the <code>docs/site</code> folder.<br>
+The content sits in the <code>contenet</code> folder.
+and static files such as images and samples reside in the <code>static</code> folder.</p>
+<p>To view local changes before pushing, run:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>task run-docs-site
+</code></pre></div><p>This will run Hugo locally and open them in a new Tab.</p>
+<h2 id=helm-chart-documentation>
+Helm Chart Documentation
+<a class=anchor href=#helm-chart-documentation>#</a>
+</h2>
+<p>If changes where made to the Helm chart parameters, we also need to update the helm chart documentation.</p>
+<p>To update them, run:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>task helm-docs
+</code></pre></div></article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
 </div>
@@ -126,7 +168,13 @@ Plugin Installation Guide
 </div>
 <aside class=book-toc>
 <div class=book-toc-content>
-<nav id=TableOfContents></nav>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#pre-requisits>Pre-requisits</a></li>
+<li><a href=#how-to>How-To</a></li>
+<li><a href=#helm-chart-documentation>Helm Chart Documentation</a></li>
+</ul>
+</nav>
 </div>
 </aside>
 </main>
