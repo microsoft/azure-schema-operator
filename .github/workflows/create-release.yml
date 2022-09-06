@@ -44,6 +44,11 @@ jobs:
         env:
           DOCKER_PUSH_TARGET: ghcr.io/microsoft/azure-schema-operator
 
+      - name: package helm chart
+        run: |
+          container_id=${{steps.devcontainer.outputs.id}}
+          docker exec "$container_id" task package-helm
+
       - name: Upload release assets
         uses: svenstaro/upload-release-action@2f88c7710e85b1f8b5f6c3a2fcadaa7f865af713 # this is v2, but pinned
         with:

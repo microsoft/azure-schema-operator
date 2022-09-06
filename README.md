@@ -1,6 +1,6 @@
 ---
 ArtifactType: kubernetes-operator
-Documentation: URL
+Documentation: https://microsoft.github.io/azure-schema-operator
 Language: golang
 Platform: AKS
 Stackoverflow: URL

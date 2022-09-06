@@ -59,7 +59,7 @@ tasks:
   package-helm:
     desc: Package the helm chart
     cmds:
-      - helm package ./charts/azure-schema-operator/ -d ./charts
+      - helm package ./charts/azure-schema-operator/ -d ./charts --version {{.VERSION}}
 
   helm-docs:
     desc: generate helm docs (readme file)
