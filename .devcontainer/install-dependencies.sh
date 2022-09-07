@@ -88,7 +88,10 @@ curl -L -o kubebuilder https://go.kubebuilder.io/dl/latest/${os}/${arch}
 chmod +x kubebuilder && mv kubebuilder $KUBEBUILDER_DEST
 
 # Install yq
-echo "Installing yq…"
+echo "Installing helm..."
 # yq_version=v4.13.0
 # yq_binary=yq_linux_amd64
 # wget "https://github.com/mikefarah/yq/releases/download/${yq_version}/${yq_binary}.tar.gz" -O - | tar -xz -C "${TOOL_DEST}" && mv "${TOOL_DEST}/$yq_binary" "${TOOL_DEST}/yq"
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+echo "done"
