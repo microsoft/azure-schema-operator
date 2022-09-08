@@ -173,7 +173,7 @@ func downloadNamedDacfromCfg(cfgMap *v1.ConfigMap, dacpacName string) (string, e
 
 }
 
-// DownloadDacpac downloads the dacpac from a URL and returns the path to the dacpac
+// DownloadDacPacFromURL downloads the dacpac from a URL and returns the path to the dacpac
 func DownloadDacPacFromURL(url string) (string, error) {
 	var f *os.File
 	var err error
@@ -187,7 +187,7 @@ func DownloadDacPacFromURL(url string) (string, error) {
 
 	t := &http.Transport{}
 	if viper.GetBool(config.AllowLocalDacPac) {
-		// To support file protocal we need to register a custom transport (urls like "file:///etc/passwd")
+		// To support file protocol we need to register a custom transport (urls like "file:///etc/passwd")
 		t.RegisterProtocol("file", http.NewFileTransport(http.Dir("/")))
 	}
 	httpClient := &http.Client{Transport: t}

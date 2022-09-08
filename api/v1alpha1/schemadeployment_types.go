@@ -89,11 +89,12 @@ type SchemaDeploymentStatus struct {
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
+// SchemaDeployment is the Base CRD for the schema deployment operator
+// it is used to define which schema to deploy to a target cluster
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="TYPE",type="string",JSONPath=".spec.type"
 //+kubebuilder:printcolumn:name="Executed",type="string",JSONPath=".status.conditions[?(@.type=='Execution')].status"
-// SchemaDeployment is the Schema for the templates API
 type SchemaDeployment struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

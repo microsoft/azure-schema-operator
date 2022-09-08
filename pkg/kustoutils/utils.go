@@ -20,9 +20,9 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// Note: This is a temporary solution to the issue of the Kusto client not aligned with v1 Azure SDK.
 // QueryClient interface is taken from https://github.com/Azure/azure-kusto-go/blob/master/kusto/ingest/query_client.go
 // Replace with import once versions align.
+// Note: This is a temporary solution to the issue of the Kusto client not aligned with v1 Azure SDK.
 type QueryClient interface {
 	io.Closer
 	Auth() kusto.Authorization
