@@ -1,3 +1,7 @@
+---
+title: Installation Guide
+weight: 1 # want this first
+---
 # Installation Guide
 
 This document will guide you through the installation and configuration process.
@@ -21,10 +25,10 @@ Schema-Operator is deployed using a helm chart.
 In the provided values we need to pass the MSI name to bind.
 
 ```bash
-export VERSION=1.0.1  
+export VERSION=0.1.1-alpha 
 chart=https://github.com/microsoft/azure-schema-operator/releases/download/v${VERSION}/azure-schema-operator-v${VERSION}.tgz
 chart=charts/azure-schema-operator-v${VERSION}.tgz
-helm install schema-operator-test $chart --namespace=schema-operator-test --create-namespace
+helm install schema-operator $chart --namespace=schema-operator-namespace --create-namespace
 ```
 
 more details on chart parameters can be found at the [chart docs](./helm-docs.md)
@@ -36,7 +40,7 @@ It will use the aks configured in the local system to deploy the crds and deploy
 
 ```bash
 export ACR=<your acr>    
-export VERSION=1.0.1  
+export VERSION=0.1.1-alpha 
 export OPERATOR_IMG="${ACR}.azurecr.io/schema-operator:v${VERSION}"  
 az acr login -n ${ACR}
 make docker-build-push IMG=$OPERATOR_IMG  
