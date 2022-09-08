@@ -64,8 +64,12 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
 # .NET runtime-deps image
 FROM cblmariner.azurecr.io/distroless/minimal:1.0
 
-LABEL org.opencontainers.image.description "Azure-Schema-Operator manages Azure Databases schema on large deployments"
-LABEL org.opencontainers.image.url "ghcr.io/microsoft/azure-schema-operator/azureschemaoperator"
+LABEL org.label-schema.vendor = "Microsoft" \
+  org.label-schema.name = "Azure Schema Operator" \
+  org.label-schema.description = "Azure-Schema-Operator manages Azure Databases schema on large deployments" \
+  org.label-schema.url = "ghcr.io/microsoft/azure-schema-operator/azureschemaoperator" \
+  org.opencontainers.image.description "Azure-Schema-Operator manages Azure Databases schema on large deployments" \
+  org.opencontainers.image.url "ghcr.io/microsoft/azure-schema-operator/azureschemaoperator"
 
 ENV \
   # Enable detection of running in a container
