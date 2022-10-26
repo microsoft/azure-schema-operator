@@ -15,7 +15,7 @@ The schema is represented in kql field in a standard ConfigMap which contains AD
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/azure-schema-operator/flexsearch.min.js></script>
-<script defer src=/azure-schema-operator/en.search.min.238d24645ed864d1f618553e0914560d389c9e8c1b6271445c0e9ba87a72b460.js integrity="sha256-I40kZF7YZNH2GFU+CRRWDTicnowbYnFEXA6bqHpytGA=" crossorigin=anonymous></script>
+<script defer src=/azure-schema-operator/en.search.min.c53b62829125436cf1cc1aee6aea3ca30540ad8f191f3fd1a30157cfd1a857ec.js integrity="sha256-xTtigpElQ2zxzBruauo8owVArY8ZHz/RowFXz9GoV+w=" crossorigin=anonymous></script>
 </head>
 <body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
@@ -125,8 +125,8 @@ Azure Data Explorer (ADX, AKA Kusto) Tutorial
 We will deploy 3 revisions of our schema, with an error on the third schema triggering a rollback.</p>
 <p>The schema is represented in <code>kql</code> field in a standard <code>ConfigMap</code> which contains ADX schemas described as KQLs..
 More details on KQL files can be found in the <a href=https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/README.md#download-dev>delta-kusto instructions</a><br>
-Or simply download and review a <a href=https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/dev-start-samples.kql>sample kql file</a></p>
-<p>Once we have a kql describe our schema we can generate an example <code>ConfigMap</code> using:</p>
+or simply download and review a <a href=https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/dev-start-samples.kql>sample kql file</a></p>
+<p>Once we have a kql that describes our schema we can generate an example <code>ConfigMap</code> using:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl create configmap test-sample-kql --from-file<span style=color:#f92672>=</span>kql<span style=color:#f92672>=</span>sample.kql --dry-run<span style=color:#f92672>=</span>client -o yaml
 </code></pre></div><p>We reference the ConfigMap object from the <code>SchemaDeployment</code> object to apply onto the clusters.</p>
 <p>All The objects used throughout the tutorial can be found in <a href=docs/samples/kusto>samples folder</a></p>
@@ -135,7 +135,7 @@ Pre-requisits
 <a class=anchor href=#pre-requisits>#</a>
 </h2>
 <p>the tutorial assumes that the Schema operator is already installed with the appropriate permissions - if not, please see <a href=content/introduction/Install.md>installation</a>
-While not mandetory, a kubectl plugin exists that provides simpler access to the schema revision history - see <a href=content/introduction/plugin_installation.md>plugin installation</a> for details</p>
+While not mandatory, a kubectl plugin exists that provides simpler access to the schema revision history - see <a href=content/introduction/plugin_installation.md>plugin installation</a> for details.</p>
 <h2 id=tutorial-steps>
 Tutorial steps
 <a class=anchor href=#tutorial-steps>#</a>
@@ -181,7 +181,7 @@ That&rsquo;s because we rolled back the faulty schema revision as requested by t
 Summary
 <a class=anchor href=#summary>#</a>
 </h2>
-<p>We&rsquo;ve looked at a common flow and how Schema-Operator can ease managment of large schema deployments.
+<p>We&rsquo;ve looked at a common flow and how Schema-Operator can ease management of large schema deployments.
 We suggest trying some of these scenarios in a dev environment to get familiar with the different options.</p>
 </article>
 <footer class=book-footer>

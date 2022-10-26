@@ -4,7 +4,7 @@
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=description content="Azure-Schema-Operator #    Note: The API is expected to change (while adhering to semantic versioning). Alpha and Beta resources are generally not recommended for production environments. Alpha, Beta, and Stable mean roughly the same for this project as they do for all Kubernetes features.
- Azure Schema Operator project is aimed to manage a schema changes of varios Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.">
+ Azure Schema Operator project is aimed to manage schema changes of various Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.">
 <meta name=theme-color content="#FFFFFF">
 <meta name=color-scheme content="light dark"><meta property="og:title" content>
 <meta property="og:description" content>
@@ -15,7 +15,7 @@
 <link rel=icon href=/azure-schema-operator/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/azure-schema-operator/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/azure-schema-operator/flexsearch.min.js></script>
-<script defer src=/azure-schema-operator/en.search.min.238d24645ed864d1f618553e0914560d389c9e8c1b6271445c0e9ba87a72b460.js integrity="sha256-I40kZF7YZNH2GFU+CRRWDTicnowbYnFEXA6bqHpytGA=" crossorigin=anonymous></script>
+<script defer src=/azure-schema-operator/en.search.min.c53b62829125436cf1cc1aee6aea3ca30540ad8f191f3fd1a30157cfd1a857ec.js integrity="sha256-xTtigpElQ2zxzBruauo8owVArY8ZHz/RowFXz9GoV+w=" crossorigin=anonymous></script>
 <link rel=alternate type=application/rss+xml href=https://microsoft.github.io/azure-schema-operator/index.xml title="Azure Schema Operator">
 </head>
 <body dir=ltr>
@@ -138,9 +138,8 @@ Azure-Schema-Operator
 <blockquote>
 <p>Note: The API is expected to change (while adhering to semantic versioning). Alpha and Beta resources are generally not recommended for production environments. Alpha, Beta, and Stable mean roughly the same for this project as they do for <a href=https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#feature-stages>all Kubernetes features</a>.</p>
 </blockquote>
-<p>Azure Schema Operator project is aimed to manage a schema changes of varios Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.</p>
-<p>A developer defines the schema in source location (e.g. configMap) and the
-operator will make sure to apply it on all the defined clusters.</p>
+<p>Azure Schema Operator project is aimed to manage schema changes of various Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.</p>
+<p>A developer defines the schema in source location (e.g. configMap) and the operator will make sure to apply it on all the defined clusters.</p>
 <p><img src=docs/images/SchemaOperator.drawio.png alt="Schema-Operator flow"></p>
 <p>The Operator offloads the heavy lifting to schema tools such as <a href=https://github.com/microsoft/delta-kusto>delta-kusto</a>
 and instead focuses on ensuring the validity of the deployment process.<br>
@@ -190,15 +189,14 @@ Now we create the <code>SchemaDeployment</code> object (our schema object to app
   <span style=color:#f92672>source</span>:
     <span style=color:#f92672>name</span>: <span style=color:#ae81ff>dev-template-kql</span>
     <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>default</span>
-</code></pre></div><p>The template defines the cluster list (<code>sampleadx</code>) and a regular expression
-to filter databases by thier name (<code>tenant_</code> is our sample filter but can be any regexp)</p>
+</code></pre></div><p>The template defines the cluster list (<code>sampleadx</code>) and a regular expression to filter databases by their name (<code>tenant_</code> is our sample filter but can be any regexp).</p>
 <h2 id=authentication>
 Authentication
 <a class=anchor href=#authentication>#</a>
 </h2>
-<p>the <code>schema-operator</code> needs access and perimssions on the target databases.
-Authorisation can be defined either by <code>MSI</code> (recommanded) or by defining a secret.</p>
-<p>To use <code>MSI</code>, <code>AZURE_USE_MSI</code> environemt variable needs to be defined on the manager pod.</p>
+<p>The <code>schema-operator</code> needs access and perimssions on the target databases.
+Authorization can be defined either by <code>MSI</code> (recommended) or by defining a secret.</p>
+<p>To use <code>MSI</code>, the <code>AZURE_USE_MSI</code> environment variable needs to be defined on the manager pod.</p>
 <p>To use a secret, we need to define a secret with the relevant credentials:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
 <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Secret</span>
@@ -239,7 +237,7 @@ Prerequisites
 <a class=anchor href=#prerequisites>#</a>
 </h3>
 <p>The schema operator is written in <a href=https://go.dev>GO</a>.
-To develop the project you need to following:</p>
+To develop the project you need the following:</p>
 <ul>
 <li>Go</li>
 <li>operator-sdk</li>
@@ -251,8 +249,8 @@ To develop the project you need to following:</p>
 Running the tests
 <a class=anchor href=#running-the-tests>#</a>
 </h2>
-<p>The project uses <a href=https://github.com/onsi/ginkgo>Ginkgo</a> with <a href=https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/envtest>envtest</a>
-To run the tests locally simple run:</p>
+<p>The project uses <a href=https://github.com/onsi/ginkgo>Ginkgo</a> with <a href=https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/envtest>envtest</a></p>
+<p>To run the tests locally simple run:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>make test
 </code></pre></div><table>
 <thead>
