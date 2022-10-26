@@ -5,9 +5,9 @@ We will deploy 3 revisions of our schema, with an error on the third schema trig
 
 The schema is represented in `kql` field in a standard `ConfigMap` which contains ADX schemas described as KQLs..
 More details on KQL files can be found in the [delta-kusto instructions](https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/README.md#download-dev)  
-Or simply download and review a [sample kql file](https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/dev-start-samples.kql)
+or simply download and review a [sample kql file](https://github.com/microsoft/delta-kusto/blob/main/documentation/tutorials/overview-tutorial/dev-start-samples.kql)
 
-Once we have a kql describe our schema we can generate an example `ConfigMap` using:
+Once we have a kql that describes our schema we can generate an example `ConfigMap` using:
 
 ```sh
 kubectl create configmap test-sample-kql --from-file=kql=sample.kql --dry-run=client -o yaml
@@ -20,7 +20,7 @@ All The objects used throughout the tutorial can be found in [samples folder](do
 ## Pre-requisits
 
 the tutorial assumes that the Schema operator is already installed with the appropriate permissions - if not, please see [installation](content/introduction/Install.md)
-While not mandetory, a kubectl plugin exists that provides simpler access to the schema revision history - see [plugin installation](content/introduction/plugin_installation.md) for details
+While not mandatory, a kubectl plugin exists that provides simpler access to the schema revision history - see [plugin installation](content/introduction/plugin_installation.md) for details.
 
 ## Tutorial steps
 
@@ -99,5 +99,5 @@ spec:
 
 ## Summary
 
-We've looked at a common flow and how Schema-Operator can ease managment of large schema deployments.
+We've looked at a common flow and how Schema-Operator can ease management of large schema deployments.
 We suggest trying some of these scenarios in a dev environment to get familiar with the different options.

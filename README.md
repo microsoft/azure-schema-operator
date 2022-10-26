@@ -14,10 +14,9 @@ Tags: operator,schema,kusto,sqlserver
 
 > Note: The API is expected to change (while adhering to semantic versioning). Alpha and Beta resources are generally not recommended for production environments. Alpha, Beta, and Stable mean roughly the same for this project as they do for [all Kubernetes features](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#feature-stages).
 
-Azure Schema Operator project is aimed to manage a schema changes of varios Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.
+Azure Schema Operator project is aimed to manage schema changes of various Azure Resources (e.g. Azure SQL, Azure Data Explorer, Azure EventsHub) using declarative approach via Kubernetes resources.
 
-A developer defines the schema in source location (e.g. configMap) and the
-operator will make sure to apply it on all the defined clusters.
+A developer defines the schema in source location (e.g. configMap) and the operator will make sure to apply it on all the defined clusters.
 
 ![Schema-Operator flow](docs/images/SchemaOperator.drawio.png)
 
@@ -75,15 +74,14 @@ spec:
     namespace: default
 ```
 
-The template defines the cluster list (`sampleadx`) and a regular expression
- to filter databases by thier name (`tenant_` is our sample filter but can be any regexp)
+The template defines the cluster list (`sampleadx`) and a regular expression to filter databases by their name (`tenant_` is our sample filter but can be any regexp).
 
 ## Authentication
 
-the `schema-operator` needs access and perimssions on the target databases.
-Authorisation can be defined either by `MSI` (recommanded) or by defining a secret.
+The `schema-operator` needs access and perimssions on the target databases.
+Authorization can be defined either by `MSI` (recommended) or by defining a secret.
 
-To use `MSI`, `AZURE_USE_MSI` environemt variable needs to be defined on the manager pod.
+To use `MSI`, the `AZURE_USE_MSI` environment variable needs to be defined on the manager pod.
 
 To use a secret, we need to define a secret with the relevant credentials:
 
@@ -131,7 +129,7 @@ env:
 ### Prerequisites
 
 The schema operator is written in [GO](https://go.dev).
-To develop the project you need to following:
+To develop the project you need the following:
 
 - Go
 - operator-sdk
@@ -142,6 +140,7 @@ To develop the project you need to following:
 ## Running the tests
 
 The project uses [Ginkgo](https://github.com/onsi/ginkgo) with [envtest](https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/envtest)
+
 To run the tests locally simple run:
 
 ```bash
