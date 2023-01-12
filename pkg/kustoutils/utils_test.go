@@ -12,7 +12,7 @@ import (
 	"github.com/Azure/azure-kusto-go/kusto/data/types"
 	"github.com/Azure/azure-kusto-go/kusto/data/value"
 	"github.com/Azure/go-autorest/autorest"
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
 	"github.com/microsoft/azure-schema-operator/pkg/utils"
 	. "github.com/onsi/ginkgo"

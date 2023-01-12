@@ -12,7 +12,7 @@ import (
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/cli-runtime/pkg/resource"
 
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/utils/schemaversions"
 )
 

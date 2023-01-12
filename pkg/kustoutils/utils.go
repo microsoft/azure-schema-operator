@@ -15,7 +15,7 @@ import (
 	"github.com/Azure/azure-kusto-go/kusto/data/errors"
 	"github.com/Azure/azure-kusto-go/kusto/data/table"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/rs/zerolog/log"
 	v1 "k8s.io/api/core/v1"
 )

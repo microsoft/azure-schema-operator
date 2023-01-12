@@ -22,7 +22,7 @@ import (
 
 	// telemetry "github.com/Azure/azure-service-operator/pkg/telemetry"
 	"github.com/go-logr/logr"
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/utils/schemaversions"
 	"github.com/rs/zerolog/log"
 )

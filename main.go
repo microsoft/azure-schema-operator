@@ -18,7 +18,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/controllers"
 	//+kubebuilder:scaffold:imports
 )
