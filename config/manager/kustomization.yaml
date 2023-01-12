@@ -12,8 +12,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: controller
-  newName: rscomplianceacr.azurecr.io/schema-operator
-  newTag: v0.0.4
+  newName: mcasdatacr.azurecr.io/schema-operator
+  newTag: v1.0.1-alpha
 
 patchesStrategicMerge:
 - manager_image_patch.yaml

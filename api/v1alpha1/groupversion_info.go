@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 // Package v1alpha1 contains API Schema definitions for the kusto v1alpha1 API group
-//+kubebuilder:object:generate=true
-//+groupName=dbschema.microsoft.com
+// +kubebuilder:object:generate=true
+// +groupName=dbschema.microsoft.com
 package v1alpha1
 
 import (

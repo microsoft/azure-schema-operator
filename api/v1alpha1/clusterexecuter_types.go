@@ -65,11 +65,11 @@ type ClusterExecuterStatus struct {
 }
 
 // ClusterExecuter is the Schema for the clusterexecuters API
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:printcolumn:name="TYPE",type="string",JSONPath=".spec.type"
-//+kubebuilder:printcolumn:name="Executed",type="string",JSONPath=".status.conditions[?(@.type=='Execution')].status"
-//+kubebuilder:printcolumn:name="CompletedPCT",type="string",JSONPath=".status.completedPct"
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="TYPE",type="string",JSONPath=".spec.type"
+// +kubebuilder:printcolumn:name="Executed",type="string",JSONPath=".status.conditions[?(@.type=='Execution')].status"
+// +kubebuilder:printcolumn:name="CompletedPCT",type="string",JSONPath=".status.completedPct"
 type ClusterExecuter struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
