@@ -19,7 +19,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
-	"github.com/microsoft/azure-schema-operator/controllers"
+	"github.com/microsoft/azure-schema-operator/controllers/dbschema"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -79,7 +79,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.SchemaDeploymentReconciler{
+	if err = (&dbschema.SchemaDeploymentReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("SchemaDeployment"),
 		Scheme: mgr.GetScheme(),
@@ -87,7 +87,7 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "SchemaDeployment")
 		os.Exit(1)
 	}
-	if err = (&controllers.ClusterExecuterReconciler{
+	if err = (&dbschema.ClusterExecuterReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("ClusterExecuter"),
 		Scheme: mgr.GetScheme(),
@@ -95,7 +95,7 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "ClusterExecuter")
 		os.Exit(1)
 	}
-	if err = (&controllers.VersionedDeplymentReconciler{
+	if err = (&dbschema.VersionedDeplymentReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("VersionedDeployment"),
 		Scheme: mgr.GetScheme(),

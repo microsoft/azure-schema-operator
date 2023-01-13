@@ -1,4 +1,4 @@
-package controllers
+package dbschema
 
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
