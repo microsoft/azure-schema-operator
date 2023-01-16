@@ -3,7 +3,7 @@ package sqlutils_test
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 import (
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"

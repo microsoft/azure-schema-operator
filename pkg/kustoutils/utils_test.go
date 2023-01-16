@@ -11,11 +11,10 @@ import (
 	"github.com/Azure/azure-kusto-go/kusto/data/table"
 	"github.com/Azure/azure-kusto-go/kusto/data/types"
 	"github.com/Azure/azure-kusto-go/kusto/data/value"
-	"github.com/Azure/go-autorest/autorest"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
 	"github.com/microsoft/azure-schema-operator/pkg/utils"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -27,7 +26,8 @@ func (m *mockKusto) Close() error {
 }
 
 func (m *mockKusto) Auth() kusto.Authorization {
-	return kusto.Authorization{Authorizer: autorest.NewBasicAuthorizer("", "")}
+	// return kusto.Authorization{Authorizer: autorest.NewBasicAuthorizer("", "")}
+	return kusto.Authorization{}
 }
 
 func (m *mockKusto) Endpoint() string {

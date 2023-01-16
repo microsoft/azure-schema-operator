@@ -1,0 +1,27 @@
+# permissions for end users to view retentionpolicies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: retentionpolicy-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: schema-operator
+    app.kubernetes.io/part-of: schema-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: retentionpolicy-viewer-role
+rules:
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - retentionpolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - retentionpolicies/status
+  verbs:
+  - get

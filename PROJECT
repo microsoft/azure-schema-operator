@@ -35,4 +35,13 @@ resources:
   kind: VersionedDeplyment
   path: github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: microsoft.com
+  group: kusto
+  kind: RetentionPolicy
+  path: github.com/microsoft/azure-schema-operator/apis/kusto/v1alpha1
+  version: v1alpha1
 version: "3"

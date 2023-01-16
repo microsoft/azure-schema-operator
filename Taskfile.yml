@@ -21,7 +21,7 @@ vars:
 
   VERSION_FLAGS: -ldflags "-X {{.PACKAGE}}/internal/version.BuildVersion={{.VERSION}}"
 
-  ENVTEST_K8S_VERSION: 1.23
+  ENVTEST_K8S_VERSION: 1.24.2
 
   CONTROLLER_DOCKER_IMAGE: azureschemaoperator:{{.VERSION}}
   PUBLIC_REGISTRY: ghcr.io/microsoft/azure-schema-operator/

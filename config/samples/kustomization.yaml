@@ -3,4 +3,5 @@ resources:
 - kusto_v1alpha1_template.yaml
 - kusto_v1alpha1_clusterexecuter.yaml
 - kusto_v1alpha1_versioneddeplyment.yaml
+- kusto_v1alpha1_retentionpolicy.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

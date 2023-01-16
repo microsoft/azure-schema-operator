@@ -19,7 +19,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
+	kustov1alpha1 "github.com/microsoft/azure-schema-operator/apis/kusto/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/controllers/dbschema"
+	kustocontrollers "github.com/microsoft/azure-schema-operator/controllers/kusto"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -31,6 +33,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(schemav1alpha1.AddToScheme(scheme))
+	utilruntime.Must(kustov1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -101,6 +104,13 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VersionedDeplyment")
+		os.Exit(1)
+	}
+	if err = (&kustocontrollers.RetentionPolicyReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "RetentionPolicy")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

@@ -14,7 +14,6 @@ import (
 	"github.com/Azure/azure-kusto-go/kusto"
 	"github.com/Azure/azure-kusto-go/kusto/data/errors"
 	"github.com/Azure/azure-kusto-go/kusto/data/table"
-	"github.com/Azure/go-autorest/autorest/azure/auth"
 	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/rs/zerolog/log"
 	v1 "k8s.io/api/core/v1"
@@ -48,17 +47,19 @@ func NewKustoCluster(uri string) *KustoCluster {
 		wrapper: NewDeltaWrapper(),
 	}
 
-	a, err := auth.NewAuthorizerFromEnvironmentWithResource(uri)
-	if err != nil {
-		log.Error().Err(err).Msgf("failed to authorize from env to %s", uri)
-	}
+	// a, err := auth.NewAuthorizerFromEnvironmentWithResource(uri)
+	// if err != nil {
+	// 	log.Error().Err(err).Msgf("failed to authorize from env to %s", uri)
+	// }
 
-	authorizer := kusto.Authorization{
-		Authorizer: a,
-		// Config: auth.NewClientCredentialsConfig(clientID, clientSecret, tenantID),
-	}
+	kcsb := kusto.NewConnectionStringBuilder(uri).WithDefaultAzureCredential()
+	client, err := kusto.New(kcsb)
+	// authorizer := kusto.Authorization{
+	// 	Authorizer: a,
+	// 	// Config: auth.NewClientCredentialsConfig(clientID, clientSecret, tenantID),
+	// }
 
-	client, err := kusto.New(uri, authorizer)
+	// client, err := kusto.New(uri, authorizer)
 	if err != nil {
 		log.Error().Err(err).Msgf("failed to connect to %s", uri)
 	}
