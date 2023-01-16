@@ -129,7 +129,7 @@ var _ = Describe("Utils", func() {
 	})
 	if liveTest {
 		Context("when testing kusto with a live server", func() {
-			ClusterUri := "https://" + testCluster + ".westeurope.kusto.windows.net"
+			ClusterUri := testCluster
 			cluster := kustoutils.NewKustoCluster(ClusterUri)
 			filter := schemav1alpha1.TargetFilter{
 				DB: "db1948",

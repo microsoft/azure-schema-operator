@@ -41,7 +41,7 @@ var _ = Describe("ClusterexecuterController", func() {
 			}
 
 			spec := kutoschemav1.ClusterExecuterSpec{
-				ClusterUri:     "https://" + testCluster + ".westeurope.kusto.windows.net",
+				ClusterUri:     testCluster,
 				Type:           schemav1alpha1.DBTypeKusto,
 				Revision:       1,
 				FailIfDataLoss: true,
@@ -50,7 +50,7 @@ var _ = Describe("ClusterexecuterController", func() {
 					Namespace: kqlCfgNamespace,
 				},
 				ApplyTo: kutoschemav1.TargetFilter{
-					ClusterUris: []string{"https://" + testCluster + ".westeurope.kusto.windows.net"},
+					ClusterUris: []string{testCluster},
 					DB:          "db1948",
 				},
 			}

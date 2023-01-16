@@ -45,7 +45,7 @@ var _ = Describe("VersioneddeplymentController", func() {
 					Namespace: kqlCfgNamespace,
 				},
 				ApplyTo: kutoschemav1.TargetFilter{
-					ClusterUris: []string{"https://" + testCluster + ".westeurope.kusto.windows.net"},
+					ClusterUris: []string{testCluster},
 					DB:          "db1337",
 				},
 				Type: schemav1alpha1.DBTypeKusto,

@@ -24,7 +24,7 @@ var _ = Describe("Policymanager", Label("Policymanager"), Label("live"), func() 
 		kcsb := kusto.NewConnectionStringBuilder(testCluster).WithDefaultAzureCredential()
 		client, err = kusto.New(kcsb)
 		Expect(err).NotTo(HaveOccurred())
-		database = "compliance"
+		database = "test"
 		tableName = "test"
 	})
 

@@ -23,7 +23,7 @@ var _ = Describe("RetentionpolicyController", func() {
 
 			spec := kustov1alpha1.RetentionPolicySpec{
 				ClusterUris: []string{testCluster},
-				DB:          "compliance",
+				DB:          "test",
 				Table:       "test",
 				RetentionPolicy: kustov1alpha1.KustoRetentionPolicy{
 					SoftDeletePeriod: "15.00:00:00",

@@ -43,7 +43,7 @@ var _ = Describe("SchemaDeploymentController", func() {
 			spec := kutoschemav1.SchemaDeploymentSpec{
 
 				ApplyTo: kutoschemav1.TargetFilter{
-					ClusterUris: []string{"https://" + testCluster + ".westeurope.kusto.windows.net"},
+					ClusterUris: []string{testCluster},
 					DB:          "db1120",
 				},
 				Type:           kutoschemav1.DBTypeKusto,
