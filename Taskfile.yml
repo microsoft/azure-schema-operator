@@ -147,6 +147,12 @@ tasks:
     # deps: [controller:generate-crds, controller:run-kustomize-for-envtest]
     cmds:
       - go test -short -tags=noexit -v -timeout 10m -run '{{default ".*" .TEST_FILTER}}' ./pkg/...
+  
+  pkg:filtered-test:
+    desc: Run ginkgo tests for a specific filter
+    dir: '{{.CONTROLLER_ROOT}}'
+    cmds:
+      - ginkgo -v --label-filter={{.FILTER}}  ./pkg/...
 
   controller:test-cover:
     desc: Run {{.CONTROLLER_APP}} unit tests and output coverage.
@@ -253,3 +259,4 @@ tasks:
     cmds:
       - echo "Place holder for test resource group cleanup"
       # - '{{.SCRIPTS_ROOT}}/delete-old-resourcegroups.sh -p "{{.TEST_RESOURCE_PREFIX}}"'
+
