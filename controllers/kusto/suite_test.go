@@ -77,7 +77,7 @@ var _ = BeforeSuite(func() {
 	err = (&RetentionPolicyReconciler{
 		Client: k8sManager.GetClient(),
 		Scheme: k8sManager.GetScheme(),
-		// Log:    ctrl.Log.WithName("controllers").WithName("RetentionPolicyReconciler"),
+		Log:    ctrl.Log.WithName("controllers").WithName("RetentionPolicyTest"),
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 

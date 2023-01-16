@@ -13,9 +13,9 @@ import (
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/Azure/azure-kusto-go/kusto"
+	"github.com/go-logr/logr"
 	kustov1alpha1 "github.com/microsoft/azure-schema-operator/apis/kusto/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
 	corev1 "k8s.io/api/core/v1"
@@ -25,12 +25,14 @@ import (
 type RetentionPolicyReconciler struct {
 	client.Client
 	Scheme   *runtime.Scheme
+	Log      logr.Logger
 	recorder record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=kusto.microsoft.com,resources=retentionpolicies,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=kusto.microsoft.com,resources=retentionpolicies/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=kusto.microsoft.com,resources=retentionpolicies/finalizers,verbs=update
+//+kubebuilder:rbac:groups="",resources=events,verbs=create;patch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -40,7 +42,7 @@ type RetentionPolicyReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.0/pkg/reconcile
 func (r *RetentionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := log.FromContext(ctx)
+	log := r.Log.WithValues("RetentionPolicy", req.NamespacedName)
 
 	retentionPolicy := &kustov1alpha1.RetentionPolicy{}
 	err := r.Get(ctx, req.NamespacedName, retentionPolicy)

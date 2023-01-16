@@ -9,4 +9,11 @@ metadata:
     app.kubernetes.io/created-by: schema-operator
   name: retentionpolicy-sample
 spec:
-  # TODO(user): Add fields here
+  clusterUris:
+    - https://cluster1.kusto.windows.net
+    - https://cluster2.kusto.windows.net
+  db: test
+  table: test
+  retentionPolicy:
+    softDeletePeriod: 15.00:00:00
+    recoverability: Enabled
