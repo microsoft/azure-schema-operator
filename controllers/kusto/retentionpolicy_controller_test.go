@@ -9,6 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	kustov1alpha1 "github.com/microsoft/azure-schema-operator/apis/kusto/v1alpha1"
+	kustotypes "github.com/microsoft/azure-schema-operator/pkg/kustoutils/types"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
@@ -22,10 +23,12 @@ var _ = Describe("RetentionpolicyController", func() {
 		It("should create a retention policy", func() {
 
 			spec := kustov1alpha1.RetentionPolicySpec{
-				ClusterUris: []string{testCluster},
-				DB:          "test",
-				Table:       "test",
-				RetentionPolicy: kustov1alpha1.KustoRetentionPolicy{
+				PolicySpec: kustov1alpha1.PolicySpec{
+					ClusterUris: []string{testCluster},
+					DB:          "test",
+					Table:       "test",
+				},
+				RetentionPolicy: kustotypes.RetentionPolicy{
 					SoftDeletePeriod: "15.00:00:00",
 					Recoverability:   "Enabled",
 				},

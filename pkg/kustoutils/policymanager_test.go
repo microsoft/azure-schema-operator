@@ -3,8 +3,8 @@ package kustoutils_test
 import (
 	"context"
 
-	kustov1alpha1 "github.com/microsoft/azure-schema-operator/apis/kusto/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
+	"github.com/microsoft/azure-schema-operator/pkg/kustoutils/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -28,7 +28,6 @@ var _ = Describe("Policymanager", Label("Policymanager"), Label("live"), func() 
 		tableName = "test"
 	})
 
-	// get a policy for the test table
 	It("should get a policy", func() {
 		ctx := context.Background()
 		retentionPolicy, err := kustoutils.GetTableRetentionPolicy(ctx, client, database, tableName)
@@ -44,10 +43,18 @@ var _ = Describe("Policymanager", Label("Policymanager"), Label("live"), func() 
 	})
 	It("should set a policy", func() {
 		ctx := context.Background()
-		newPolicy := &kustov1alpha1.KustoRetentionPolicy{SoftDeletePeriod: "12.00:00:00", Recoverability: "Enabled"}
+		newPolicy := &types.RetentionPolicy{SoftDeletePeriod: "12.00:00:00", Recoverability: "Enabled"}
 		retentionPolicy, err := kustoutils.SetTableRetentionPolicy(ctx, client, database, tableName, newPolicy)
 		Expect(err).NotTo(HaveOccurred())
 		GinkgoWriter.Println("Test table retuention policy:", retentionPolicy)
+
+	})
+	It("should get a policy", func() {
+		ctx := context.Background()
+		policy := &types.CachingPolicy{}
+		err := kustoutils.GetTablePolicy(ctx, client, database, tableName, policy)
+		Expect(err).NotTo(HaveOccurred())
+		GinkgoWriter.Println("Test table policy:", policy)
 
 	})
 })
