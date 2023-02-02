@@ -32,7 +32,7 @@ RUN curl -L >sqlpackage.zip https://aka.ms/sqlpackage-linux \
 # Build the manager binary
 FROM golang:1.19 as builder
 
-ARG delta_kusto_version=0.9.0.105
+ARG delta_kusto_version=0.10.5.112
 WORKDIR /workspace
 
 RUN curl -L >delta-kusto-linux.tar.gz https://github.com/microsoft/delta-kusto/releases/download/${delta_kusto_version}/delta-kusto-linux.tar.gz \

@@ -1,0 +1,12 @@
+apiVersion: kusto.microsoft.com/v1alpha1
+kind: CachingPolicy
+metadata:
+  labels:
+    app.kubernetes.io/name: cachingpolicy
+    app.kubernetes.io/instance: cachingpolicy-sample
+    app.kubernetes.io/part-of: schema-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: schema-operator
+  name: cachingpolicy-sample
+spec:
+  # TODO(user): Add fields here

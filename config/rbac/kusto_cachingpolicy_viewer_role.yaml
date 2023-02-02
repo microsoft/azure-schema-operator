@@ -1,0 +1,27 @@
+# permissions for end users to view cachingpolicies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: cachingpolicy-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: schema-operator
+    app.kubernetes.io/part-of: schema-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: cachingpolicy-viewer-role
+rules:
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - cachingpolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - cachingpolicies/status
+  verbs:
+  - get

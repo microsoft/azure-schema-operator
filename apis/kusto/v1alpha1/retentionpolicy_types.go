@@ -20,7 +20,7 @@ type PolicySpec struct {
 
 // RetentionPolicySpec defines the desired state of RetentionPolicy
 type RetentionPolicySpec struct {
-	PolicySpec
+	PolicySpec      `json:"",inline`
 	RetentionPolicy types.RetentionPolicy `json:"retentionPolicy"`
 }
 

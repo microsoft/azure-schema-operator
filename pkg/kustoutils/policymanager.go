@@ -30,10 +30,10 @@ type dbRetentionRecord struct {
 // GetTableCachingPolicy returns the caching policy of a table
 // it furst checks if a policy is defined on the table, if not it checks if a policy is defined on the database.
 func GetTableCachingPolicy(ctx context.Context, client *kusto.Client, database string, tableName string) (*types.CachingPolicy, error) {
-	var policy *types.CachingPolicy
+	policy := &types.CachingPolicy{}
 	err := GetTablePolicy(ctx, client, database, tableName, policy)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to get table retention policy")
+		log.Error().Err(err).Msg("failed to get table caching policy")
 		return nil, err
 	}
 	return policy, nil
@@ -42,7 +42,7 @@ func GetTableCachingPolicy(ctx context.Context, client *kusto.Client, database s
 // GetTableRetentionPolicy returns the retention policy of a table
 // it furst checks if a policy is defined on the table, if not it checks if a policy is defined on the database.
 func GetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database string, tableName string) (*types.RetentionPolicy, error) {
-	var policy *types.RetentionPolicy
+	policy := &types.RetentionPolicy{}
 	err := GetTablePolicy(ctx, client, database, tableName, policy)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to get table retention policy")
@@ -67,7 +67,7 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 	}
 	defer iterator.Stop()
 	rec := retentionRecord{}
-	var newPolicy *types.RetentionPolicy
+	newPolicy := &types.RetentionPolicy{}
 	err = iterator.DoOnRowOrError(
 		func(row *table.Row, inlineError *errors.Error) error {
 			if row != nil {
@@ -96,6 +96,56 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 	}
 	if newPolicy.SoftDeletePeriod != policy.SoftDeletePeriod || newPolicy.Recoverability != policy.Recoverability {
 		log.Error().Msgf("returned policy doesn't match requested policy, %s vs %s", newPolicy.SoftDeletePeriod, policy.SoftDeletePeriod)
+		return nil, fmt.Errorf("returned policy doesn't match requested policy")
+	}
+	return newPolicy, nil
+}
+
+// SetTableCachingPolicy sets the retention policy of a table
+func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database string, tableName string, policy *types.CachingPolicy) (*types.CachingPolicy, error) {
+	policyStr, err := json.Marshal(policy)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to marshal policy")
+		return nil, err
+	}
+	stmtStr := fmt.Sprintf(".alter table %s policy %s ``` %s ```", tableName, policy.GetShortName(), policyStr)
+	stmt := kusto.NewStmt("", kusto.UnsafeStmt(unsafe.Stmt{Add: true, SuppressWarning: true})).UnsafeAdd(stmtStr)
+	iterator, err := client.Mgmt(ctx, database, stmt)
+	if err != nil {
+		log.Error().Err(err).Msgf("failed to alter table %s policy", policy.GetShortName())
+		return nil, err
+	}
+	defer iterator.Stop()
+	rec := retentionRecord{}
+	newPolicy := &types.CachingPolicy{}
+	err = iterator.DoOnRowOrError(
+		func(row *table.Row, inlineError *errors.Error) error {
+			if row != nil {
+				row.ToStruct(&rec)
+				log.Debug().Msgf("got policy: %+v, policy: %s", rec, rec.Policy)
+				if rec.Policy != "null" {
+					newPolicy = &types.CachingPolicy{}
+					err = json.Unmarshal([]byte(rec.Policy), newPolicy)
+					if err != nil {
+						log.Error().Err(err).Msg("failed to unmarshal policy")
+						return err
+					}
+					log.Debug().Msgf("got policy: %+v", newPolicy)
+				}
+			} else {
+				// ignore inline errors - not relevant for this use case
+				log.Error().Msgf("got inline error: %s", inlineError.Error())
+			}
+			// log.Debug().Msgf("dbname: %s", dbName)
+			return nil
+		},
+	)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to iterate results")
+		return nil, err
+	}
+	if newPolicy.DataHotSpan != policy.DataHotSpan || newPolicy.IndexHotSpan != policy.IndexHotSpan {
+		log.Error().Msgf("returned policy doesn't match requested policy, %s vs %s", newPolicy.DataHotSpan, policy.IndexHotSpan)
 		return nil, fmt.Errorf("returned policy doesn't match requested policy")
 	}
 	return newPolicy, nil
