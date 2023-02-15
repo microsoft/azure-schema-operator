@@ -6,7 +6,6 @@ Licensed under the MIT license.
 package v1alpha1
 
 import (
-	"github.com/microsoft/azure-schema-operator/pkg/kustoutils/types"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -16,7 +15,7 @@ import (
 // CachingPolicySpec defines the desired state of CachingPolicy
 type CachingPolicySpec struct {
 	PolicySpec    `json:"",inline`
-	CachingPolicy types.CachingPolicy `json:"cachingPolicy"`
+	CachingPolicy string `json:"cachingPolicy"`
 }
 
 // CachingPolicyStatus defines the observed state of CachingPolicy

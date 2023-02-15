@@ -29,14 +29,15 @@ type dbRetentionRecord struct {
 
 // GetTableCachingPolicy returns the caching policy of a table
 // it furst checks if a policy is defined on the table, if not it checks if a policy is defined on the database.
-func GetTableCachingPolicy(ctx context.Context, client *kusto.Client, database string, tableName string) (*types.CachingPolicy, error) {
+func GetTableCachingPolicy(ctx context.Context, client *kusto.Client, database string, tableName string) (string, error) {
 	policy := &types.CachingPolicy{}
 	err := GetTablePolicy(ctx, client, database, tableName, policy)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to get table caching policy")
-		return nil, err
+		return "", err
 	}
-	return policy, nil
+	policyStr := ConvertTimeFormat(*&policy.DataHotSpan.Value)
+	return policyStr, nil
 }
 
 // GetTableRetentionPolicy returns the retention policy of a table
@@ -102,18 +103,14 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 }
 
 // SetTableCachingPolicy sets the retention policy of a table
-func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database string, tableName string, policy *types.CachingPolicy) (*types.CachingPolicy, error) {
-	policyStr, err := json.Marshal(policy)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to marshal policy")
-		return nil, err
-	}
-	stmtStr := fmt.Sprintf(".alter table %s policy %s ``` %s ```", tableName, policy.GetShortName(), policyStr)
+func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database string, tableName string, policy string) (string, error) {
+
+	stmtStr := fmt.Sprintf(".alter table %s policy caching hot = %s", tableName, policy)
 	stmt := kusto.NewStmt("", kusto.UnsafeStmt(unsafe.Stmt{Add: true, SuppressWarning: true})).UnsafeAdd(stmtStr)
 	iterator, err := client.Mgmt(ctx, database, stmt)
 	if err != nil {
-		log.Error().Err(err).Msgf("failed to alter table %s policy", policy.GetShortName())
-		return nil, err
+		log.Error().Err(err).Msg("failed to alter table caching policy")
+		return "", err
 	}
 	defer iterator.Stop()
 	rec := retentionRecord{}
@@ -142,13 +139,15 @@ func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database s
 	)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to iterate results")
-		return nil, err
+		return "", err
 	}
-	if newPolicy.DataHotSpan != policy.DataHotSpan || newPolicy.IndexHotSpan != policy.IndexHotSpan {
-		log.Error().Msgf("returned policy doesn't match requested policy, %s vs %s", newPolicy.DataHotSpan, policy.IndexHotSpan)
-		return nil, fmt.Errorf("returned policy doesn't match requested policy")
+	newPolicyStr := ConvertTimeFormat(newPolicy.DataHotSpan.Value)
+
+	if newPolicyStr != policy {
+		log.Error().Msgf("returned policy doesn't match requested policy, %s vs %s", newPolicy.DataHotSpan, policy)
+		return "", fmt.Errorf("returned policy doesn't match requested policy")
 	}
-	return newPolicy, nil
+	return newPolicyStr, nil
 }
 
 // GetTablePolicy returns a requested policy of a table

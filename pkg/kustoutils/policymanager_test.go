@@ -49,12 +49,20 @@ var _ = Describe("Policymanager", Label("Policymanager"), Label("live"), func() 
 		GinkgoWriter.Println("Test table retuention policy:", retentionPolicy)
 
 	})
-	It("should get a policy", func() {
+	It("should get a caching policy", Label("cachingpolicy"), func() {
 		ctx := context.Background()
 		policy := &types.CachingPolicy{}
 		err := kustoutils.GetTablePolicy(ctx, client, database, tableName, policy)
 		Expect(err).NotTo(HaveOccurred())
 		GinkgoWriter.Println("Test table policy:", policy)
+
+	})
+	It("should set a caching policy", Label("cachingpolicy"), func() {
+		ctx := context.Background()
+		newPolicy := "7d"
+		cachingPolicy, err := kustoutils.SetTableCachingPolicy(ctx, client, database, tableName, newPolicy)
+		Expect(err).NotTo(HaveOccurred())
+		GinkgoWriter.Println("Test table retuention policy:", cachingPolicy)
 
 	})
 })

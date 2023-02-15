@@ -67,9 +67,9 @@ func (r *CachingPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			log.Info("Failed to get caching Policy")
 			return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
 		}
-		if *tablePolicy != cachingPolicy.Spec.CachingPolicy {
-			changedPolicy, err := kustoutils.SetTableCachingPolicy(ctx, client, cachingPolicy.Spec.DB, cachingPolicy.Spec.Table, &cachingPolicy.Spec.CachingPolicy)
-			if err != nil || *changedPolicy != cachingPolicy.Spec.CachingPolicy {
+		if tablePolicy != cachingPolicy.Spec.CachingPolicy {
+			changedPolicy, err := kustoutils.SetTableCachingPolicy(ctx, client, cachingPolicy.Spec.DB, cachingPolicy.Spec.Table, cachingPolicy.Spec.CachingPolicy)
+			if err != nil || changedPolicy != cachingPolicy.Spec.CachingPolicy {
 				log.Error(err, "Failed to changing caching Policy")
 				return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
 			}
