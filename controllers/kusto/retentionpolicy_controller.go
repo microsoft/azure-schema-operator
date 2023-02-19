@@ -51,6 +51,11 @@ func (r *RetentionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
+	changeType := "table"
+	if  retentionPolicy.Spec.Table == "" {
+		changeType = "database"
+	}
+
 	// Loop over all clusters - check if the policy is set - if not - set it
 	clustersDone := make([]string, 0)
 	for _, cluster := range retentionPolicy.Spec.ClusterUris {
@@ -72,7 +77,7 @@ func (r *RetentionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 				log.Error(err, "Failed to changing retention Policy")
 				return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
 			}
-			r.recorder.Eventf(retentionPolicy, corev1.EventTypeNormal, "Executed", "Set table policy in cluster  %s", cluster)
+			r.recorder.Eventf(retentionPolicy, corev1.EventTypeNormal, "Executed", "Set %s policy in cluster  %s", changeType, cluster)
 		}
 		clustersDone = append(clustersDone, cluster)
 	}

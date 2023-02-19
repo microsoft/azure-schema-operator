@@ -27,12 +27,18 @@ var _ = Describe("Policymanager", Label("Policymanager"), Label("live"), func() 
 		database = "test"
 		tableName = "test"
 	})
-
 	It("should get a policy", func() {
 		ctx := context.Background()
 		retentionPolicy, err := kustoutils.GetTableRetentionPolicy(ctx, client, database, tableName)
 		Expect(err).NotTo(HaveOccurred())
 		GinkgoWriter.Println("Test table retuention policy:", retentionPolicy)
+
+	})
+	It("should get the db policy for an empty table ", func() {
+		ctx := context.Background()
+		retentionPolicy, err := kustoutils.GetTableRetentionPolicy(ctx, client, database, "")
+		Expect(err).NotTo(HaveOccurred())
+		GinkgoWriter.Println("Test database retuention policy:", retentionPolicy)
 
 	})
 	It("should fail to get a policy for non existing table", func() {

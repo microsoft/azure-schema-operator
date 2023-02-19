@@ -31,7 +31,12 @@ type dbRetentionRecord struct {
 // it furst checks if a policy is defined on the table, if not it checks if a policy is defined on the database.
 func GetTableCachingPolicy(ctx context.Context, client *kusto.Client, database string, tableName string) (string, error) {
 	policy := &types.CachingPolicy{}
-	err := GetTablePolicy(ctx, client, database, tableName, policy)
+	var err error
+	if tableName != "" {
+		err = GetTablePolicy(ctx, client, database, tableName, policy)
+	} else {
+		err = GetDatabasePolicy(ctx, client, database, policy)
+	}
 	if err != nil {
 		log.Error().Err(err).Msg("failed to get table caching policy")
 		return "", err
@@ -44,7 +49,13 @@ func GetTableCachingPolicy(ctx context.Context, client *kusto.Client, database s
 // it furst checks if a policy is defined on the table, if not it checks if a policy is defined on the database.
 func GetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database string, tableName string) (*types.RetentionPolicy, error) {
 	policy := &types.RetentionPolicy{}
-	err := GetTablePolicy(ctx, client, database, tableName, policy)
+	var err error
+	if tableName != "" {
+		log.Debug().Msgf("getting retention policy for table %s", tableName)
+		err = GetTablePolicy(ctx, client, database, tableName, policy)
+	} else {
+		err = GetDatabasePolicy(ctx, client, database, policy)
+	}
 	if err != nil {
 		log.Error().Err(err).Msg("failed to get table retention policy")
 		return nil, err
@@ -59,11 +70,17 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 		log.Error().Err(err).Msg("failed to marshal policy")
 		return nil, err
 	}
-	stmtStr := fmt.Sprintf(".alter table %s policy retention ``` %s ```", tableName, policyStr)
+	var stmtStr string
+	if tableName != "" {
+		stmtStr = fmt.Sprintf(".alter table %s policy retention ``` %s ```", tableName, policyStr)
+	} else {
+		stmtStr = fmt.Sprintf(".alter database %s policy retention ``` %s ```", database, policyStr)
+	}
+	
 	stmt := kusto.NewStmt("", kusto.UnsafeStmt(unsafe.Stmt{Add: true, SuppressWarning: true})).UnsafeAdd(stmtStr)
 	iterator, err := client.Mgmt(ctx, database, stmt)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to alter table retention policy")
+		log.Error().Err(err).Msg("failed to alter retention policy")
 		return nil, err
 	}
 	defer iterator.Stop()
@@ -73,7 +90,7 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 		func(row *table.Row, inlineError *errors.Error) error {
 			if row != nil {
 				row.ToStruct(&rec)
-				log.Debug().Msgf("got policy: %+v, policy: %s", rec, rec.Policy)
+				log.Debug().Msgf("SetTableRetentionPolicy: got policy: %+v, policy: %s", rec, rec.Policy)
 				if rec.Policy != "null" {
 					newPolicy = &types.RetentionPolicy{}
 					err = json.Unmarshal([]byte(rec.Policy), newPolicy)
@@ -81,7 +98,7 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 						log.Error().Err(err).Msg("failed to unmarshal policy")
 						return err
 					}
-					log.Debug().Msgf("got policy: %+v", newPolicy)
+					log.Debug().Msgf("SetTableRetentionPolicy: got policy: %+v", newPolicy)
 				}
 			} else {
 				// ignore inline errors - not relevant for this use case
@@ -104,8 +121,12 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 
 // SetTableCachingPolicy sets the retention policy of a table
 func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database string, tableName string, policy string) (string, error) {
-
-	stmtStr := fmt.Sprintf(".alter table %s policy caching hot = %s", tableName, policy)
+	var stmtStr string
+	if tableName != "" {
+		stmtStr = fmt.Sprintf(".alter table %s policy caching hot = %s", tableName, policy)
+	} else {
+		stmtStr = fmt.Sprintf(".alter database %s policy caching hot = %s", database, policy)
+	}
 	stmt := kusto.NewStmt("", kusto.UnsafeStmt(unsafe.Stmt{Add: true, SuppressWarning: true})).UnsafeAdd(stmtStr)
 	iterator, err := client.Mgmt(ctx, database, stmt)
 	if err != nil {
@@ -119,7 +140,7 @@ func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database s
 		func(row *table.Row, inlineError *errors.Error) error {
 			if row != nil {
 				row.ToStruct(&rec)
-				log.Debug().Msgf("got policy: %+v, policy: %s", rec, rec.Policy)
+				log.Debug().Msgf("SetTableCachingPolicy: got policy: %+v, policy: %s", rec, rec.Policy)
 				if rec.Policy != "null" {
 					newPolicy = &types.CachingPolicy{}
 					err = json.Unmarshal([]byte(rec.Policy), newPolicy)
@@ -127,7 +148,7 @@ func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database s
 						log.Error().Err(err).Msg("failed to unmarshal policy")
 						return err
 					}
-					log.Debug().Msgf("got policy: %+v", newPolicy)
+					log.Debug().Msgf("SetTableCachingPolicy: got policy: %+v", newPolicy)
 				}
 			} else {
 				// ignore inline errors - not relevant for this use case
@@ -167,14 +188,14 @@ func GetTablePolicy(ctx context.Context, client *kusto.Client, database string, 
 		func(row *table.Row, inlineError *errors.Error) error {
 			if row != nil {
 				row.ToStruct(&rec)
-				log.Debug().Msgf("got policy: %+v, policy: %s", rec, rec.Policy)
+				log.Debug().Msgf("GetTablePolicy: got policy: %+v, policy: %s", rec, rec.Policy)
 				if rec.Policy != "null" {
 					err = json.Unmarshal([]byte(rec.Policy), policy)
 					if err != nil {
 						log.Error().Err(err).Msg("failed to unmarshal policy")
 						return err
 					}
-					log.Debug().Msgf("got policy: %+v", policy)
+					log.Debug().Msgf("GetTablePolicy: got policy: %+v", policy)
 					found = true
 				}
 			} else {
@@ -199,12 +220,12 @@ func GetTablePolicy(ctx context.Context, client *kusto.Client, database string, 
 	// ignore inline errors - not relevant for this use case
 	// log.Debug().Msgf("dbname: %s", dbName)
 	// if we found a policy on the table, return it
-	return GetDatabasePolicy(database, policy, client, ctx)
+	return GetDatabasePolicy(ctx,client,database, policy)
 
 }
 
 // GetDatabasePolicy returns a requested policy of a table
-func GetDatabasePolicy(database string, policy types.Policy, client *kusto.Client, ctx context.Context) error {
+func GetDatabasePolicy(ctx context.Context,client *kusto.Client,database string, policy types.Policy) error {
 	dbstmt := kusto.NewStmt("", kusto.UnsafeStmt(unsafe.Stmt{Add: true, SuppressWarning: true})).UnsafeAdd(".show database " + database + " policy " + policy.GetShortName())
 	dbiterator, err := client.Mgmt(ctx, database, dbstmt)
 	if err != nil {

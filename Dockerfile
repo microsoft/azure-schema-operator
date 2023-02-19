@@ -28,16 +28,17 @@ RUN curl -L >sqlpackage.zip https://aka.ms/sqlpackage-linux \
   && chmod a+x /staging/sqlpackage/sqlpackage \
   && rm sqlpackage.zip
 
-RUN curl -L >delta-kusto-linux.tar.gz https://github.com/microsoft/delta-kusto/releases/download/${delta_kusto_version}/delta-kusto-linux.tar.gz \
-  && tar -xzvf delta-kusto-linux.tar.gz -C /staging \
-  && chmod +x /staging/delta-kusto \
-  && rm delta-kusto-linux.tar.gz 
 
 # Build the manager binary
 FROM golang:1.19 as builder
 
 ARG delta_kusto_version=0.10.5.112
 WORKDIR /workspace
+
+RUN curl -L >delta-kusto-linux.tar.gz https://github.com/microsoft/delta-kusto/releases/download/${delta_kusto_version}/delta-kusto-linux.tar.gz \
+  && tar -xzvf delta-kusto-linux.tar.gz -C /tmp \
+  && chmod +x /tmp/delta-kusto \
+  && rm delta-kusto-linux.tar.gz 
 
 COPY go.mod go.mod
 COPY go.sum go.sum
@@ -76,7 +77,7 @@ ENV \
 
 WORKDIR /
 COPY --from=installer /staging/ /
-COPY --from=installer staging/delta-kusto /bin/
+COPY --from=builder /tmp/delta-kusto /bin/
 COPY --from=builder /workspace/manager .
 
 USER 65532:65532

@@ -15,7 +15,8 @@ type PolicySpec struct {
 	// +kubebuilder:validation:MinItems:=1
 	ClusterUris []string `json:"clusterUris"`
 	DB          string   `json:"db"`
-	Table       string   `json:"table"`
+	// +kubebuilder:validation:Optional
+	Table string `json:"table"`
 }
 
 // RetentionPolicySpec defines the desired state of RetentionPolicy
