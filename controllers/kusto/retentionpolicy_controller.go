@@ -52,7 +52,7 @@ func (r *RetentionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	}
 
 	changeType := "table"
-	if  retentionPolicy.Spec.Table == "" {
+	if retentionPolicy.Spec.Table == "" {
 		changeType = "database"
 	}
 

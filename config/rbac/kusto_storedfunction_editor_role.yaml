@@ -1,0 +1,31 @@
+# permissions for end users to edit storedfunctions.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: storedfunction-editor-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: schema-operator
+    app.kubernetes.io/part-of: schema-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: storedfunction-editor-role
+rules:
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - storedfunctions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - storedfunctions/status
+  verbs:
+  - get

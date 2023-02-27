@@ -76,7 +76,7 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 	} else {
 		stmtStr = fmt.Sprintf(".alter database %s policy retention ``` %s ```", database, policyStr)
 	}
-	
+
 	stmt := kusto.NewStmt("", kusto.UnsafeStmt(unsafe.Stmt{Add: true, SuppressWarning: true})).UnsafeAdd(stmtStr)
 	iterator, err := client.Mgmt(ctx, database, stmt)
 	if err != nil {
@@ -220,12 +220,12 @@ func GetTablePolicy(ctx context.Context, client *kusto.Client, database string, 
 	// ignore inline errors - not relevant for this use case
 	// log.Debug().Msgf("dbname: %s", dbName)
 	// if we found a policy on the table, return it
-	return GetDatabasePolicy(ctx,client,database, policy)
+	return GetDatabasePolicy(ctx, client, database, policy)
 
 }
 
 // GetDatabasePolicy returns a requested policy of a table
-func GetDatabasePolicy(ctx context.Context,client *kusto.Client,database string, policy types.Policy) error {
+func GetDatabasePolicy(ctx context.Context, client *kusto.Client, database string, policy types.Policy) error {
 	dbstmt := kusto.NewStmt("", kusto.UnsafeStmt(unsafe.Stmt{Add: true, SuppressWarning: true})).UnsafeAdd(".show database " + database + " policy " + policy.GetShortName())
 	dbiterator, err := client.Mgmt(ctx, database, dbstmt)
 	if err != nil {
@@ -255,4 +255,40 @@ func GetDatabasePolicy(ctx context.Context,client *kusto.Client,database string,
 	}
 
 	return nil
+}
+
+// GetFunction returns a requested function
+func GetFunction(ctx context.Context, client *kusto.Client, database string, function types.KustoFunction, create bool) (*types.KustoFunction, error) {
+	dbstmt := kusto.NewStmt("", kusto.UnsafeStmt(unsafe.Stmt{Add: true, SuppressWarning: true}))
+	if create {
+		dbstmt = dbstmt.UnsafeAdd(function.SetFunctionQuery())
+	} else {
+		dbstmt = dbstmt.UnsafeAdd(function.GetFunctionQuery())
+	}
+	log.Debug().Msgf("GetFunction: statment: %s", dbstmt)
+
+	dbiterator, err := client.Mgmt(ctx, database, dbstmt)
+	if err != nil {
+		log.Error().Err(err).Str("funcName", function.Name).Msg("failed to get function")
+		return nil, err
+	}
+	defer dbiterator.Stop()
+	dbFunction := &types.KustoFunction{}
+	err = dbiterator.DoOnRowOrError(
+		func(row *table.Row, inlineError *errors.Error) error {
+			if row != nil {
+				log.Debug().Msgf("got row: %+v", row)
+				row.ToStruct(dbFunction)
+			} else {
+				log.Error().Msgf("got inline error: %s", inlineError.Error())
+			}
+
+			return nil
+		},
+	)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to iterate results")
+		return nil, err
+	}
+	return dbFunction, nil
 }

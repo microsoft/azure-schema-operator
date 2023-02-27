@@ -14,7 +14,7 @@ import (
 
 // CachingPolicySpec defines the desired state of CachingPolicy
 type CachingPolicySpec struct {
-	PolicySpec    `json:"",inline`
+	PolicySpec    `json:",inline"`
 	CachingPolicy string `json:"cachingPolicy"`
 }
 

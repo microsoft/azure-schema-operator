@@ -72,3 +72,49 @@ var _ = Describe("Policymanager", Label("Policymanager"), Label("live"), func() 
 
 	})
 })
+
+var _ = Describe("Function Manager", Label("KustoFunctions"), Label("live"), func() {
+	var (
+		client   *kusto.Client
+		database string
+		funcName string
+		err      error
+	)
+
+	BeforeEach(func() {
+		GinkgoWriter.Println("connecting to cluster: ", testCluster)
+		kcsb := kusto.NewConnectionStringBuilder(testCluster).WithDefaultAzureCredential()
+		client, err = kusto.New(kcsb)
+		Expect(err).NotTo(HaveOccurred())
+		database = "test"
+		funcName = "test"
+	})
+	It("should fail to find missing function", func() {
+		ctx := context.Background()
+		funct := types.KustoFunction{Name: funcName}
+		_, err := kustoutils.GetFunction(ctx, client, database, funct, false)
+		Expect(err).To(HaveOccurred())
+		// GinkgoWriter.Println("Test function:", funct)
+
+	})
+	It("should find a function", func() {
+		ctx := context.Background()
+		funct := types.KustoFunction{Name: "MyTestFunction2"}
+		funcInDB, err := kustoutils.GetFunction(ctx, client, database, funct, false)
+		Expect(err).ToNot(HaveOccurred())
+		GinkgoWriter.Printf("Test function: %+v", funcInDB)
+	})
+	It("should create-or-alter a function", func() {
+		ctx := context.Background()
+		funct := types.KustoFunction{
+			Name:       "MyTestFunction",
+			Parameters: "(x:int)",
+			Body:       "{ let y = 2; x + y }",
+		}
+		funcInDB, err := kustoutils.GetFunction(ctx, client, database, funct, true)
+		Expect(err).ToNot(HaveOccurred())
+		GinkgoWriter.Printf("Test function: %+v\n", funct)
+		GinkgoWriter.Printf("Returned function: %+v\n", funcInDB)
+		Expect(funct.Equals(funcInDB)).To(Equal(true))
+	})
+})
