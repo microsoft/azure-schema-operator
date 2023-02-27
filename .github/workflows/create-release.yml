@@ -59,7 +59,7 @@ jobs:
 
       - name: Login to registry
         # note that all creds are on host and never passed into devcontainer
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
