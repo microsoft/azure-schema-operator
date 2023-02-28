@@ -108,3 +108,81 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - cachingpolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - cachingpolicies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - cachingpolicies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - retentionpolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - retentionpolicies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - retentionpolicies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - storedfunctions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - storedfunctions/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - storedfunctions/status
+  verbs:
+  - get
+  - patch
+  - update
