@@ -8,7 +8,15 @@ trigger:
     - '*'
 
 resources:
-- repo: self
+  repositories:
+  - repository: self
+  containers:
+  - container: azureschemaoperator      
+    type: ACR  
+    azureSubscription: 91d8605f-b80a-4b1c-bca1-6ec55bfd1deb
+    resourceGroup: azure-schema-operator
+    registry: azureschemaoperator
+    repository: azureschemaoperator
 
 variables:
   # Container registry service connection established during pipeline creation
