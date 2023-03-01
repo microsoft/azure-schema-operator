@@ -50,10 +50,10 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-    - task: HelmInstaller@0
-      displayName: Install Helm 3.10.2
+    - task: HelmInstaller@1
+      displayName: Install Helm 3.6.2
       inputs:
-        helmVersion: 3.10.2
+        helmVersionToInstall: 3.6.2
     - task: HelmDeploy@0
       inputs:
         azureSubscriptionForACR: 'Adallom RS-02 (Europe West) Subscription'
