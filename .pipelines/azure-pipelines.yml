@@ -56,7 +56,7 @@ stages:
         helmVersion: 3.10.2
     - task: HelmDeploy@0
       inputs:
-        azureSubscriptionForACR: 'Adallom RS-02 (Europe West) Subscription - Portal'
+        azureSubscriptionForACR: 'Adallom RS-02 (Europe West) Subscription'
         azureResourceGroupForACR: 'azure-schema-operator'
         azureContainerRegistry: 'azureschemaoperator.azurecr.io'
         command: 'save'
