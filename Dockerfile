@@ -1,12 +1,12 @@
 # Installer image
-FROM cblmariner.azurecr.io/base/core:1.0 AS installer
+FROM mcr.microsoft.com/cbl-mariner/base/core:2.0 AS installer
 
 
 RUN tdnf install -y dnf unzip
 
 # Install .NET's dependencies into a staging location
 RUN mkdir /staging \
-  && dnf install -y --releasever=1.0 --installroot /staging \
+  && tdnf install -y --releasever=2.0 --installroot /staging \
   prebuilt-ca-certificates \
   glibc \
   krb5 \
@@ -30,7 +30,7 @@ RUN curl -L >sqlpackage.zip https://aka.ms/sqlpackage-linux \
 
 
 # Build the manager binary
-FROM golang:1.19 as builder
+FROM mcr.microsoft.com/oss/go/microsoft/golang:1.19 as builder
 
 ARG delta_kusto_version=0.10.5.112
 WORKDIR /workspace
@@ -62,7 +62,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
 # FROM cblmariner.azurecr.io/distroless/base-debug:1.0
 
 # .NET runtime-deps image
-FROM cblmariner.azurecr.io/distroless/minimal:1.0
+FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0
 
 LABEL org.label-schema.vendor = "Microsoft" \
   org.label-schema.name = "Azure Schema Operator" \
