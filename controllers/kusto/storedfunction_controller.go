@@ -7,6 +7,7 @@ package kusto
 
 import (
 	"context"
+	"github.com/hashicorp/go-multierror"
 	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -63,12 +64,15 @@ func (r *StoredFunctionReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 
 	// Loop over all clusters - check if the policy is set - if not - set it
 	clustersDone := make([]string, 0)
+	var executionError error
 	for _, cluster := range storedFunction.Spec.ClusterUris {
 		kcsb := kusto.NewConnectionStringBuilder(cluster).WithDefaultAzureCredential()
 		client, err := kusto.New(kcsb)
 		if err != nil {
 			log.Error(err, "Failed to create Kusto Client")
-			return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
+			r.recorder.Eventf(storedFunction, corev1.EventTypeWarning, "Failed", "Failed to create function in cluster  %s", cluster)
+			executionError = multierror.Append(executionError, err)
+			continue
 		}
 		defer client.Close()
 
@@ -78,7 +82,10 @@ func (r *StoredFunctionReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 			funcInDB, err := kustoutils.GetFunction(ctx, client, storedFunction.Spec.DB, kustoFunc, true)
 			if err != nil || !kustoFunc.Equals(funcInDB) {
 				log.Error(err, "Failed Creating Function")
-				return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
+				r.recorder.Eventf(storedFunction, corev1.EventTypeWarning, "Failed", "Failed to create function in cluster  %s", cluster)
+				executionError = multierror.Append(executionError, err)
+				continue
+
 			}
 			r.recorder.Eventf(storedFunction, corev1.EventTypeNormal, "Executed", "Function %s created in cluster  %s", kustoFunc.Name, cluster)
 		}
@@ -88,10 +95,15 @@ func (r *StoredFunctionReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	storedFunction.Status.ClustersDone = clustersDone
 	storedFunction.Status.Status = "Success"
 
+	if executionError != nil {
+		storedFunction.Status.Status = "Failed"
+	}
+
 	err = r.Status().Update(ctx, storedFunction)
-	if err != nil {
-		log.Error(err, "failed updating stored function status", "request", req.String())
-		return ctrl.Result{}, err
+	executionError = multierror.Append(executionError, err)
+	if executionError != nil {
+		log.Error(executionError, "failed updating stored function status", "request", req.String())
+		return ctrl.Result{RequeueAfter: 10 * time.Minute}, executionError
 	}
 
 	return ctrl.Result{}, nil

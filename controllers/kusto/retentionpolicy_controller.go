@@ -7,6 +7,7 @@ package kusto
 
 import (
 	"context"
+	"github.com/hashicorp/go-multierror"
 	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -58,24 +59,31 @@ func (r *RetentionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 	// Loop over all clusters - check if the policy is set - if not - set it
 	clustersDone := make([]string, 0)
+	var executionError error
 	for _, cluster := range retentionPolicy.Spec.ClusterUris {
 		kcsb := kusto.NewConnectionStringBuilder(cluster).WithDefaultAzureCredential()
 		client, err := kusto.New(kcsb)
 		if err != nil {
 			log.Error(err, "Failed to create Kusto Client")
-			return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
+			r.recorder.Eventf(retentionPolicy, corev1.EventTypeWarning, "Failed", "Failed to set policy in cluster  %s", cluster)
+			executionError = multierror.Append(executionError, err)
+			continue
 		}
 		defer client.Close()
 		tablePolicy, err := kustoutils.GetTableRetentionPolicy(ctx, client, retentionPolicy.Spec.DB, retentionPolicy.Spec.Table)
 		if err != nil {
 			log.Info("Failed to get retention Policy")
-			return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
+			r.recorder.Eventf(retentionPolicy, corev1.EventTypeWarning, "Failed", "Failed to set policy in cluster  %s", cluster)
+			executionError = multierror.Append(executionError, err)
+			continue
 		}
 		if *tablePolicy != retentionPolicy.Spec.RetentionPolicy {
 			changedPolicy, err := kustoutils.SetTableRetentionPolicy(ctx, client, retentionPolicy.Spec.DB, retentionPolicy.Spec.Table, &retentionPolicy.Spec.RetentionPolicy)
 			if err != nil || *changedPolicy != retentionPolicy.Spec.RetentionPolicy {
 				log.Error(err, "Failed to changing retention Policy")
-				return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
+				r.recorder.Eventf(retentionPolicy, corev1.EventTypeWarning, "Failed", "Failed to set policy in cluster  %s", cluster)
+				executionError = multierror.Append(executionError, err)
+				continue
 			}
 			r.recorder.Eventf(retentionPolicy, corev1.EventTypeNormal, "Executed", "Set %s policy in cluster  %s", changeType, cluster)
 		}
@@ -85,10 +93,15 @@ func (r *RetentionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	retentionPolicy.Status.ClustersDone = clustersDone
 	retentionPolicy.Status.Status = "Success"
 
+	if executionError != nil {
+		retentionPolicy.Status.Status = "Failed"
+	}
+
 	err = r.Status().Update(ctx, retentionPolicy)
-	if err != nil {
-		log.Error(err, "failed updating retention policy status", "request", req.String())
-		return ctrl.Result{}, err
+	executionError = multierror.Append(executionError, err)
+	if executionError != nil {
+		log.Error(executionError, "failed updating retention policy status", "request", req.String())
+		return ctrl.Result{RequeueAfter: 10 * time.Minute}, executionError
 	}
 
 	return ctrl.Result{}, nil

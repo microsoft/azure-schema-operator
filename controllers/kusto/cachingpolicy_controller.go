@@ -7,6 +7,7 @@ package kusto
 
 import (
 	"context"
+	"github.com/hashicorp/go-multierror"
 	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -54,24 +55,30 @@ func (r *CachingPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	// Loop over all clusters - check if the policy is set - if not - set it
 	clustersDone := make([]string, 0)
+	var executionError error
 	for _, cluster := range cachingPolicy.Spec.ClusterUris {
 		kcsb := kusto.NewConnectionStringBuilder(cluster).WithDefaultAzureCredential()
 		client, err := kusto.New(kcsb)
 		if err != nil {
 			log.Error(err, "Failed to create Kusto Client")
-			return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
+			r.recorder.Eventf(cachingPolicy, corev1.EventTypeWarning, "Failed", "Failed to set table policy in cluster  %s", cluster)
+			executionError = multierror.Append(executionError, err)
+			continue
 		}
 		defer client.Close()
 		tablePolicy, err := kustoutils.GetTableCachingPolicy(ctx, client, cachingPolicy.Spec.DB, cachingPolicy.Spec.Table)
 		if err != nil {
-			log.Info("Failed to get caching Policy")
-			return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
+			r.recorder.Eventf(cachingPolicy, corev1.EventTypeWarning, "Failed", "Failed to set table policy in cluster  %s", cluster)
+			executionError = multierror.Append(executionError, err)
+			continue
 		}
 		if tablePolicy != cachingPolicy.Spec.CachingPolicy {
 			changedPolicy, err := kustoutils.SetTableCachingPolicy(ctx, client, cachingPolicy.Spec.DB, cachingPolicy.Spec.Table, cachingPolicy.Spec.CachingPolicy)
 			if err != nil || changedPolicy != cachingPolicy.Spec.CachingPolicy {
-				log.Error(err, "Failed to changing caching Policy")
-				return ctrl.Result{RequeueAfter: 10 * time.Minute}, err
+				log.Error(err, "Failed changing caching Policy")
+				r.recorder.Eventf(cachingPolicy, corev1.EventTypeWarning, "Failed", "Failed to table policy in cluster  %s", cluster)
+				executionError = multierror.Append(executionError, err)
+				continue
 			}
 			r.recorder.Eventf(cachingPolicy, corev1.EventTypeNormal, "Executed", "Set table policy in cluster  %s", cluster)
 		}
@@ -81,10 +88,15 @@ func (r *CachingPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	cachingPolicy.Status.ClustersDone = clustersDone
 	cachingPolicy.Status.Status = "Success"
 
+	if executionError != nil {
+		cachingPolicy.Status.Status = "Failed"
+	}
+
 	err = r.Status().Update(ctx, cachingPolicy)
-	if err != nil {
-		log.Error(err, "failed updating caching policy status", "request", req.String())
-		return ctrl.Result{}, err
+	executionError = multierror.Append(executionError, err)
+	if executionError != nil {
+		log.Error(executionError, "failed updating caching policy status", "request", req.String())
+		return ctrl.Result{RequeueAfter: 10 * time.Minute}, executionError
 	}
 
 	return ctrl.Result{}, nil
