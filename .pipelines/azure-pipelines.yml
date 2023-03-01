@@ -14,7 +14,7 @@ variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '9d31c0a1-42ef-4a7a-9c30-859e0150d3cd'
   imageRepository: 'azureschemaoperator'
-  containerRegistry: 'mcasdatacr.azurecr.io'
+  containerRegistry: 'mcaspublicops.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
 
@@ -22,6 +22,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
+
 - stage: Build
   displayName: Build and push stage
   jobs:
