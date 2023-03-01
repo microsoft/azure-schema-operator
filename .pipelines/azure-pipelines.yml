@@ -55,11 +55,11 @@ stages:
       inputs:
         helmVersion: 3.10.2
     - task: HelmDeploy@0
-      displayName: Helm save
       inputs:
-        command: save
-        chartNameForACR: $(containerRegistry)/helm/azure-schema-operator:$(tag)
-        chartPathForACR: $(Build.SourcesDirectory)/charts/azure-schema-operator
-        azureSubscriptionForACR: $(azureSubscriptionForACR)
-        azureResourceGroupForACR: $(azureResourceGroupForACR)
-        azureContainerRegistry: $(dockerRegistryServiceConnection)
+        azureSubscriptionForACR: 'Adallom RS-02 (Europe West) Subscription - Portal'
+        azureResourceGroupForACR: 'azure-schema-operator'
+        azureContainerRegistry: 'azureschemaoperator.azurecr.io'
+        command: 'save'
+        chartNameForACR: 'azure-schema-operator'
+        chartPathForACR: '$(Build.SourcesDirectory)/charts/azure-schema-operator'
+    
