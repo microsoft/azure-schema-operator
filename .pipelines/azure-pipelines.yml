@@ -16,7 +16,8 @@ variables:
   imageRepository: 'azureschemaoperator'
   containerRegistry: 'mcaspublicops.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
+  # tag: '$(Build.BuildId)'
+  tag: v0.1.2
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
