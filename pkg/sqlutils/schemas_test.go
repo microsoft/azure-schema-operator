@@ -37,7 +37,7 @@ var _ = Describe("Schemas", func() {
 
 	})
 	if liveTest {
-		Context("when testing sqlpackage with a live server", func() {
+		Context("when testing sqlpackage with a live server", Label("live"), func() {
 			cluster := sqlutils.NewSQLCluster(testCluster+".database.windows.net", nil, nil)
 			filter := schemav1alpha1.TargetFilter{
 				DB:     "DB1",

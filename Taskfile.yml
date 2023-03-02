@@ -158,8 +158,7 @@ tasks:
     desc: Run {{.CONTROLLER_APP}} unit tests and output coverage.
     # deps: [controller:generate-crds]
     cmds:
-      # -race fails at the moment in gopter - possibly due to our shared generator variable?
-      - go test -short -tags=noexit -timeout 10m -covermode set -coverprofile=controller-coverage.out -coverpkg="./pkg/..." -run '{{default ".*" .TEST_FILTER}}' ./pkg/...
+      - ginkgo -v --procs=4 --compilers=4 --label-filter="!live" --timeout 10m --keep-going --cover -covermode set --coverprofile=controller-coverage.out -coverpkg="./pkg/..."  ./pkg/...
 
   controller:test-integration-ci:
     desc: Run integration tests for CI
