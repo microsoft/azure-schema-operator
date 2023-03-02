@@ -7,8 +7,9 @@ package kusto
 
 import (
 	"context"
-	"github.com/hashicorp/go-multierror"
 	"time"
+
+	"github.com/hashicorp/go-multierror"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
@@ -98,7 +99,9 @@ func (r *RetentionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	}
 
 	err = r.Status().Update(ctx, retentionPolicy)
-	executionError = multierror.Append(executionError, err)
+	if err != nil {
+		executionError = multierror.Append(executionError, err)
+	}
 	if executionError != nil {
 		log.Error(executionError, "failed updating retention policy status", "request", req.String())
 		return ctrl.Result{RequeueAfter: 10 * time.Minute}, executionError

@@ -7,8 +7,9 @@ package kusto
 
 import (
 	"context"
-	"github.com/hashicorp/go-multierror"
 	"time"
+
+	"github.com/hashicorp/go-multierror"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
@@ -100,7 +101,9 @@ func (r *StoredFunctionReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	}
 
 	err = r.Status().Update(ctx, storedFunction)
-	executionError = multierror.Append(executionError, err)
+	if err != nil {
+		executionError = multierror.Append(executionError, err)
+	}
 	if executionError != nil {
 		log.Error(executionError, "failed updating stored function status", "request", req.String())
 		return ctrl.Result{RequeueAfter: 10 * time.Minute}, executionError

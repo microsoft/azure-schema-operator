@@ -1,4 +1,5 @@
 package kustoutils
+
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 import (
@@ -42,7 +43,7 @@ func GetTableCachingPolicy(ctx context.Context, client *kusto.Client, database s
 		log.Error().Err(err).Msg("failed to get table caching policy")
 		return "", err
 	}
-	policyStr := ConvertTimeFormat(*&policy.DataHotSpan.Value)
+	policyStr := ConvertTimeFormat(policy.DataHotSpan.Value)
 	return policyStr, nil
 }
 
@@ -89,8 +90,13 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 	newPolicy := &types.RetentionPolicy{}
 	err = iterator.DoOnRowOrError(
 		func(row *table.Row, inlineError *errors.Error) error {
+			var err error
 			if row != nil {
-				row.ToStruct(&rec)
+				err = row.ToStruct(&rec)
+				if err != nil {
+					log.Error().Err(err).Msg("failed to unmarshal policy")
+					return err
+				}
 				log.Debug().Msgf("SetTableRetentionPolicy: got policy: %+v, policy: %s", rec, rec.Policy)
 				if rec.Policy != "null" {
 					newPolicy = &types.RetentionPolicy{}
@@ -106,7 +112,7 @@ func SetTableRetentionPolicy(ctx context.Context, client *kusto.Client, database
 				log.Error().Msgf("got inline error: %s", inlineError.Error())
 			}
 			// log.Debug().Msgf("dbname: %s", dbName)
-			return nil
+			return err
 		},
 	)
 	if err != nil {
@@ -139,8 +145,13 @@ func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database s
 	newPolicy := &types.CachingPolicy{}
 	err = iterator.DoOnRowOrError(
 		func(row *table.Row, inlineError *errors.Error) error {
+			var err error
 			if row != nil {
-				row.ToStruct(&rec)
+				err = row.ToStruct(&rec)
+				if err != nil {
+					log.Error().Err(err).Msg("failed to unmarshal policy")
+					return err
+				}
 				log.Debug().Msgf("SetTableCachingPolicy: got policy: %+v, policy: %s", rec, rec.Policy)
 				if rec.Policy != "null" {
 					newPolicy = &types.CachingPolicy{}
@@ -156,7 +167,7 @@ func SetTableCachingPolicy(ctx context.Context, client *kusto.Client, database s
 				log.Error().Msgf("got inline error: %s", inlineError.Error())
 			}
 			// log.Debug().Msgf("dbname: %s", dbName)
-			return nil
+			return err
 		},
 	)
 	if err != nil {
@@ -188,7 +199,11 @@ func GetTablePolicy(ctx context.Context, client *kusto.Client, database string, 
 	err = iterator.DoOnRowOrError(
 		func(row *table.Row, inlineError *errors.Error) error {
 			if row != nil {
-				row.ToStruct(&rec)
+				err = row.ToStruct(&rec)
+				if err != nil {
+					log.Error().Err(err).Msg("failed to unmarshal policy")
+					return err
+				}
 				log.Debug().Msgf("GetTablePolicy: got policy: %+v, policy: %s", rec, rec.Policy)
 				if rec.Policy != "null" {
 					err = json.Unmarshal([]byte(rec.Policy), policy)
@@ -237,17 +252,21 @@ func GetDatabasePolicy(ctx context.Context, client *kusto.Client, database strin
 	dbRec := dbRetentionRecord{}
 	err = dbiterator.DoOnRowOrError(
 		func(row *table.Row, inlineError *errors.Error) error {
+			var err error
 			if row != nil {
 				log.Debug().Msgf("got row: %+v", row)
-				row.ToStruct(&dbRec)
+				err = row.ToStruct(&dbRec)
+				if err != nil {
+					log.Error().Err(err).Msg("failed to unmarshal policy to struct")
+					return err
+				}
 				log.Debug().Msgf("got database policy: %+v, policy: %s", dbRec, dbRec.Policy)
-				json.Unmarshal([]byte(dbRec.Policy), policy)
+				err = json.Unmarshal([]byte(dbRec.Policy), policy)
 			} else {
-
 				log.Error().Msgf("got inline error: %s", inlineError.Error())
 			}
 
-			return nil
+			return err
 		},
 	)
 	if err != nil {
@@ -277,14 +296,15 @@ func GetFunction(ctx context.Context, client *kusto.Client, database string, fun
 	dbFunction := &types.KustoFunction{}
 	err = dbiterator.DoOnRowOrError(
 		func(row *table.Row, inlineError *errors.Error) error {
+			var err error
 			if row != nil {
 				log.Debug().Msgf("got row: %+v", row)
-				row.ToStruct(dbFunction)
+				err = row.ToStruct(dbFunction)
 			} else {
 				log.Error().Msgf("got inline error: %s", inlineError.Error())
 			}
 
-			return nil
+			return err
 		},
 	)
 	if err != nil {

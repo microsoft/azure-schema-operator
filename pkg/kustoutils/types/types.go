@@ -1,15 +1,16 @@
 package types
+
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 type PolicyName string
 
 const (
 	Caching            PolicyName = "CachingPolicy"
-	ExtentsMerge                  = "ExtentsMergePolicy"
-	DataSharding                  = "DataShardingPolicy"
-	Retention                     = "RetentionPolicy"
-	StreamingIngestion            = "StreamingIngestionPolicy"
-	IngestionBatching             = "IngestionBatchingPolicy"
+	ExtentsMerge       PolicyName = "ExtentsMergePolicy"
+	DataSharding       PolicyName = "DataShardingPolicy"
+	Retention          PolicyName = "RetentionPolicy"
+	StreamingIngestion PolicyName = "StreamingIngestionPolicy"
+	IngestionBatching  PolicyName = "IngestionBatchingPolicy"
 )
 
 type Policy interface {

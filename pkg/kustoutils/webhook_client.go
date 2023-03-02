@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"text/template"
 
@@ -64,7 +64,7 @@ func (c *WebHookClient) PerformQuery(url, server, label string) ([]string, error
 	if resp.StatusCode == http.StatusUnauthorized {
 		return nil, errors.New("Unauthorized")
 	}
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	res := Response{}
 	err = json.Unmarshal(body, &res)
 	return res.DBS, err

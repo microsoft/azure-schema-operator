@@ -8,7 +8,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -79,7 +78,7 @@ func updateDacPac(dstDacPac string, srcDacPac string, sourceSchema, tenantSchema
 				panic(err)
 			}
 
-			originContent, err = ioutil.ReadAll(fileInArchive)
+			originContent, err = io.ReadAll(fileInArchive)
 			if err != nil {
 				panic(err)
 			}
@@ -122,7 +121,7 @@ func replaceContent(zipWriter *zip.Writer, f *zip.File, sourceSchema string, ten
 		panic(err)
 	}
 
-	read, err := ioutil.ReadAll(fileInArchive)
+	read, err := io.ReadAll(fileInArchive)
 	if err != nil {
 		panic(err)
 	}
