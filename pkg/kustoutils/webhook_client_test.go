@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 

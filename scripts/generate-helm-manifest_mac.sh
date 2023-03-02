@@ -17,7 +17,7 @@ rm -rf "$DIR"charts/azure-schema-operator/templates/generated
 rm -rf "$DIR"charts/azure-schema-operator/crds # remove generated files
 mkdir "$DIR"charts/azure-schema-operator/templates/generated
 mkdir "$DIR"charts/azure-schema-operator/crds # create dirs for generated files
-kustomize build "$DIR"config/default -o "$DIR"charts/azure-schema-operator/templates/generated
+./bin/kustomize build "$DIR"config/default -o "$DIR"charts/azure-schema-operator/templates/generated
 find "$DIR"charts/azure-schema-operator/templates/generated/*_customresourcedefinition_* -exec mv '{}' "$DIR"charts/azure-schema-operator/crds \; # move CRD definitions to crd folder
 rm "$DIR"charts/azure-schema-operator/templates/generated/*_namespace_* # remove namespace as we will let Helm manage it
 sed -i '' "s@$LOCAL_REGISTRY_CONTROLLER_DOCKER_IMAGE@{{.Values.image.repository}}@g" "$DIR"charts/azure-schema-operator/templates/generated/*_deployment_* # Replace hardcoded ASO image

@@ -4,11 +4,11 @@ package kustoutils_test
 // Licensed under the MIT License.
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/kustoutils"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 )
@@ -69,7 +69,7 @@ var _ = Describe("DeltaWrapper", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(fileName).To(BeARegularFile())
 			fmt.Fprintf(GinkgoWriter, "generated config file: %s\n", fileName)
-			b, err := ioutil.ReadFile(fileName) // just pass the file name
+			b, err := os.ReadFile(fileName) // just pass the file name
 			Expect(err).NotTo(HaveOccurred())
 			genCfgStr := string(b) // convert content to a 'string'
 			Expect(genCfgStr).To(Equal(tstCfgContent))

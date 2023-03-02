@@ -1,4 +1,4 @@
-package controllers
+package dbschema
 
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
@@ -7,15 +7,15 @@ import (
 	"fmt"
 	"time"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	kutoschemav1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	kutoschemav1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 )
 
 var _ = Describe("SchemaDeploymentController", func() {
@@ -43,7 +43,7 @@ var _ = Describe("SchemaDeploymentController", func() {
 			spec := kutoschemav1.SchemaDeploymentSpec{
 
 				ApplyTo: kutoschemav1.TargetFilter{
-					ClusterUris: []string{"https://" + testCluster + ".westeurope.kusto.windows.net"},
+					ClusterUris: []string{testCluster},
 					DB:          "db1120",
 				},
 				Type:           kutoschemav1.DBTypeKusto,

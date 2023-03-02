@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0 # required to access tags
           submodules: 'true'
@@ -30,7 +30,7 @@ jobs:
           mkdir -p $HOME/.docker # in case it doesn’t exist
           container_id=$(docker create -w /workspace -v $GITHUB_WORKSPACE:/workspace -v /var/run/docker.sock:/var/run/docker.sock devcontainer:latest)
           docker start "$container_id"
-          echo "::set-output name=id::$container_id"
+          echo "id=$container_id" >> $GITHUB_OUTPUT
 
       # - name: Run Kustomize
       #   run: |
@@ -59,7 +59,7 @@ jobs:
 
       - name: Login to registry
         # note that all creds are on host and never passed into devcontainer
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

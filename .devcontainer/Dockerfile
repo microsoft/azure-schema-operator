@@ -1,7 +1,7 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.137.0/containers/go/.devcontainer/base.Dockerfile
 
 # This is pinned to a particular version of go:
-FROM mcr.microsoft.com/vscode/devcontainers/go:0-1.18
+FROM mcr.microsoft.com/vscode/devcontainers/go:0-1.19
 
 # APT dependencies
 ENV DEBIAN_FRONTEND=noninteractive
@@ -46,7 +46,7 @@ COPY library-scripts/docker-debian.sh /tmp/library-scripts/
 # devcontainer image is based on: https://github.com/microsoft/vscode-dev-containers/issues/1008
 RUN bash /tmp/library-scripts/docker-debian.sh true /var/run/docker-host.sock /var/run/docker.sock automatic false
 
-ARG delta_kusto_version=0.9.0.105
+ARG delta_kusto_version=0.10.5.112
 
 RUN curl -L >delta-kusto-linux.tar.gz https://github.com/microsoft/delta-kusto/releases/download/${delta_kusto_version}/delta-kusto-linux.tar.gz \
   && tar -xzvf delta-kusto-linux.tar.gz -C /bin \

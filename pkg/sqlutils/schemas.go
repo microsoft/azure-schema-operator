@@ -13,7 +13,7 @@ import (
 	"github.com/microsoft/go-mssqldb/azuread"
 	"github.com/rs/zerolog/log"
 
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

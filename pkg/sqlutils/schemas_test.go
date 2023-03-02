@@ -3,10 +3,10 @@ package sqlutils_test
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 import (
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/microsoft/azure-schema-operator/pkg/sqlutils"
 	v1 "k8s.io/api/core/v1"
 )
@@ -37,7 +37,7 @@ var _ = Describe("Schemas", func() {
 
 	})
 	if liveTest {
-		Context("when testing sqlpackage with a live server", func() {
+		Context("when testing sqlpackage with a live server", Label("live"), func() {
 			cluster := sqlutils.NewSQLCluster(testCluster+".database.windows.net", nil, nil)
 			filter := schemav1alpha1.TargetFilter{
 				DB:     "DB1",

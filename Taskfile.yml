@@ -12,16 +12,16 @@ vars:
   TEST_RESOURCE_PREFIX: schematest
   TEST_LIVE_RESOURCE_PREFIX: schemalivetest
 
-  VERSION:
+  VERSION: "v0.1.2"
     # Version tags for the controller must start with "v1", e.g. "v1.0.0-alpha.0".
-    sh: '{{.SCRIPTS_ROOT}}/build-version.py v0'
+    # sh: '{{.SCRIPTS_ROOT}}/build-version.py v0'
 
   DEBUG:
     sh: if [ $DEBUG ];  then echo "-v"; fi
 
   VERSION_FLAGS: -ldflags "-X {{.PACKAGE}}/internal/version.BuildVersion={{.VERSION}}"
 
-  ENVTEST_K8S_VERSION: 1.23
+  ENVTEST_K8S_VERSION: 1.24.2
 
   CONTROLLER_DOCKER_IMAGE: azureschemaoperator:{{.VERSION}}
   PUBLIC_REGISTRY: ghcr.io/microsoft/azure-schema-operator/
@@ -41,8 +41,7 @@ tasks:
       - controller:test-deps
       - controller:ci
     cmds:
-      - echo "task: verify-no-changes"
-      # - task: verify-no-changes
+      - echo 'task verify-no-changes'
 
   ci-live:
     desc: Run all CI checks with live Azure resources. Requires that auth environment variables are set.
@@ -148,13 +147,18 @@ tasks:
     # deps: [controller:generate-crds, controller:run-kustomize-for-envtest]
     cmds:
       - go test -short -tags=noexit -v -timeout 10m -run '{{default ".*" .TEST_FILTER}}' ./pkg/...
+  
+  pkg:filtered-test:
+    desc: Run ginkgo tests for a specific filter
+    dir: '{{.CONTROLLER_ROOT}}'
+    cmds:
+      - ginkgo -v --label-filter={{.FILTER}}  ./pkg/...
 
   controller:test-cover:
     desc: Run {{.CONTROLLER_APP}} unit tests and output coverage.
     # deps: [controller:generate-crds]
     cmds:
-      # -race fails at the moment in gopter - possibly due to our shared generator variable?
-      - go test -short -tags=noexit -timeout 10m -covermode set -coverprofile=controller-coverage.out -coverpkg="./pkg/..." -run '{{default ".*" .TEST_FILTER}}' ./pkg/...
+      - ginkgo -v --procs=4 --compilers=4 --label-filter="!live" --timeout 10m --keep-going --cover -covermode set --coverprofile=controller-coverage.out -coverpkg="./pkg/..."  ./pkg/...
 
   controller:test-integration-ci:
     desc: Run integration tests for CI
@@ -171,7 +175,7 @@ tasks:
         sh: if [ $TEST_FILTER ];  then echo "-v"; fi
     env:
       KUBEBUILDER_ASSETS:
-        sh: setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
+        sh: ./bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
         # sh: $(pwd)/bin/setup-envtest use {{.ENVTEST_K8S_VERSION}} -p path
 
   test-integration-envtest-live:
@@ -254,3 +258,4 @@ tasks:
     cmds:
       - echo "Place holder for test resource group cleanup"
       # - '{{.SCRIPTS_ROOT}}/delete-old-resourcegroups.sh -p "{{.TEST_RESOURCE_PREFIX}}"'
+

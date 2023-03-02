@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/microsoft/azure-schema-operator/pkg/utils"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 

@@ -1,0 +1,75 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.11.1
+  creationTimestamp: null
+  name: cachingpolicies.kusto.microsoft.com
+spec:
+  group: kusto.microsoft.com
+  names:
+    kind: CachingPolicy
+    listKind: CachingPolicyList
+    plural: cachingpolicies
+    singular: cachingpolicy
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: CachingPolicy is the Schema for the cachingpolicies API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CachingPolicySpec defines the desired state of CachingPolicy
+            properties:
+              cachingPolicy:
+                type: string
+              clusterUris:
+                items:
+                  type: string
+                minItems: 1
+                type: array
+              db:
+                type: string
+              table:
+                type: string
+            required:
+            - cachingPolicy
+            - clusterUris
+            - db
+            type: object
+          status:
+            description: CachingPolicyStatus defines the observed state of CachingPolicy
+            properties:
+              clustersDone:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file'
+                items:
+                  type: string
+                type: array
+              status:
+                enum:
+                - Success
+                - Fail
+                type: string
+            required:
+            - status
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

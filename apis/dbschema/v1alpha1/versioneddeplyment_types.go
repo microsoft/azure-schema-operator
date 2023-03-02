@@ -43,9 +43,9 @@ type VersionedDeplymentStatus struct {
 }
 
 // VersionedDeplyment is an immutable object that represents a deployment of a specific revision of a schema deployment
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:printcolumn:name="CompletedPCT",type="string",JSONPath=".status.completedPct"
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="CompletedPCT",type="string",JSONPath=".status.completedPct"
 type VersionedDeplyment struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

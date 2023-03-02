@@ -18,8 +18,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
-	"github.com/microsoft/azure-schema-operator/controllers"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
+	kustov1alpha1 "github.com/microsoft/azure-schema-operator/apis/kusto/v1alpha1"
+	"github.com/microsoft/azure-schema-operator/controllers/dbschema"
+	kustocontrollers "github.com/microsoft/azure-schema-operator/controllers/kusto"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -31,6 +33,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(schemav1alpha1.AddToScheme(scheme))
+	utilruntime.Must(kustov1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -79,7 +82,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.SchemaDeploymentReconciler{
+	if err = (&dbschema.SchemaDeploymentReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("SchemaDeployment"),
 		Scheme: mgr.GetScheme(),
@@ -87,7 +90,7 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "SchemaDeployment")
 		os.Exit(1)
 	}
-	if err = (&controllers.ClusterExecuterReconciler{
+	if err = (&dbschema.ClusterExecuterReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("ClusterExecuter"),
 		Scheme: mgr.GetScheme(),
@@ -95,12 +98,36 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "ClusterExecuter")
 		os.Exit(1)
 	}
-	if err = (&controllers.VersionedDeplymentReconciler{
+	if err = (&dbschema.VersionedDeplymentReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("VersionedDeployment"),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VersionedDeplyment")
+		os.Exit(1)
+	}
+	if err = (&kustocontrollers.RetentionPolicyReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("RetentionPolicy"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "RetentionPolicy")
+		os.Exit(1)
+	}
+	if err = (&kustocontrollers.CachingPolicyReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("CachingPolicy"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "CachingPolicy")
+		os.Exit(1)
+	}
+	if err = (&kustocontrollers.StoredFunctionReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("StoredFunction"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "StoredFunction")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

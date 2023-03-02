@@ -1,0 +1,19 @@
+apiVersion: kusto.microsoft.com/v1alpha1
+kind: RetentionPolicy
+metadata:
+  labels:
+    app.kubernetes.io/name: retentionpolicy
+    app.kubernetes.io/instance: retentionpolicy-sample
+    app.kubernetes.io/part-of: schema-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: schema-operator
+  name: retentionpolicy-sample
+spec:
+  clusterUris:
+    - https://cluster1.kusto.windows.net
+    - https://cluster2.kusto.windows.net
+  db: test
+  table: test
+  retentionPolicy:
+    softDeletePeriod: 15.00:00:00
+    recoverability: Enabled

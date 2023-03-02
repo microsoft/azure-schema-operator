@@ -5,7 +5,6 @@ package schemaop
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -146,7 +145,7 @@ func (o *SchemaUpdateOptions) Run() error {
 	} else {
 		found = true
 	}
-	b, err := ioutil.ReadFile(o.SchemaFile) // just pass the file name
+	b, err := os.ReadFile(o.SchemaFile) // just pass the file name
 	if err != nil {
 		return fmt.Errorf("unable to read schema file: %w", err)
 	}

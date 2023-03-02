@@ -1,0 +1,27 @@
+# permissions for end users to view storedfunctions.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: storedfunction-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: schema-operator
+    app.kubernetes.io/part-of: schema-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: storedfunction-viewer-role
+rules:
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - storedfunctions
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kusto.microsoft.com
+  resources:
+  - storedfunctions/status
+  verbs:
+  - get

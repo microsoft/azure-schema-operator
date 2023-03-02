@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"io"
@@ -14,8 +15,7 @@ import (
 	"github.com/Azure/azure-kusto-go/kusto"
 	"github.com/Azure/azure-kusto-go/kusto/data/errors"
 	"github.com/Azure/azure-kusto-go/kusto/data/table"
-	"github.com/Azure/go-autorest/autorest/azure/auth"
-	schemav1alpha1 "github.com/microsoft/azure-schema-operator/api/v1alpha1"
+	schemav1alpha1 "github.com/microsoft/azure-schema-operator/apis/dbschema/v1alpha1"
 	"github.com/rs/zerolog/log"
 	v1 "k8s.io/api/core/v1"
 )
@@ -48,17 +48,19 @@ func NewKustoCluster(uri string) *KustoCluster {
 		wrapper: NewDeltaWrapper(),
 	}
 
-	a, err := auth.NewAuthorizerFromEnvironmentWithResource(uri)
-	if err != nil {
-		log.Error().Err(err).Msgf("failed to authorize from env to %s", uri)
-	}
+	// a, err := auth.NewAuthorizerFromEnvironmentWithResource(uri)
+	// if err != nil {
+	// 	log.Error().Err(err).Msgf("failed to authorize from env to %s", uri)
+	// }
 
-	authorizer := kusto.Authorization{
-		Authorizer: a,
-		// Config: auth.NewClientCredentialsConfig(clientID, clientSecret, tenantID),
-	}
+	kcsb := kusto.NewConnectionStringBuilder(uri).WithDefaultAzureCredential()
+	client, err := kusto.New(kcsb)
+	// authorizer := kusto.Authorization{
+	// 	Authorizer: a,
+	// 	// Config: auth.NewClientCredentialsConfig(clientID, clientSecret, tenantID),
+	// }
 
-	client, err := kusto.New(uri, authorizer)
+	// client, err := kusto.New(uri, authorizer)
 	if err != nil {
 		log.Error().Err(err).Msgf("failed to connect to %s", uri)
 	}
@@ -185,4 +187,25 @@ func (c *KustoCluster) CreateExecConfiguration(targets schemav1alpha1.ClusterTar
 // ClusterNameFromURI returns the cluster name from the given URI
 func ClusterNameFromURI(uri string) string {
 	return strings.Split(strings.Split(uri, "https://")[1], ".")[0]
+}
+
+// ConvertTimeFormat converts the time format for cache expiration from days.hours:minutes to hours/days.
+func ConvertTimeFormat(input string) string {
+	// Split the input string into its parts
+	parts := strings.Split(input, ".")
+
+	// Parse the days and hours from the input string
+	days, _ := strconv.Atoi(parts[0])
+	hoursAndMinutes := strings.Split(parts[1], ":")
+	hours, _ := strconv.Atoi(hoursAndMinutes[0])
+
+	// Calculate the total number of hours
+	totalHours := days*24 + hours
+
+	// Check if the number of hours is a multiple of 24 (i.e. full days)
+	if totalHours%24 == 0 {
+		return fmt.Sprintf("%dd", totalHours/24)
+	} else {
+		return fmt.Sprintf("%dh", totalHours)
+	}
 }
