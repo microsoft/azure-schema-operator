@@ -59,7 +59,7 @@ go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.11.1
 go install sigs.k8s.io/kind@v0.11.1 
 # go install sigs.k8s.io/kustomize/kustomize/v3@v3.8.7
 go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
-go install github.com/onsi/ginkgo/v2/ginkgo
+go install github.com/onsi/ginkgo/v2/ginkgo@latest
 
 # for docs site
 go install -tags extended github.com/gohugoio/hugo@v0.88.1
