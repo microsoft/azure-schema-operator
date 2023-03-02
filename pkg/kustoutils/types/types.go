@@ -1,5 +1,6 @@
 package types
-
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 type PolicyName string
 
 const (
