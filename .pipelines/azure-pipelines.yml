@@ -8,11 +8,21 @@ trigger:
     - '*'
 
 resources:
-- repo: self
+  repositories:
+  - repository: self
+  containers:
+  - container: azureschemaoperator      
+    type: ACR  
+    azureSubscription: 91d8605f-b80a-4b1c-bca1-6ec55bfd1deb
+    resourceGroup: azure-schema-operator
+    registry: azureschemaoperator
+    repository: azureschemaoperator
 
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '458c1603-21ee-4e99-8116-59021a6d17f6'
+  azureSubscriptionForACR: '91d8605f-b80a-4b1c-bca1-6ec55bfd1deb'
+  azureResourceGroupForACR: 'azure-schema-operator'
   imageRepository: 'azureschemaoperator'
   containerRegistry: 'azureschemaoperator.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
@@ -40,3 +50,16 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+    - task: HelmInstaller@1
+      displayName: Install Helm 3.6.2
+      inputs:
+        helmVersionToInstall: 3.6.2
+    - task: HelmDeploy@0
+      inputs:
+        azureSubscriptionForACR: 'Adallom RS-02 (Europe West) Subscription'
+        azureResourceGroupForACR: 'azure-schema-operator'
+        azureContainerRegistry: 'azureschemaoperator.azurecr.io'
+        command: 'save'
+        chartNameForACR: 'azure-schema-operator'
+        chartPathForACR: '$(Build.SourcesDirectory)/charts/azure-schema-operator'
+    
