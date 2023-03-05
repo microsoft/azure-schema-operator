@@ -36,6 +36,7 @@ jobs:
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           AZURE_USE_MSI: ${{ secrets.AZURE_USE_MSI }}
           SCHEMAOP_TEST_KUSTO_CLUSTER_NAME: ${{ secrets.SCHEMAOP_TEST_KUSTO_CLUSTER_NAME }}
+          SCHEMAOP_TEST_SQLSERVER_CLUSTER_NAME: ${{ secrets.SCHEMAOP_TEST_SQLSERVER_CLUSTER_NAME }}
           SCHEMAOP_TEST_RG_NAME: ${{ secrets.SCHEMAOP_TEST_RG_NAME }}
 
       # We explicitly do not upload coverage for live tests as it messes with the diffs for PRs,
