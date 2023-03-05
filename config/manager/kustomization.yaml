@@ -13,7 +13,7 @@ kind: Kustomization
 images:
 - name: controller
   newName: mcasdatacr.azurecr.io/schema-operator
-  newTag: v1.0.2-alpha
+  newTag: v0.1.1-alpha
 
 patchesStrategicMerge:
 - manager_image_patch.yaml

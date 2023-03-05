@@ -1,4 +1,5 @@
 package kusto
+
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
