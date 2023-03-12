@@ -77,7 +77,7 @@ var _ = Describe("Utils", func() {
 			dbs, err := mockClient.ListDatabases(expression)
 			Expect(err).NotTo(HaveOccurred())
 			fmt.Fprintf(GinkgoWriter, "List of DBs in Mock Cluster: %+v \n", dbs)
-			Expect(len(dbs)).To(Equal(2))
+			Expect(dbs).To(HaveLen(2))
 		})
 		It("should return only filtered results", func() {
 			client := &mockKusto{}
@@ -88,7 +88,7 @@ var _ = Describe("Utils", func() {
 			dbs, err := mockClient.ListDatabases(expression)
 			Expect(err).NotTo(HaveOccurred())
 			fmt.Fprintf(GinkgoWriter, "List of DBs in Mock Cluster: %+v \n", dbs)
-			Expect(len(dbs)).To(Equal(1))
+			Expect(dbs).To(HaveLen(1))
 		})
 		It("should filter everything", func() {
 			client := &mockKusto{}
@@ -99,7 +99,7 @@ var _ = Describe("Utils", func() {
 			dbs, err := mockClient.ListDatabases(expression)
 			Expect(err).NotTo(HaveOccurred())
 			fmt.Fprintf(GinkgoWriter, "List of DBs in Mock Cluster: %+v \n", dbs)
-			Expect(len(dbs)).To(Equal(0))
+			Expect(dbs).To(BeEmpty())
 		})
 		It("should AquireTargets filtered results", func() {
 			client := &mockKusto{}
@@ -112,7 +112,7 @@ var _ = Describe("Utils", func() {
 			targets, err := mockClient.AquireTargets(filter)
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(len(targets.DBs)).To(Equal(1))
+			Expect(targets.DBs).To(HaveLen(1))
 		})
 		It("should AquireTargets all dbs without filter", func() {
 			client := &mockKusto{}
@@ -123,7 +123,7 @@ var _ = Describe("Utils", func() {
 			targets, err := mockClient.AquireTargets(filter)
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(len(targets.DBs)).To(Equal(2))
+			Expect(targets.DBs).To(HaveLen(2))
 		})
 
 	})
@@ -137,7 +137,7 @@ var _ = Describe("Utils", func() {
 			It("Should acquire requested targets and prepare for execution", func() {
 				clusterTargets, err := cluster.AquireTargets(filter)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(len(clusterTargets.DBs)).To(Equal(1))
+				Expect(clusterTargets.DBs).To(HaveLen(1))
 			})
 		})
 	}

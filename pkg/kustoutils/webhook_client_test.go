@@ -69,7 +69,7 @@ var _ = Describe("Server-side Request handling", func() {
 		url := srv.URL + "/dbs?cluster={{.Cluster}}&label={{.Label}}"
 		dbs, err := c.PerformQuery(url, "test-cluster", "delux")
 		Expect(err).ToNot(HaveOccurred())
-		Expect(len(dbs)).To(Equal(2))
+		Expect(dbs).To(HaveLen(2))
 	})
 
 	// Context("Use a different handler", func() {
