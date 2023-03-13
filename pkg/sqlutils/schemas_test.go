@@ -46,7 +46,7 @@ var _ = Describe("Schemas", func() {
 			It("Should acquire requested targets and prepare for execution", func() {
 				clusterTargets, err := cluster.AquireTargets(filter)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(len(clusterTargets.Schemas)).To(Equal(1))
+				Expect(clusterTargets.Schemas).To(HaveLen(1))
 			})
 		})
 	}

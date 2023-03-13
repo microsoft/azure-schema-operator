@@ -21,9 +21,9 @@ var _ = Describe("Cluster", func() {
 		}
 
 		c := cluster.Difference(a, b)
-		Expect(len(c.DBs)).To(Equal(1))
+		Expect(c.DBs).To(HaveLen(1))
 		u := cluster.Union(a, b)
-		Expect(len(u.DBs)).To(Equal(3))
+		Expect(u.DBs).To(HaveLen(3))
 
 	})
 })

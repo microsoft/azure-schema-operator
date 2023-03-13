@@ -72,7 +72,9 @@ var _ = Describe("DeltaWrapper", func() {
 			b, err := os.ReadFile(fileName) // just pass the file name
 			Expect(err).NotTo(HaveOccurred())
 			genCfgStr := string(b) // convert content to a 'string'
+			// TODO: fix this test
 			fmt.Fprintf(GinkgoWriter, "generated config: %s\n", genCfgStr)
+			fmt.Fprintf(GinkgoWriter, "should match config: %s\n", tstCfgContent)
 			// Expect(genCfgStr).To(Equal(tstCfgContent))
 
 		})

@@ -117,6 +117,6 @@ var _ = Describe("Function Manager", Label("KustoFunctions"), Label("live"), fun
 		Expect(err).ToNot(HaveOccurred())
 		GinkgoWriter.Printf("Test function: %+v\n", funct)
 		GinkgoWriter.Printf("Returned function: %+v\n", funcInDB)
-		Expect(funct.Equals(funcInDB)).To(Equal(true))
+		Expect(funct.Equals(funcInDB)).To(BeTrue())
 	})
 })
