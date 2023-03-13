@@ -13,7 +13,7 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '458c1603-21ee-4e99-8116-59021a6d17f6'
-  imageRepository: 'azureschemaoperator'
+  imageRepository: 'public/azureschemaoperator/azureschemaoperator'
   containerRegistry: 'azureschemaoperator.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   # tag: '$(Build.BuildId)'
